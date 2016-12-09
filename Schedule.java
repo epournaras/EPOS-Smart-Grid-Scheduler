@@ -84,9 +84,17 @@ public class Schedule {
 	}
 	
 	public void printScheduleList(){
-		/*
-		 * ToDo
-		 */
+		scheduleList.trimToSize();
+		Action[][] listArray = new Action[scheduleList.size()][];
+		scheduleList.toArray(listArray);
+		String output = "";
+		for(int i = 0 ; i < listArray.length; i++){
+			output+="\n Schedule"+i+"\n";
+			for(int j = 0; j<listArray[i].length;j++){
+				output+=listArray[i][j].name+" "+listArray[i][j].getTimeString(listArray[i][j].windowStart)+"-"+listArray[i][j].getTimeString(listArray[i][j].windowEnd)+"\n";
+			}
+		}
+		System.out.print(output); //Will have to be changed once testing is finished and this is moved to Android Studio
 	}
 	
 	/*
@@ -97,9 +105,6 @@ public class Schedule {
 		scheduleList.add(list);
 		lock.unlock();
 	}
-	/*
-	 * method for threads to update up to what point their starting lists are fixed
-	 */
 	
 	/*
 	 * Go to the last list that was given to a thread, use it as an input to changeWindow to get the next list to use to get another schedule
