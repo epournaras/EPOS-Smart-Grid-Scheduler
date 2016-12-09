@@ -47,7 +47,7 @@ public class Action {
 		}
 	}
 	
-	public static String getTimeString(int a){
+	public String getTimeString(int a){
 		int hour = a/60;
 		int minute = a%60;
 		String result;
