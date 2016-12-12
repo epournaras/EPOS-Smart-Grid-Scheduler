@@ -1,4 +1,5 @@
 
+
 public class Action {
 	public String name;
 	public int windowStart;
@@ -69,7 +70,7 @@ public class Action {
 		char[] timeCharArray = a.toCharArray();
 		int hour = (Character.getNumericValue(timeCharArray[0])*10)+Character.getNumericValue(timeCharArray[1]);
         int minute = (Character.getNumericValue(timeCharArray[3])*10)+Character.getNumericValue(timeCharArray[4]);
-        time=hour+minute;
+        time=hour*60+minute;
 		return time;
 	}
 	
