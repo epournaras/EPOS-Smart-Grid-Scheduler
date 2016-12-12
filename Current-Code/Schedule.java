@@ -7,9 +7,19 @@ public class Schedule {
 	public Action[] actionList = new Action[1];
 	public ArrayList<Action[]> scheduleList = new ArrayList<Action[]>();
 	private Action[] lastStartingList;
-	private Lock lock;
-	private Lock nextListLock;
+	private ReentrantLock lock = new ReentrantLock();
+	private ReentrantLock nextListLock = new ReentrantLock();
 	int startingIndex;
+	int count = 0;
+	
+	public Schedule(Action[] a){
+		for(int i = 0;i<a.length;i++){
+			list.add(a[i]);
+		}
+	}
+	public Schedule(){
+		this.startingIndex = 0;
+	}
 	public void add(Action a){
 		list.add(a);
 	}
@@ -19,7 +29,8 @@ public class Schedule {
 	/*
 	 * The list of Actions is complete. Now create Schedules from them.
 	 */
-	public void makeScheduleList(){
+	
+	public void initialiseActionList(){
 		list.trimToSize();
 		int numberOfActions = list.size();
 		actionList = new Action[numberOfActions];
@@ -43,6 +54,10 @@ public class Schedule {
 		actionList = tempList;
 		tempList = null;
 		temp = null;
+	}
+	
+	public void makeScheduleList(){
+		initialiseActionList();
 		Action[] referenceList = new Action[actionList.length];
 		for(int i = 0 ; i < referenceList.length ; i++ ){
 			referenceList[i] = new Action(actionList[i]);
@@ -66,6 +81,7 @@ public class Schedule {
 				positionsLeft = false;
 			}
 		}
+		printScheduleList();
 		startingIndex = 0;
 		listOfStartingLists.trimToSize();
 		Action[][] listArray = new Action[listOfStartingLists.size()][];
@@ -81,36 +97,63 @@ public class Schedule {
 		for(int i = 0; i<threads.size();i++){
 			threads.get(i).start();
 		}
+		for(int i = 0; i<threads.size();i++){
+			try{
+				threads.get(i).t.join();
+			}catch(InterruptedException e){
+				System.out.print("Thread"+i+" interrupted\n");
+			}
+		}
+		printScheduleList();
 	}
 	
 	public void printScheduleList(){
+		int j = 0;
+		System.out.print("HERE");
 		scheduleList.trimToSize();
 		Action[][] listArray = new Action[scheduleList.size()][];
-		scheduleList.toArray(listArray);
-		String output = "";
-		for(int i = 0 ; i < listArray.length; i++){
-			output+="\n Schedule"+i+"\n";
-			for(int j = 0; j<listArray[i].length;j++){
-				output+=listArray[i][j].name+" "+listArray[i][j].getTimeString(listArray[i][j].windowStart)+"-"+listArray[i][j].getTimeString(listArray[i][j].windowEnd)+"\n";
+		for(int q = 0; q<scheduleList.size();q++){
+			if(scheduleList.get(q)!=null){
+				listArray[q] = scheduleList.get(q);
+				System.out.print("\nSchedule "+q+"\n");
+				for(j = 0; j<listArray[q].length;j++){
+					System.out.print(listArray[q][j].name+" "
+							+listArray[q][j].getTimeString(listArray[q][j].windowStart)
+							+"-"+listArray[q][j].getTimeString(listArray[q][j].windowEnd)+"\n");
+				}
 			}
 		}
-		System.out.print(output); //Will have to be changed once testing is finished and this is moved to Android Studio
+		//Will have to be changed once testing is finished and this is moved to Android Studio
 	}
 	
 	/*
 	 * Used by threads to add the schedule they found to the list of schedules
 	 */
 	public void returnActionList(Action[] list){
-		lock.lock();
-		scheduleList.add(list);
-		lock.unlock();
+		boolean lockAcquired = false;
+		try{
+			lock.tryLock();
+			try{
+				lockAcquired = true;
+				if(list!=null) scheduleList.add(cloneActionArray(list));	
+			}finally{
+				if(lockAcquired){
+					lock.unlock();
+				}
+			}
+		}catch(IllegalMonitorStateException e){
+			
+		}
+		catch(ArrayIndexOutOfBoundsException e){
+			
+		}
 	}
 	
 	/*
 	 * Go to the last list that was given to a thread, use it as an input to changeWindow to get the next list to use to get another schedule
 	 */
 	public Action[] getNextList(){
-		nextListLock.lock();
+		nextListLock.tryLock();
 		Action[] temp = cloneActionArray(lastStartingList);
 		temp[startingIndex].windowStart++;
 		temp[startingIndex].windowEnd=temp[startingIndex].windowStart+temp[startingIndex].duration;
@@ -136,12 +179,11 @@ public class Schedule {
 	public Action intialiseListForSplit(Action[] referenceList, int indexAtWhichToSplit){
 		Action temp = new Action(referenceList[indexAtWhichToSplit]);
 		temp = changeWindow(indexAtWhichToSplit, referenceList);
-		if(temp!=null)
-			return temp;
+		if(temp!=null) return temp;
 		temp=null;
-		return null;
-		
+		return null;	
 	}
+	
 	public Action[] getSchedule(Action[] referenceList, int startingIndex){
 		boolean noSchedule = false;
 		Action[] temp = new Action[referenceList.length];
@@ -150,7 +192,7 @@ public class Schedule {
 		}
 		for(int i = startingIndex; i<referenceList.length&&!noSchedule;i++){
 			if(temp[i]==null){
-				temp[i] = new Action(referenceList[i]);
+				temp[i] = new Action(actionList[i]);
 			}
 			temp[i] = changeWindow(i,temp);
 			if(temp[i]==null){
@@ -174,21 +216,26 @@ public class Schedule {
 	 * If the window moves to the end of possible window positions and there was no position in which it did not conflict with preceding actions, return null.
 	 */
 	public Action changeWindow(int indexOfItem, Action[] currentSchedule){
-		Action clone = new Action(currentSchedule[indexOfItem]);
-		clone.windowEnd = clone.windowStart+clone.duration;
-		boolean positionOk = false;
-		while(clone.windowStart+clone.duration<actionList[indexOfItem].windowEnd&&!positionOk){
-			positionOk = checkPosition(indexOfItem, clone, currentSchedule);
-			if(!positionOk){
-				clone.windowStart++;
-				clone.windowEnd = clone.windowStart+clone.duration;
+		try{
+			Action clone = new Action(currentSchedule[indexOfItem]);
+			clone.windowEnd = clone.windowStart+clone.duration;
+			boolean positionOk = false;
+			while(clone.windowStart+clone.duration<actionList[indexOfItem].windowEnd&&!positionOk){
+				positionOk = checkPosition(indexOfItem, clone, currentSchedule);
+				if(!positionOk){
+					clone.windowStart++;
+					clone.windowEnd = clone.windowStart+clone.duration;
+				}
 			}
-		}
-		if(clone.windowStart+clone.duration>actionList[indexOfItem].windowEnd){
-			clone = null;
+			if(clone.windowStart+clone.duration>actionList[indexOfItem].windowEnd){
+				clone = null;
+				return null;
+			}else{
+				return clone;
+			}
+		}catch(NullPointerException e){
+			System.out.print("ERROR: Action "+currentSchedule[indexOfItem].name+" is null \n");
 			return null;
-		}else{
-			return clone;
 		}
 	}
 	
@@ -198,8 +245,10 @@ public class Schedule {
 	 */
 	public boolean checkPosition(int indexOfItem, Action a, Action[] currentSchedule){
 		boolean noConflict = true;
-		for(int i = 0; i<indexOfItem&&noConflict; i++){
-			noConflict = checkConflict(a,currentSchedule[i], false);		
+		for(int i = 0; i<currentSchedule.length&&noConflict; i++){
+			if(currentSchedule[i]!=null&&i!=indexOfItem){
+				noConflict = checkConflict(a,currentSchedule[i], false);
+			}	
 		}
 		return noConflict;
 	}
@@ -211,11 +260,11 @@ public class Schedule {
 	 *The Actions A and B must have windows the size of their duration.
 	 */
 	public boolean checkConflict(Action a, Action b, boolean reverse){
-		if(a.windowStart<b.windowStart&&a.windowEnd<b.windowEnd&&a.windowEnd>b.windowStart){
+		if(a.windowStart<=b.windowStart&&a.windowEnd<=b.windowEnd&&a.windowEnd>=b.windowStart){
 			System.out.print("Conflict between "+a.name+" and "+b.name+"\n");
 			return false;
 		}
-		if(a.windowStart>b.windowStart&&a.windowEnd<b.windowEnd){
+		if(a.windowStart>=b.windowStart&&a.windowEnd<=b.windowEnd){
 			System.out.print("Conflict between "+a.name+" and "+b.name+"\n");
 			return false;
 		}
@@ -230,8 +279,10 @@ public class Schedule {
 	public Action[] cloneActionArray(Action[] array){
 		Action[] clone = new Action[array.length];
 		for(int i = 0; i<array.length;i++){
-			clone[i] = new Action(array[i]);
+			if(array[i]!=null){
+				clone[i] = new Action(array[i]);
+			}
 		}
-		return array;
+		return clone;
 	}
 }
