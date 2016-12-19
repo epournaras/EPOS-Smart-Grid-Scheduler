@@ -109,21 +109,24 @@ public class Schedule {
 	
 	public void printScheduleList(){
 		int j = 0;
-		System.out.print("HERE");
+		//System.out.print("HERE");
 		scheduleList.trimToSize();
 		Action[][] listArray = new Action[scheduleList.size()][];
-		for(int q = 0; q<scheduleList.size();q++){
-			if(scheduleList.get(q)!=null){
-				listArray[q] = scheduleList.get(q);
-				System.out.print("\nSchedule "+q+"\n");
-				for(j = 0; j<listArray[q].length;j++){
-					System.out.print(listArray[q][j].name+" "
-							+listArray[q][j].getTimeString(listArray[q][j].windowStart)
-							+"-"+listArray[q][j].getTimeString(listArray[q][j].windowEnd)+"\n");
+		if(!scheduleList.isEmpty()){
+			for(int q = 0; q<scheduleList.size();q++){
+				if(scheduleList.get(q)!=null){
+					listArray[q] = scheduleList.get(q);
+					System.out.print("\nSchedule "+q+"\n");
+					for(j = 0; j<listArray[q].length;j++){
+						System.out.print(listArray[q][j].name+" "
+								+listArray[q][j].getTimeString(listArray[q][j].windowStart)
+								+"-"+listArray[q][j].getTimeString(listArray[q][j].windowEnd)+"\n");
+					}
 				}
 			}
+		}else{
+			System.out.print("No schedules exist");
 		}
-		//Will have to be changed once testing is finished and this is moved to Android Studio
 	}
 	
 	/*
