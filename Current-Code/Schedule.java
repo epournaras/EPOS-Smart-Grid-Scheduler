@@ -135,7 +135,15 @@ public class Schedule {
 			lock.tryLock();
 			try{
 				lockAcquired = true;
-				if(list!=null) scheduleList.add(cloneActionArray(list));	
+				boolean noConflict = true;
+				if(list!=null) {
+					for(int i= 0; i<list.length&&noConflict;i++){
+						noConflict = checkPosition(i, list[i],list);
+					}
+					if(noConflict){
+						scheduleList.add(cloneActionArray(list));
+					}
+				}	
 			}finally{
 				if(lockAcquired){
 					lock.unlock();
@@ -261,14 +269,20 @@ public class Schedule {
 	 */
 	public boolean checkConflict(Action a, Action b, boolean reverse){
 		if(a.windowStart<=b.windowStart&&a.windowEnd<=b.windowEnd&&a.windowEnd>=b.windowStart){
-			System.out.print("Conflict between "+a.name+" and "+b.name+"\n");
+			//System.out.print("Conflict between "+a.name+" and "+b.name+"\n");
 			return false;
 		}
 		if(a.windowStart>=b.windowStart&&a.windowEnd<=b.windowEnd){
-			System.out.print("Conflict between "+a.name+" and "+b.name+"\n");
+			//System.out.print("Conflict between "+a.name+" and "+b.name+"\n");
 			return false;
 		}
 		if(!reverse){
+			if(a.windowStart == b.windowStart){
+				return false;
+			}
+			if(a.windowEnd == b.windowEnd){
+				return false;
+			}
 			return checkConflict(b,a, true);
 		}
 		else{
