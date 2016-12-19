@@ -67,8 +67,13 @@ public class ThreadManager implements Runnable{
 					
 				}
 				
-			}			
-			this.list = this.caller.getNextList();
+			}
+			do{
+				this.list = this.caller.getNextList();
+				if(this.list ==null){
+					break;
+				}
+			}while(this.list[0].name.equals("Failure"));
 			if(this.list!=null){
 				Thread.sleep(50);
 				this.run();
