@@ -11,6 +11,7 @@ public class Schedule {
 	private ReentrantLock nextListLock = new ReentrantLock();
 	int startingIndex;
 	int count = 0;
+	private int schedulesToCreate = 400000;
 	
 	public Schedule(Action[] a){
 		for(int i = 0;i<a.length;i++){
@@ -90,7 +91,7 @@ public class Schedule {
 		ArrayList<ThreadManager> threads = new ArrayList<ThreadManager>();
 		
 		for(int i = 0 ; i<listArray.length; i++){
-			threads.add(new ThreadManager("Thread"+i,listArray[i],this,0));
+			threads.add(new ThreadManager("Thread"+i,listArray[i],this,0,this.schedulesToCreate/cores));
 		}
 		threads.trimToSize();
 		for(int i = 0; i<threads.size();i++){
@@ -104,6 +105,10 @@ public class Schedule {
 			}
 		}
 		printScheduleList();
+	}
+	
+	public void setSchedulesToCreate(int a){
+		this.schedulesToCreate = a;
 	}
 	
 	public void printScheduleList(){
