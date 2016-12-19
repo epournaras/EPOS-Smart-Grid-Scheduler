@@ -1,5 +1,4 @@
 
-
 public class ThreadManager implements Runnable{
 	public Thread t;
 	private String threadName;
@@ -8,6 +7,7 @@ public class ThreadManager implements Runnable{
 	private int startingIndex;
 	private Action[] spareList;
 	private int schedulesToGet;
+	private int count = 0;
 	
 	public ThreadManager(String name, Action[] list, Schedule caller, int startingIndex){
 		System.out.print("Creating "+name+"\n");
@@ -28,8 +28,7 @@ public class ThreadManager implements Runnable{
 	 */
 	public void run(){
 		try{
-			int count = 0;
-			System.out.print("Running "+threadName+"...\n");
+			//System.out.print("Running "+threadName+"...\n");
 			this.list = this.caller.getSchedule(this.list, startingIndex+1);
 			if(this.list!=null){
 				this.spareList = this.caller.cloneActionArray(this.list);
