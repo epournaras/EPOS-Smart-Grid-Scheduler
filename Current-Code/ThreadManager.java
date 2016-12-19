@@ -9,13 +9,13 @@ public class ThreadManager implements Runnable{
 	private int schedulesToGet;
 	private int count = 0;
 	
-	public ThreadManager(String name, Action[] list, Schedule caller, int startingIndex){
+	public ThreadManager(String name, Action[] list, Schedule caller, int startingIndex, int schedulesToGet){
 		System.out.print("Creating "+name+"\n");
 		this.threadName = name;
 		this.list = list;
 		this.caller = caller;
 		this.startingIndex = startingIndex;
-		this.schedulesToGet = 10000;
+		this.schedulesToGet = schedulesToGet;
 	}
 	
 	/*
