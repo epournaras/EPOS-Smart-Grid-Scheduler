@@ -1,4 +1,5 @@
 
+
 public class ThreadManager implements Runnable{
 	public Thread t;
 	private String threadName;
@@ -69,7 +70,12 @@ public class ThreadManager implements Runnable{
 				
 			}			
 			this.list = this.caller.getNextList();
-			Thread.sleep(50);
+			if(this.list!=null){
+				Thread.sleep(50);
+				this.run();
+			}else{
+				Thread.sleep(50);
+			}
 		}catch (InterruptedException e) {
 			System.out.println("Thread " +  this.threadName + " interrupted.");
 		}
