@@ -81,7 +81,6 @@ public class Schedule {
 				positionsLeft = false;
 			}
 		}
-		printScheduleList();
 		startingIndex = 0;
 		listOfStartingLists.trimToSize();
 		Action[][] listArray = new Action[listOfStartingLists.size()][];
@@ -164,20 +163,36 @@ public class Schedule {
 	 * Go to the last list that was given to a thread, use it as an input to changeWindow to get the next list to use to get another schedule
 	 */
 	public Action[] getNextList(){
-		nextListLock.tryLock();
-		Action[] temp = cloneActionArray(lastStartingList);
-		temp[startingIndex].windowStart++;
-		temp[startingIndex].windowEnd=temp[startingIndex].windowStart+temp[startingIndex].duration;
-		temp[startingIndex] = changeWindow(startingIndex, temp);
-		if(temp[startingIndex]!=null){
-			lastStartingList = temp;
-			nextListLock.unlock();
-			return temp;
-		}else{
-			temp = null;
-			nextListLock.unlock();
-			return null;
+		boolean lockAcquired = false;
+		Action[] temp = null;
+		try{
+			nextListLock.tryLock();
+			try{
+				lockAcquired = true;
+				temp = cloneActionArray(lastStartingList);
+				temp[startingIndex].windowStart++;
+				temp[startingIndex].windowEnd=temp[startingIndex].windowStart+temp[startingIndex].duration;
+				temp[startingIndex] = changeWindow(startingIndex, temp);
+				if(temp[startingIndex]!=null){
+					lastStartingList = temp;
+				}else{
+					temp = null;
+				}
+			}finally{
+				if(lockAcquired){
+					nextListLock.unlock();
+					return temp;
+				}
+			}
+		}catch(IllegalMonitorStateException e){
+			
 		}
+		catch(ArrayIndexOutOfBoundsException e){
+			
+		}
+		Action failure = new Action("Failure","00:00","00:00","00:00",0);
+		Action[] tryFailed = {failure};
+		return tryFailed;
 	}
 	/*
 	 * pass in the list of actions in their original form (original entered window) 
