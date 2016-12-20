@@ -3,6 +3,7 @@ package com.example.scheduleapp;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.widget.TimePicker;
 import android.app.TimePickerDialog;
 import android.app.Dialog;
@@ -34,13 +35,16 @@ public class timeFragment extends DialogFragment
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         try{
-            String time = hourOfDay+":"+minute;
-            if(minute == 0 ){
-                time+=0;
+            String time = hourOfDay+":";
+            if(minute < 10 ){
+                time+=0+""+minute;
+            }else{
+                time+=minute;
             }
-            if(hourOfDay == 0){
+            if(hourOfDay < 10){
                 time = 0+time;
             }
+            //Log.d("Time", ""+time);
             Context context = getActivity();
             FileInputStream fisThree = context.openFileInput("minOrMax.txt");
             StringBuilder builder = new StringBuilder();
