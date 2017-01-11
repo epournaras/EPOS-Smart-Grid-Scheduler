@@ -1,20 +1,29 @@
-
-
 public class Action {
 	public String name;
 	public int windowStart;
 	public int windowEnd;
 	public int duration;
+	public int optimalTime;
 	public double shiftingFactor;
 	
+	public Action(){
+		/*
+		 * allows the use of built in methods like getTimeString() or getIntTime()
+		 */
+	}
+	
+	//cloning method
 	public Action(Action a){
 		this.name = a.name;
 		this.windowStart = a.windowStart;
 		this.windowEnd = a.windowEnd;
 		this.duration = a.duration;
+		this.optimalTime = a.optimalTime;
 		this.shiftingFactor = a.shiftingFactor;
 	}
-	public Action(String name, int a, int b, int c, double d){
+	
+	//Instantiation method.
+	public Action(String name, int a, int b, int c, int d, double f){
 		try{
 			if(a>b||a+c>b){
 				throw new RuntimeException();
@@ -23,16 +32,18 @@ public class Action {
 				this.windowStart = a;
 				this.windowEnd = b;
 				this.duration = c;
-				this.shiftingFactor = d;
+				this.optimalTime = d;
+				this.shiftingFactor = f;
 			}
 		}catch(RuntimeException e){
 			System.err.print("Bad input \n");
 		}
 	}
-	public Action(String name, String start, String end, String duration, double shiftingFactor){
+	public Action(String name, String start, String end, String duration, String optimalTime, double shiftingFactor){
 		int a = getIntTime(start);
 		int b = getIntTime(end);
 		int c = getIntTime(duration);
+		int d = getIntTime(optimalTime);
 		try{
 			if(a>b||a+c>b){
 				throw new RuntimeException();
@@ -41,6 +52,7 @@ public class Action {
 				this.windowStart = a;
 				this.windowEnd = b;
 				this.duration = c;
+				this.optimalTime = d;
 				this.shiftingFactor = shiftingFactor;
 			}
 		}catch(RuntimeException e){
@@ -63,6 +75,10 @@ public class Action {
 			result+=minute;
 		}
 		return result;
+	}
+	
+	public String getOptimalTime(){
+		return getTimeString(this.optimalTime);
 	}
 	
 	public static int getIntTime(String a){
