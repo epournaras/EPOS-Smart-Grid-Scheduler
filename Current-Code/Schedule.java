@@ -109,6 +109,7 @@ public class Schedule {
 				System.out.print("Thread"+i+" interrupted\n");
 			}
 		}
+		rankSchedulesByRating();
 		printScheduleList();
 	}
 	
@@ -356,7 +357,7 @@ public class Schedule {
 	/*
 	 * Method to take the ArrayList and create a new one, with all Schedules sorted by highest rating.
 	 */
-	public ArrayList<Action[]> rankSchedulesByRating(){
+	public void rankSchedulesByRating(){
 		scheduleList.trimToSize();
 		schedulesList = new Action[scheduleList.size()][]; 
 		scheduleList.toArray(schedulesList);
@@ -386,7 +387,7 @@ public class Schedule {
 			ratedList[i].schedule = schedulesList[i];
 			ratedList[i].rating = ratings[i];
 		}
-		return null;
+		ParallelSortingRegularSampling a = new ParallelSortingRegularSampling(ratedList, cores, this);
 	}
 	
 	public ScheduleAndIndex getNewSchedule(){
