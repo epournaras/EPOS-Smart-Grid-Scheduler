@@ -357,7 +357,8 @@ public class Schedule {
 	}
 	
 	/*
-	 * Method to take the ArrayList and create a new one, with all Schedules sorted by highest rating.
+	 * Using the ArrayList of Schedules (Arrays of Actions), create their rating by totalling the rating of each of their actions
+	 * Then, using this rating rank them in order of lowest to highest rating.
 	 */
 	public void rankSchedulesByRating(){
 		scheduleList.trimToSize();
