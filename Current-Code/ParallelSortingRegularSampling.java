@@ -15,6 +15,68 @@ public class ParallelSortingRegularSampling {
 	private ReentrantLock phaseFourLockPartOne = new ReentrantLock();
 	private ReentrantLock phaseFourLockPartTwo = new ReentrantLock();
 	private ReentrantLock phaseFiveLock = new ReentrantLock();
+	/* 
+	 * PHASE I:
+	 * Split data into equal parts and distribute to workerThreads and root. All threads then sort their local data.
+	 * PHASE II:
+	 * get sample points at 0, n/p^2,2n/P^2,3n/P^2...(P-1)(n/p^2)
+	 * Where n is the size of the set, and P is the number of threads. (including root)
+	 * PHASE III:
+	 * Gather the sample points, sort them. Choose from these p^2 points p-1 pivot points and broadcast them to the other threads.
+	 * PHASE IV:
+	 * Other threads take their local data and separate it into p parts using the pivot values.
+	 * PHASE V:
+	 * Thread i gathers the i-th part of every other threads local data and sorts it, including the i-th part of its own data only.
+	 * PHASE VI:
+	 * Root collects all sorted local data from all other threads and assembles it in order
+	 */
+	public ParallelSortingRegularSampling(RatedSchedule[] data, int numberOfCores, Schedule caller){
+		//PHASE I:
+		int dataSize = data.length;
+		ArrayList<ArrayList<RatedSchedule>> splitData = new ArrayList<ArrayList<RatedSchedule>>();
+		splitData.ensureCapacity(numberOfCores);
+		for(int i = 0; i<numberOfCores;i++){
+			splitData.get(i).ensureCapacity(dataSize/numberOfCores);
+		}
+		int index = 0;
+		for(int j = 0; j<numberOfCores;j++){
+			for(int i = 0; i<dataSize/numberOfCores; i++){
+				splitData.get(j).add(data[index]);
+				index++;
+			}
+			splitData.get(j).trimToSize();
+		}
+		splitData.trimToSize();
+		RatedSchedule[][] splitDataArray = new RatedSchedule[splitData.size()][];
+		for(int i = 0; i<splitDataArray.length; i++){
+			splitDataArray[i] = new RatedSchedule[splitData.get(i).size()];
+			splitData.get(i).toArray(splitDataArray[i]);
+		}
+		
+		Root root = new Root(splitDataArray[0], numberOfCores-1, "Root", caller);
+		ArrayList<WorkerThread> workers = new ArrayList<WorkerThread>();
+		for(int i = 1; i<numberOfCores;i++){
+			workers.add(new WorkerThread(splitDataArray[i], root, numberOfCores-1, "Worker "+i, i));
+		}
+		workers.trimToSize();
+		
+		root.start();
+		for(int i = 0;i<workers.size();i++){
+			workers.get(i).start();
+		}
+		for(int i = 0; i<workers.size();i++){
+			try{
+				workers.get(i).t.join();
+			}catch(InterruptedException e){
+				System.out.print("Worker"+i+" interrupted\n");
+			}
+		}
+		try{
+			root.t.join();
+		}catch(InterruptedException e){
+			System.out.print("Root interrupted\n");
+		}
+	}
 	
 	public class Root implements Runnable{
 		public RatedSchedule[] ratedSchedules;
@@ -39,23 +101,11 @@ public class ParallelSortingRegularSampling {
 			this.caller = caller;
 		}
 		
-		/* 
-		 * PHASE I:
-		 * Split data into equal parts and distribute to workerThreads and root. All threads then sort their local data.
-		 * PHASE II:
-		 * get sample points at 0, n/p^2,2n/P^2,3n/P^2...(P-1)(n/p^2)
-		 * Where n is the size of the set, and P is the number of threads. (including root)
-		 * PHASE III:
-		 * Gather the sample points, sort them. Choose from these p^2 points p-1 pivot points and broadcast them to the other threads.
-		 * PHASE IV:
-		 * Other threads take their local data and separate it into p parts using the pivot values.
-		 * PHASE V:
-		 * Thread i gathers the i-th part of every other threads local data and sorts it, including the i-th part of its own data only.
-		 * PHASE VI:
-		 * Root collects all sorted local data from all other threads and assembles it in order
-		 */
 		public void run(){
+			//PHASE I:
 			this.ratedSchedules = sort(this.ratedSchedules);
+			
+			//PHASE II:
 			RatedSchedule[] samplePoints = new RatedSchedule[this.numberOfWorkers];
 			for(int i = 0; i<this.numberOfWorkers;i++){
 				int index = (i*this.ratedSchedules.length)/(this.numberOfWorkers*this.numberOfWorkers);
@@ -70,6 +120,7 @@ public class ParallelSortingRegularSampling {
 				}
 			}
 			
+			//PHASE III:
 			this.sortSamplePoints();
 			while(phaseThree!=true){
 				try {
@@ -79,6 +130,7 @@ public class ParallelSortingRegularSampling {
 				}
 			}
 			
+			//PHASE IV:
 			ArrayList<ArrayList<RatedSchedule>> parts = new ArrayList<ArrayList<RatedSchedule>>();
 			parts.ensureCapacity(this.numberOfWorkers);
 			int index = 0;
@@ -103,6 +155,8 @@ public class ParallelSortingRegularSampling {
 					e.printStackTrace();
 				}
 			}
+			
+			//PHASE V:
 			do{
 				this.ratedSchedules = this.getPart(0);
 			}while(this.ratedSchedules==null);
@@ -120,6 +174,8 @@ public class ParallelSortingRegularSampling {
 					e.printStackTrace();
 				}
 			}
+			
+			//PHASE VI:
 			this.assembleSortedParts();
 		}
 		
