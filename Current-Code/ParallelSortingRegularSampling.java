@@ -78,6 +78,7 @@ public class ParallelSortingRegularSampling {
 		}
 	}
 	
+	//The Root is the master thread, used for gathering and redistributing data at different phases. It also sorts its own data as if it were a worker thread as well.
 	public class Root implements Runnable{
 		public RatedSchedule[] ratedSchedules;
 		public int numberOfWorkers;
@@ -179,7 +180,10 @@ public class ParallelSortingRegularSampling {
 			this.assembleSortedParts();
 		}
 		
-		//Phase II: Requires Lock.
+		/*
+		 * Phase II: Requires Lock.
+		 * The workers use this method to pass back the sample points they have taken from their sorted local data. 
+		 */
 		public boolean gatherSamplePoints(RatedSchedule[] samplePoints){
 			boolean lockAcquired = false;
 			try{
@@ -207,7 +211,11 @@ public class ParallelSortingRegularSampling {
 			return false;
 		}
 		
-		//Phase III:
+		/*
+		 * Phase III:
+		 * Now that all sample points have been gathered, the root sorts them by size as well. 
+		 * This is an attempt to find a truer median as well as a method to find pivot points for further sorting.
+		 */
 		public void sortSamplePoints(){
 			RatedSchedule[][] temp = new RatedSchedule[samplePointsArrayList.size()][];
 			samplePointsArrayList.toArray(temp);
@@ -221,7 +229,9 @@ public class ParallelSortingRegularSampling {
 			phaseTwo = true;
 			makePivotValues();
 		}
-		
+		/*
+		 * The Root uses this method to get pivot points at regular intervals from the sorted sample points
+		 */
 		private void makePivotValues(){
 			int size = allSamplePoints.length;
 			this.pivotPoints = new RatedSchedule[numberOfWorkers];
@@ -233,11 +243,17 @@ public class ParallelSortingRegularSampling {
 			phaseThree = true;
 		}
 		
+		/*
+		 * Used by worker threads to contact the root to get their pivot points.
+		 */
 		public RatedSchedule[] getPivotPoints(){
 			return this.pivotPoints;
 		}
 		
-		//Phase IV: requires lock
+		/*
+		 * Phase IV: requires lock
+		 * The Worker threads use this method to send the i parts of their local data to the Root, so that it may gather them and redistribute them to the i-th worker
+		 */
 		public boolean sendParts(RatedSchedule[][] parts){
 			boolean lockAcquired = false;
 			try{
@@ -268,7 +284,10 @@ public class ParallelSortingRegularSampling {
 			}
 			return false;
 		}
-		 //Phase IV: Requires Lock
+		 /*
+		  * Phase IV: Requires Lock
+		  * Used by all threads to get their i-th part from the assembled parts.
+		  */
 		public RatedSchedule[] getPart(int i){
 			boolean lockAcquired = false;
 			RatedSchedule[] part = new RatedSchedule[1];
@@ -294,7 +313,10 @@ public class ParallelSortingRegularSampling {
 			return null;
 		}
 		
-		//Phase V: Requires Lock
+		/*
+		 * Phase V: Requires Lock
+		 * Once the i-th worker has sorted the i-th part, it returns it to the root via this method.
+		 */
 		public boolean receiveSortedPart(RatedSchedule[] a, int i){
 			boolean lockAcquired = false;
 			try{
@@ -321,7 +343,10 @@ public class ParallelSortingRegularSampling {
 			return false;
 		}
 		
-		//Phase VI:
+		/*
+		 * Phase VI:
+		 * Once the Root has all parts, it will assemble them in order as one RatedSchedule array and send it back to its schedule caller.
+		 */
 		public void assembleSortedParts(){
 			this.sortedParts.trimToSize();
 			RatedSchedule[][] sortedPartsArray = new RatedSchedule[this.sortedParts.size()][];
@@ -346,6 +371,9 @@ public class ParallelSortingRegularSampling {
 		}
 	}
 	
+	/* The Worker thread receives data and sorts it using quicksort. It then passes data to its root, gets back new data and sorts that too. 
+	 * This process repeats until the Root stops giving back data (Phase 6)
+	 */
 	public class WorkerThread implements Runnable{
 		public RatedSchedule[] ratedSchedules;
 		public Root root;
@@ -425,12 +453,16 @@ public class ParallelSortingRegularSampling {
 			sendSortedPart(this.ratedSchedules, this.workerID);
 		}
 		
+		/*
+		 * Send back the i-th part that was given to this i-th thread, now sorted, to the root for assembly into the final sorted array.
+		 */
 		public void sendSortedPart(RatedSchedule[] s, int w){
 			boolean sent = false;
 			while(!sent){
 				sent=this.root.receiveSortedPart(s,w);
 			}
 		}
+		
 		public void start(){
 			System.out.print("Starting "+this.threadName+"\n");
 			if(this.t==null){
