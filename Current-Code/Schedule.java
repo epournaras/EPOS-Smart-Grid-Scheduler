@@ -110,32 +110,34 @@ public class Schedule {
 			}
 		}
 		rankSchedulesByRating();
-		printScheduleList();
+		printTopNRankedSchedules(this.rankedSchedules.length);
 	}
 	
 	public void setSchedulesToCreate(int a){
 		this.schedulesToCreate = a;
 	}
 	
-	public void printScheduleList(){
-		int j = 0;
-		//System.out.print("HERE");
-		scheduleList.trimToSize();
-		Action[][] listArray = new Action[scheduleList.size()][];
-		if(!scheduleList.isEmpty()){
-			for(int q = 0; q<scheduleList.size();q++){
-				if(scheduleList.get(q)!=null){
-					listArray[q] = scheduleList.get(q);
-					System.out.print("\nSchedule "+q+"\n");
-					for(j = 0; j<listArray[q].length;j++){
-						System.out.print(listArray[q][j].name+" "
-								+listArray[q][j].getTimeString(listArray[q][j].windowStart)
-								+"-"+listArray[q][j].getTimeString(listArray[q][j].windowEnd)+"\n");
-					}
+	public void printTopNRankedSchedules(int n){
+		if(rankedSchedules.length ==0){
+			System.out.print("No Schedules Exist");
+		}else{
+			if(n<rankedSchedules.length){
+				for(int i = 0; i<n;i++){
+					System.out.print("Schedule #"+i+"\n");
+					printSchedule(this.rankedSchedules[i].schedule);
+				}
+			}else{
+				for(int i = 0; i<rankedSchedules.length;i++){
+					System.out.print("Schedule #"+i+"\n");
+					printSchedule(this.rankedSchedules[i].schedule);
 				}
 			}
-		}else{
-			System.out.print("No schedules exist");
+		}
+	}
+	
+	public void printSchedule(Action[] a){
+		for(int i = 0; i<a.length;i++){
+			System.out.print(a[i].name+": "+a[i].getTimeString(a[i].windowStart)+" - "+a[i].getTimeString(a[i].windowEnd)+"\n");
 		}
 	}
 	
@@ -402,6 +404,6 @@ public class Schedule {
 	}
 	
 	public void receiveSortedRatedSchedules(RatedSchedule[] a){
-		rankedSchedules = a;
+		this.rankedSchedules = a;
 	}
 }
