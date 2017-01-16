@@ -180,7 +180,6 @@ public class ParallelSortingRegularSampling {
 		}
 		
 		//Phase II: Requires Lock.
-		@SuppressWarnings("finally")
 		public boolean gatherSamplePoints(RatedSchedule[] samplePoints){
 			boolean lockAcquired = false;
 			try{
@@ -197,8 +196,6 @@ public class ParallelSortingRegularSampling {
 					if(lockAcquired){
 						phaseTwoLock.unlock();
 						return true;
-					}else{
-						return false;
 					}
 				}
 			}catch(IllegalMonitorStateException e){
@@ -207,6 +204,7 @@ public class ParallelSortingRegularSampling {
 			catch(ArrayIndexOutOfBoundsException e){
 				return false;
 			}
+			return false;
 		}
 		
 		//Phase III:
@@ -240,7 +238,6 @@ public class ParallelSortingRegularSampling {
 		}
 		
 		//Phase IV: requires lock
-		@SuppressWarnings("finally")
 		public boolean sendParts(RatedSchedule[][] parts){
 			boolean lockAcquired = false;
 			try{
@@ -261,8 +258,6 @@ public class ParallelSortingRegularSampling {
 					if(lockAcquired){
 						phaseFourLockPartOne.unlock();
 						return true;
-					}else{
-						return false;
 					}
 				}
 			}catch(IllegalMonitorStateException e){
@@ -271,10 +266,9 @@ public class ParallelSortingRegularSampling {
 			catch(ArrayIndexOutOfBoundsException e){
 				return false;
 			}
-			
+			return false;
 		}
 		 //Phase IV: Requires Lock
-		@SuppressWarnings("finally")
 		public RatedSchedule[] getPart(int i){
 			boolean lockAcquired = false;
 			RatedSchedule[] part = new RatedSchedule[1];
@@ -289,8 +283,6 @@ public class ParallelSortingRegularSampling {
 					if(lockAcquired){
 						phaseFourLockPartTwo.unlock();
 						return part;
-					}else{
-						return null;
 					}
 				}
 			}catch(IllegalMonitorStateException e){
@@ -299,10 +291,10 @@ public class ParallelSortingRegularSampling {
 			catch(ArrayIndexOutOfBoundsException e){
 				return null;
 			}
+			return null;
 		}
 		
 		//Phase V: Requires Lock
-		@SuppressWarnings("finally")
 		public boolean receiveSortedPart(RatedSchedule[] a, int i){
 			boolean lockAcquired = false;
 			try{
@@ -318,8 +310,6 @@ public class ParallelSortingRegularSampling {
 					if(lockAcquired){
 						phaseFiveLock.unlock();
 						return true;
-					}else{
-						return false;
 					}
 				}
 			}catch(IllegalMonitorStateException e){
@@ -328,6 +318,7 @@ public class ParallelSortingRegularSampling {
 			catch(ArrayIndexOutOfBoundsException e){
 				return false;
 			}
+			return false;
 		}
 		
 		//Phase VI:
