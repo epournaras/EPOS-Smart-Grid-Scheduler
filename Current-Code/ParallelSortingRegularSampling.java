@@ -39,6 +39,21 @@ public class ParallelSortingRegularSampling {
 			this.caller = caller;
 		}
 		
+		/* 
+		 * PHASE I:
+		 * Split data into equal parts and distribute to workerThreads and root. All threads then sort their local data.
+		 * PHASE II:
+		 * get sample points at 0, n/p^2,2n/P^2,3n/P^2...(P-1)(n/p^2)
+		 * Where n is the size of the set, and P is the number of threads. (including root)
+		 * PHASE III:
+		 * Gather the sample points, sort them. Choose from these p^2 points p-1 pivot points and broadcast them to the other threads.
+		 * PHASE IV:
+		 * Other threads take their local data and separate it into p parts using the pivot values.
+		 * PHASE V:
+		 * Thread i gathers the i-th part of every other threads local data and sorts it, including the i-th part of its own data only.
+		 * PHASE VI:
+		 * Root collects all sorted local data from all other threads and assembles it in order
+		 */
 		public void run(){
 			this.ratedSchedules = sort(this.ratedSchedules);
 			RatedSchedule[] samplePoints = new RatedSchedule[this.numberOfWorkers];
@@ -80,6 +95,7 @@ public class ParallelSortingRegularSampling {
 			while(!partsPassed){
 				partsPassed = this.sendParts(seperatedParts);
 			}
+			
 			while(phaseFive!=true){
 				try {
 					wait(10);
@@ -90,11 +106,13 @@ public class ParallelSortingRegularSampling {
 			do{
 				this.ratedSchedules = this.getPart(0);
 			}while(this.ratedSchedules==null);
+			
 			this.ratedSchedules = sort(this.ratedSchedules);
 			boolean sortedPartAdded = false;
 			while(!sortedPartAdded){
 				sortedPartAdded = this.receiveSortedPart(this.ratedSchedules, 0);
 			}
+			
 			while(phaseSix!=true){
 				try {
 					wait(10);
@@ -103,18 +121,6 @@ public class ParallelSortingRegularSampling {
 				}
 			}
 			this.assembleSortedParts();
-			/* PHASE II:
-			 * get sample points at 0, n/p^2,2n/P^2,3n/P^2...(P-1)(n/p^2)
-			 * Where n is the size of the set, and P is the number of threads. (including root)
-			 * PHASE III:
-			 * Gather the sample points, sort them. Choose from these p^2 points p-1 pivot points and broadcast them to the other threads.
-			 * PHASE IV:
-			 * Other threads take their local data and separate it into p parts using the pivot values.
-			 * PHASE V:
-			 * Thread i gathers the i-th part of every other threads local data and sorts it, including the i-th part of its own data only.
-			 * PHASE VI:
-			 * Root collects all sorted local data from all other threads and assembles it in order
-			 */
 		}
 		
 		//Phase II: Requires Lock.
@@ -268,6 +274,7 @@ public class ParallelSortingRegularSampling {
 			}
 		}
 		
+		//Phase VI:
 		public void assembleSortedParts(){
 			this.sortedParts.trimToSize();
 			RatedSchedule[][] sortedPartsArray = new RatedSchedule[this.sortedParts.size()][];
@@ -282,12 +289,13 @@ public class ParallelSortingRegularSampling {
 			}
 			this.caller.receiveSortedRatedSchedules(assembledSortedParts);
 		}
+		
 		public void start(){
 			System.out.print("Starting "+this.threadName+"\n");
 			if(this.t==null){
-				t = new Thread(this, this.threadName);
+				this.t = new Thread(this, this.threadName);
 			}
-			t.start();
+			this.t.start();
 		}
 	}
 	
@@ -310,7 +318,10 @@ public class ParallelSortingRegularSampling {
 		}
 		
 		public void run(){
+			//Phase I:
 			this.ratedSchedules = sort(this.ratedSchedules);
+			
+			//Phase II
 			RatedSchedule[] samplePoints = new RatedSchedule[this.numberOfWorkers];
 			for(int i = 0; i<this.numberOfWorkers;i++){
 				int index = (i*this.ratedSchedules.length)/(this.numberOfWorkers*this.numberOfWorkers);
@@ -320,10 +331,7 @@ public class ParallelSortingRegularSampling {
 			while(!pointsPassed){
 				pointsPassed=this.root.gatherSamplePoints(samplePoints);
 			}
-			/*
-			 * get sample points at 0, n/p^2,2n/P^2,3n/P^2...(P-1)(n/p^2)
-			 * Where n is the size of the set, and P is the number of threads. (including root)
-			 */
+			
 			while(phaseThree==false){
 				try{
 					wait(10);
@@ -331,8 +339,11 @@ public class ParallelSortingRegularSampling {
 					
 				}
 			}
+			
+			//Phase III:
 			this.pivotPoints = this.root.getPivotPoints();
 			
+			//Phase IV:
 			ArrayList<ArrayList<RatedSchedule>> parts = new ArrayList<ArrayList<RatedSchedule>>();
 			parts.ensureCapacity(this.numberOfWorkers);
 			int index = 0;
@@ -356,8 +367,14 @@ public class ParallelSortingRegularSampling {
 					
 				}
 			}
-			this.ratedSchedules = this.root.getPart(this.workerID);
+			
+			//Phase V:
+			do{
+				this.ratedSchedules = this.root.getPart(this.workerID);
+			}while(this.ratedSchedules==null);
 			this.ratedSchedules = sort(this.ratedSchedules);
+			
+			//Phase VI:
 			sendSortedPart(this.ratedSchedules, this.workerID);
 		}
 		
