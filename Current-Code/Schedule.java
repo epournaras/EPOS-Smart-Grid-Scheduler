@@ -14,6 +14,9 @@ public class Schedule {
 	int count = 0;
 	private int schedulesToCreate = 400000;
 	private double[] ratings;
+	private int passedSchedulesCount=0;
+	private Action[][] schedulesList;
+	public RatedSchedule[] rankedSchedules;
 	
 	public Schedule(Action[] a){
 		for(int i = 0;i<a.length;i++){
@@ -353,14 +356,51 @@ public class Schedule {
 	/*
 	 * Method to take the ArrayList and create a new one, with all Schedules sorted by highest rating.
 	 */
-	public ArrayList<Action[]> rankSchedulesByRating(ArrayList<Action[]> scheduleList, double[] ratings){
+	public ArrayList<Action[]> rankSchedulesByRating(){
 		scheduleList.trimToSize();
-		Action[][] list = new Action[scheduleList.size()][]; 
-		scheduleList.toArray(list);
-		/*
-		 * Sort using PSRS method. 
-		 */
+		schedulesList = new Action[scheduleList.size()][]; 
+		scheduleList.toArray(schedulesList);
+		RatedSchedule[] ratedScheduleList = new RatedSchedule[schedulesList.length];
+		for(int i = 0; i<schedulesList.length;i++){
+			ratedScheduleList[i].schedule = schedulesList[i];
+		}
+		int cores = Runtime.getRuntime().availableProcessors();
+		ArrayList<RankingThreads> threads = new ArrayList<RankingThreads>();
+		for(int i = 0; i<cores;i++){
+			threads.add(new RankingThreads("Thread"+i,this, i, schedulesList[i]));
+			passedSchedulesCount++;
+		}
+		threads.trimToSize();
+		for(int i = 0; i<threads.size();i++){
+			threads.get(i).start();
+		}
+		for(int i = 0; i<threads.size();i++){
+			try{
+				threads.get(i).t.join();
+			}catch(InterruptedException e){
+				System.out.print("Thread"+i+" interrupted\n");
+			}
+		}
+		RatedSchedule[] ratedList = new RatedSchedule[schedulesList.length];
+		for(int i = 0; i<schedulesList.length;i++){
+			ratedList[i].schedule = schedulesList[i];
+			ratedList[i].rating = ratings[i];
+		}
 		return null;
 	}
 	
+	public ScheduleAndIndex getNewSchedule(){
+		if(passedSchedulesCount<schedulesList.length){
+			int index = passedSchedulesCount;
+			Action[] schedule = schedulesList[passedSchedulesCount];
+			ScheduleAndIndex passBack = new ScheduleAndIndex(index, schedule);
+			passedSchedulesCount++;
+			return passBack;
+		}
+		return null;
+	}
+	
+	public void receiveSortedRatedSchedules(RatedSchedule[] a){
+		rankedSchedules = a;
+	}
 }
