@@ -1,0 +1,18 @@
+In the experiments we want to measure two things: Power consumption and processing time.
+Variables for this will be: # of inputs
+                            Average duration of each input.
+                            # of schedules required to be created.
+                            Ranking scheme.
+                            Sorting algorithms
+For these experiments we want to repeat them between 50-100 times and measure the standard deviations between both Power
+consumption and processing time.
+
+We also want to measure procesing time and power consumption on the subtasks of the application. How long does the sorting 
+algorithm take, the creation of schedules or the application of rank? And how much power is consumed during these subtasks?
+
+We want between 50-100 people to use the application to gather data on their behaviour after this. Decisions need to be made
+on the exact number of participating phones, and the length of the experiment. 
+
+The actions (their names) will be fixed so that their data can be gathered under a unified heading. 
+
+A domain with mutually exclusive subdomains needs to be chosen. This will be used in future to help balance concurrent users. 
