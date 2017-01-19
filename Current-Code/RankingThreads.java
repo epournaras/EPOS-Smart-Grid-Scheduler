@@ -5,6 +5,7 @@ public class RankingThreads implements Runnable{
 	private int passedScheduleIndex;
 	private Action[] array;
 	private ScheduleAndIndex item;
+	private boolean end = false;
 	
 	public RankingThreads(String name, Schedule caller, int passedScheduleIndex, Action[] array){
 		this.threadName = name;
@@ -14,19 +15,17 @@ public class RankingThreads implements Runnable{
 	}
 	
 	public void run(){
-		while(this.array!=null){
-			double rating = getScheduleRating(array);
-			boolean added = false;
-			while(!added){
-				added = returnTotal(rating);
-			}
+		//System.out.print("\n"+"Running "+threadName+"...\n");
+		while(!end){
+			double rating = this.getScheduleRating(array);
+			this.returnTotal(rating);
 			this.getNextSchedule();
 		}
-		
+		//System.out.print("\n"+threadName+" exiting \n");
 	}
 	
 	public void start(){
-		System.out.print("Starting "+this.threadName+"\n");
+		//System.out.print("\n"+"Starting "+this.threadName+"\n");
 		if(t==null){
 			t = new Thread(this, this.threadName);
 		}
@@ -45,13 +44,14 @@ public class RankingThreads implements Runnable{
 		return total;
 	}
 	
-	private boolean returnTotal(double a){
-		return this.caller.returnRating(this.passedScheduleIndex,a);
+	private synchronized void returnTotal(double a){
+		this.caller.returnRating(this.passedScheduleIndex,a);
 	}
 	
 	private void getNextSchedule(){
 		this.item = caller.getNewSchedule();
 		this.array = item.schedule;
 		this.passedScheduleIndex = item.index;
+		this.end = item.finalPass;
 	}
 }
