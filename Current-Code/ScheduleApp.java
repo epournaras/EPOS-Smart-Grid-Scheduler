@@ -3,7 +3,7 @@ public class ScheduleApp {
 		
 		Schedule testSchedule = new Schedule();
 
-		int n = 7;
+		int n = 4;
 		for(int i = 0; i < n; i++){
 			Action temp = new Action();
 			int timeOne = 0 + (int)(Math.random() * ((1199 - 0) + 1));	
@@ -27,11 +27,11 @@ public class ScheduleApp {
 			String minTimeString = temp.getTimeString(minTime);
 			String durationString = temp.getTimeString(timeThree);
 			String optimalTimeString = temp.getTimeString(timeFour);
-			System.out.print(minTimeString+" "+maxTimeString+" "+durationString+"\n");
+			System.out.print(minTimeString+"\t"+maxTimeString+"\t"+durationString+"\t"+optimalTimeString+"\n");
 			temp = new Action("Action "+i, minTimeString, maxTimeString, durationString, optimalTimeString, 0);
 			testSchedule.add(cloneAction(temp));
 		}
-		testSchedule.setSchedulesToCreate(n*100000);
+		testSchedule.setSchedulesToCreate(n*10000);
 		testSchedule.initialiseActionList();
 		testSchedule.makeScheduleList();
 	}
