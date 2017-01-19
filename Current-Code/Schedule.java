@@ -1,15 +1,12 @@
 import java.util.ArrayList;
 import static java.util.Arrays.sort;
-import java.util.concurrent.locks.*;
 
 public class Schedule {
 	public ArrayList<Action> list = new ArrayList<Action>();
 	public Action[] actionList = new Action[1];
 	public ArrayList<Action[]> scheduleList = new ArrayList<Action[]>();
 	private Action[] lastStartingList;
-	private ReentrantLock lock = new ReentrantLock();
-	private ReentrantLock nextListLock = new ReentrantLock();
-	private ReentrantLock ratingsLock = new ReentrantLock();
+
 	int startingIndex;
 	int count = 0;
 	private int schedulesToCreate = 400000;
@@ -17,6 +14,7 @@ public class Schedule {
 	private int passedSchedulesCount=0;
 	private Action[][] schedulesList;
 	public RatedSchedule[] rankedSchedules;
+	public boolean rankingDone = false;
 	
 	public Schedule(Action[] a){
 		for(int i = 0;i<a.length;i++){
@@ -96,7 +94,7 @@ public class Schedule {
 		ArrayList<ThreadManager> threads = new ArrayList<ThreadManager>();
 		
 		for(int i = 0 ; i<listArray.length; i++){
-			threads.add(new ThreadManager("Thread"+i,listArray[i],this,0,this.schedulesToCreate/cores));
+			threads.add(new ThreadManager("Thread "+i,listArray[i],this,0,this.schedulesToCreate/cores));
 		}
 		threads.trimToSize();
 		for(int i = 0; i<threads.size();i++){
@@ -106,11 +104,11 @@ public class Schedule {
 			try{
 				threads.get(i).t.join();
 			}catch(InterruptedException e){
-				System.out.print("Thread"+i+" interrupted\n");
+				System.out.print("Thread "+i+" interrupted\n");
 			}
 		}
 		rankSchedulesByRating();
-		printTopNRankedSchedules(this.rankedSchedules.length);
+		printTopNRankedSchedules(5);
 	}
 	
 	public void setSchedulesToCreate(int a){
@@ -118,18 +116,20 @@ public class Schedule {
 	}
 	
 	public void printTopNRankedSchedules(int n){
-		if(rankedSchedules.length ==0){
-			System.out.print("No Schedules Exist");
-		}else{
-			if(n<rankedSchedules.length){
-				for(int i = 0; i<n;i++){
-					System.out.print("Schedule #"+i+"\n");
-					printSchedule(this.rankedSchedules[i].schedule);
-				}
+		if(this.rankedSchedules!=null){
+			if(this.rankedSchedules.length == 0){
+				System.out.print("No Schedules Exist");
 			}else{
-				for(int i = 0; i<rankedSchedules.length;i++){
-					System.out.print("Schedule #"+i+"\n");
-					printSchedule(this.rankedSchedules[i].schedule);
+				if(n<this.rankedSchedules.length){
+					for(int i = 0; i<n;i++){
+						System.out.print("Schedule #"+i+"\n");
+						printSchedule(this.rankedSchedules[i].schedule);
+					}
+				}else{
+					for(int i = 0; i<this.rankedSchedules.length;i++){
+						System.out.print("Schedule #"+i+"\n");
+						printSchedule(this.rankedSchedules[i].schedule);
+					}
 				}
 			}
 		}
@@ -137,75 +137,40 @@ public class Schedule {
 	
 	public void printSchedule(Action[] a){
 		for(int i = 0; i<a.length;i++){
-			System.out.print(a[i].name+": "+a[i].getTimeString(a[i].windowStart)+" - "+a[i].getTimeString(a[i].windowEnd)+"\n");
+			System.out.print(a[i].name+":\t"+a[i].getTimeString(a[i].windowStart)+"\t"+a[i].getTimeString(a[i].windowEnd)+"\t"+a[i].getTimeString(a[i].optimalTime)+"\n");
 		}
 	}
 	
 	/*
 	 * Used by threads to add the schedule they found to the list of schedules
 	 */
-	public void returnActionList(Action[] list){
-		boolean lockAcquired = false;
-		try{
-			lock.tryLock();
-			try{
-				lockAcquired = true;
-				boolean noConflict = true;
-				if(list!=null) {
-					for(int i= 0; i<list.length&&noConflict;i++){
-						noConflict = checkPosition(i, list[i],list);
-					}
-					if(noConflict){
-						scheduleList.add(cloneActionArray(list));
-					}
-				}	
-			}finally{
-				if(lockAcquired){
-					lock.unlock();
-				}
+	public synchronized void returnActionList(Action[] list){
+		boolean noConflict = true;
+		if(list!=null) {
+			for(int i= 0; i<list.length&&noConflict;i++){
+				noConflict = checkPosition(i, list[i],list);
 			}
-		}catch(IllegalMonitorStateException e){
-			
-		}
-		catch(ArrayIndexOutOfBoundsException e){
-			
-		}
+			if(noConflict){
+				scheduleList.add(cloneActionArray(list));
+			}
+		}	
 	}
 	
 	/*
 	 * Go to the last list that was given to a thread, use it as an input to changeWindow to get the next list to use to get another schedule
 	 */
-	public Action[] getNextList(){
-		boolean lockAcquired = false;
+	public synchronized Action[] getNextList(){
 		Action[] temp = null;
-		try{
-			nextListLock.tryLock();
-			try{
-				lockAcquired = true;
-				temp = cloneActionArray(lastStartingList);
-				temp[startingIndex].windowStart++;
-				temp[startingIndex].windowEnd=temp[startingIndex].windowStart+temp[startingIndex].duration;
-				temp[startingIndex] = changeWindow(startingIndex, temp);
-				if(temp[startingIndex]!=null){
-					lastStartingList = temp;
-				}else{
-					temp = null;
-				}
-			}finally{
-				if(lockAcquired){
-					nextListLock.unlock();
-					return temp;
-				}
-			}
-		}catch(IllegalMonitorStateException e){
-			
+		temp = cloneActionArray(lastStartingList);
+		temp[startingIndex].windowStart++;
+		temp[startingIndex].windowEnd=temp[startingIndex].windowStart+temp[startingIndex].duration;
+		temp[startingIndex] = changeWindow(startingIndex, temp);
+		if(temp[startingIndex]!=null){
+			lastStartingList = temp;
+		}else{
+			temp = null;
 		}
-		catch(ArrayIndexOutOfBoundsException e){
-			
-		}
-		Action failure = new Action("Failure","00:00","00:00","00:00","00:00",0);
-		Action[] tryFailed = {failure};
-		return tryFailed;
+		return temp;
 	}
 	/*
 	 * pass in the list of actions in their original form (original entered window) 
@@ -334,26 +299,8 @@ public class Schedule {
 	/*
 	 * Threads attempt to pass back the ratings they found for the particular schedule they were working on.
 	 */
-	public boolean returnRating(int i, double a){
-		boolean lockAcquired = false;
-		 try{
-			ratingsLock.tryLock();
-			try{
-				lockAcquired = true;
-				ratings[i] = a;
-			}finally{
-				if(lockAcquired){
-					ratingsLock.unlock();
-					return true;
-				}
-			}
-			return false;
-		}catch(IllegalMonitorStateException e){
-			return false;
-		}
-		catch(ArrayIndexOutOfBoundsException e){
-			return false;
-		}
+	public synchronized void returnRating(int i, double a){
+			ratings[i] = a;		
 	}
 	
 	/*
@@ -362,16 +309,19 @@ public class Schedule {
 	 */
 	public void rankSchedulesByRating(){
 		scheduleList.trimToSize();
+		scheduleList.trimToSize();
 		schedulesList = new Action[scheduleList.size()][]; 
 		scheduleList.toArray(schedulesList);
 		RatedSchedule[] ratedScheduleList = new RatedSchedule[schedulesList.length];
 		for(int i = 0; i<schedulesList.length;i++){
+			ratedScheduleList[i] = new RatedSchedule(1);
 			ratedScheduleList[i].schedule = schedulesList[i];
-		}
+		}		
 		int cores = Runtime.getRuntime().availableProcessors();
 		ArrayList<RankingThreads> threads = new ArrayList<RankingThreads>();
+		ratings = new double[schedulesList.length];
 		for(int i = 0; i<cores;i++){
-			threads.add(new RankingThreads("Thread"+i,this, i, schedulesList[i]));
+			threads.add(new RankingThreads("Thread "+i,this, i, schedulesList[i]));
 			passedSchedulesCount++;
 		}
 		threads.trimToSize();
@@ -382,29 +332,34 @@ public class Schedule {
 			try{
 				threads.get(i).t.join();
 			}catch(InterruptedException e){
-				System.out.print("Thread"+i+" interrupted\n");
+				System.out.print("Thread "+i+" interrupted\n");
 			}
 		}
 		RatedSchedule[] ratedList = new RatedSchedule[schedulesList.length];
 		for(int i = 0; i<schedulesList.length;i++){
+			ratedList[i] = new RatedSchedule(1, 0);
 			ratedList[i].schedule = schedulesList[i];
 			ratedList[i].rating = ratings[i];
 		}
-		ParallelSortingRegularSampling a = new ParallelSortingRegularSampling(ratedList, cores, this);
+		ParallelSortingRegularSampling a = new ParallelSortingRegularSampling(ratedList, cores, this);	 
 	}
 	
-	public ScheduleAndIndex getNewSchedule(){
+	public synchronized ScheduleAndIndex getNewSchedule(){
+		
+		ScheduleAndIndex passBack = new ScheduleAndIndex();
 		if(passedSchedulesCount<schedulesList.length){
-			int index = passedSchedulesCount;
-			Action[] schedule = schedulesList[passedSchedulesCount];
-			ScheduleAndIndex passBack = new ScheduleAndIndex(index, schedule);
-			passedSchedulesCount++;
-			return passBack;
+				int index = passedSchedulesCount;
+				Action[] schedule = schedulesList[passedSchedulesCount];
+				passBack = new ScheduleAndIndex(index, schedule, false);
+				passedSchedulesCount++;
+		}else{
+			passBack = new ScheduleAndIndex();
 		}
-		return null;
+		return passBack;
 	}
 	
-	public void receiveSortedRatedSchedules(RatedSchedule[] a){
-		this.rankedSchedules = a;
+	public synchronized void receiveSortedRatedSchedules(RatedSchedule[] a){
+		this.rankedSchedules = new RatedSchedule[a.length];
+		System.arraycopy(a, 0, this.rankedSchedules, 0, a.length);
 	}
 }
