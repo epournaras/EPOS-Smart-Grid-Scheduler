@@ -1,20 +1,16 @@
 import java.util.ArrayList;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class ParallelSortingRegularSampling {
-	public ArrayList<RatedSchedule[]> samplePointsArrayList = new ArrayList<RatedSchedule[]>();
+	
 	public int workersReported = 0;
 	public boolean phaseOne = false;
 	public boolean phaseTwo = false;
 	public boolean phaseThree= false;
 	public boolean phaseFour = false;
+	public boolean phaseFourPartTwo = false;
 	public boolean phaseFive = false;
 	public boolean phaseSix = false;
-	
-	private ReentrantLock phaseTwoLock = new ReentrantLock();
-	private ReentrantLock phaseFourLockPartOne = new ReentrantLock();
-	private ReentrantLock phaseFourLockPartTwo = new ReentrantLock();
-	private ReentrantLock phaseFiveLock = new ReentrantLock();
+	public int totalDataSize;
 	/* 
 	 * PHASE I:
 	 * Split data into equal parts and distribute to workerThreads and root. All threads then sort their local data.
@@ -32,15 +28,17 @@ public class ParallelSortingRegularSampling {
 	 */
 	public ParallelSortingRegularSampling(RatedSchedule[] data, int numberOfCores, Schedule caller){
 		//PHASE I:
-		int dataSize = data.length;
+		totalDataSize = data.length;
 		ArrayList<ArrayList<RatedSchedule>> splitData = new ArrayList<ArrayList<RatedSchedule>>();
 		splitData.ensureCapacity(numberOfCores);
+		int size = (totalDataSize/numberOfCores);
 		for(int i = 0; i<numberOfCores;i++){
-			splitData.get(i).ensureCapacity(dataSize/numberOfCores);
+			splitData.add(new ArrayList<RatedSchedule>());
+			splitData.get(i).ensureCapacity(size);
 		}
 		int index = 0;
 		for(int j = 0; j<numberOfCores;j++){
-			for(int i = 0; i<dataSize/numberOfCores; i++){
+			for(int i = 0; i<totalDataSize/numberOfCores; i++){
 				splitData.get(j).add(data[index]);
 				index++;
 			}
@@ -87,8 +85,10 @@ public class ParallelSortingRegularSampling {
 		private RatedSchedule[] allSamplePoints;
 		public int dataSize;
 		public RatedSchedule[] pivotPoints;
-		public ArrayList<ArrayList<RatedSchedule>> assembledParts;
-		public ArrayList<RatedSchedule[]> sortedParts;
+		public RatedSchedule[][][] assembledParts;
+		private RatedSchedule[][] seperatedParts;
+		public RatedSchedule[][] sortedParts;
+		public RatedSchedule[][] samplePoints;
 		public Schedule caller;
 		
 		
@@ -97,27 +97,26 @@ public class ParallelSortingRegularSampling {
 			this.numberOfWorkers = i;
 			this.threadName = n;
 			this.dataSize = a.length;
-			this.assembledParts.ensureCapacity(this.numberOfWorkers);
-			this.sortedParts.ensureCapacity(this.numberOfWorkers);
+			this.assembledParts = new RatedSchedule[this.numberOfWorkers+1][this.numberOfWorkers+1][];
+			this.samplePoints = new RatedSchedule[this.numberOfWorkers+1][this.numberOfWorkers];
+			this.sortedParts = new RatedSchedule[this.numberOfWorkers+1][];
 			this.caller = caller;
 		}
 		
 		public void run(){
+			//System.out.print("\n"+"Running "+threadName+"...\n");
 			//PHASE I:
 			this.ratedSchedules = sort(this.ratedSchedules);
-			
 			//PHASE II:
-			RatedSchedule[] samplePoints = new RatedSchedule[this.numberOfWorkers];
-			for(int i = 0; i<this.numberOfWorkers;i++){
-				int index = (i*this.ratedSchedules.length)/(this.numberOfWorkers*this.numberOfWorkers);
-				samplePoints[i] = this.ratedSchedules[index];
-			}
-			this.gatherSamplePoints(samplePoints);
+			RatedSchedule[] samplePoints = createSamplePoints(this.numberOfWorkers, this.ratedSchedules);
+			this.gatherSamplePoints(samplePoints, 0);
 			while(phaseOne!=true){
 				try {
 					wait(10);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
+				}catch(IllegalMonitorStateException e){
+					
 				}
 			}
 			
@@ -130,37 +129,38 @@ public class ParallelSortingRegularSampling {
 					e.printStackTrace();
 				}
 			}
-			
 			//PHASE IV:
-			ArrayList<ArrayList<RatedSchedule>> parts = new ArrayList<ArrayList<RatedSchedule>>();
-			parts.ensureCapacity(this.numberOfWorkers);
-			int index = 0;
-			for(int i = 0; i<this.ratedSchedules.length&&index<this.numberOfWorkers;i++){
-				parts.get(index).add(this.ratedSchedules[i]);
-				if(this.ratedSchedules[i].rating > this.pivotPoints[index].rating){
-					index++;
-				}
+			RatedSchedule[][] phaseFourSplitting = new RatedSchedule[numberOfWorkers+1][];
+			RatedSchedule[][] temp = new RatedSchedule[2][];
+			temp[1] = this.ratedSchedules;
+			for(int i = 0; i < this.pivotPoints.length ;i++){
+				temp = split(temp[1], this.pivotPoints[i].rating);
+				phaseFourSplitting[i] = new RatedSchedule[temp[0].length];
+				System.arraycopy(temp[0], 0, phaseFourSplitting[i], 0, temp[0].length);
 			}
-			parts.trimToSize();
-			RatedSchedule[][] seperatedParts = new RatedSchedule[parts.size()][];
-			parts.toArray(seperatedParts);
+			phaseFourSplitting[numberOfWorkers] = temp[1];
 			boolean partsPassed = false;
-			while(!partsPassed){
-				partsPassed = this.sendParts(seperatedParts);
-			}
+			do{
+				partsPassed = this.sendParts(phaseFourSplitting, 0);
+			}while(partsPassed==false);
 			
-			while(phaseFive!=true){
+			while(phaseFourPartTwo!=true){
+				if(workersReported == this.numberOfWorkers+1){
+					phaseFourPartTwo =true;
+				}
 				try {
 					wait(10);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
+				}catch (IllegalMonitorStateException e){
+					
 				}
 			}
+			seperatedParts = this.createParts();
+			phaseFive = true;
 			
 			//PHASE V:
-			do{
-				this.ratedSchedules = this.getPart(0);
-			}while(this.ratedSchedules==null);
+			this.ratedSchedules = this.getPart(0);
 			
 			this.ratedSchedules = sort(this.ratedSchedules);
 			boolean sortedPartAdded = false;
@@ -173,42 +173,29 @@ public class ParallelSortingRegularSampling {
 					wait(10);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
+				}catch (IllegalMonitorStateException e){
+					
 				}
 			}
 			
+			
 			//PHASE VI:
 			this.assembleSortedParts();
+			//System.out.println("\n" + this.threadName + " exiting.");
 		}
 		
 		/*
 		 * Phase II: Requires Lock.
 		 * The workers use this method to pass back the sample points they have taken from their sorted local data. 
 		 */
-		public boolean gatherSamplePoints(RatedSchedule[] samplePoints){
-			boolean lockAcquired = false;
-			try{
-				phaseTwoLock.tryLock();
-				try{
-					lockAcquired = true;
-					samplePointsArrayList.add(samplePoints);
-					workersReported++;
-					if(workersReported==this.numberOfWorkers+1){
-						phaseOne = true;
-						workersReported = 0;
-					}
-				}finally{
-					if(lockAcquired){
-						phaseTwoLock.unlock();
-						return true;
-					}
-				}
-			}catch(IllegalMonitorStateException e){
-				return false;
+		public synchronized void gatherSamplePoints(RatedSchedule[] newSamplePoints, int id){
+			this.samplePoints[id] = new RatedSchedule[newSamplePoints.length];
+			System.arraycopy(newSamplePoints, 0, this.samplePoints[id], 0, newSamplePoints.length);
+			workersReported++;
+			if(workersReported==this.numberOfWorkers+1){
+				workersReported = 0;
+				phaseOne = true;
 			}
-			catch(ArrayIndexOutOfBoundsException e){
-				return false;
-			}
-			return false;
 		}
 		
 		/*
@@ -217,14 +204,16 @@ public class ParallelSortingRegularSampling {
 		 * This is an attempt to find a truer median as well as a method to find pivot points for further sorting.
 		 */
 		public void sortSamplePoints(){
-			RatedSchedule[][] temp = new RatedSchedule[samplePointsArrayList.size()][];
-			samplePointsArrayList.toArray(temp);
-			this.allSamplePoints = new RatedSchedule[this.numberOfWorkers*this.numberOfWorkers];
+			this.allSamplePoints = new RatedSchedule[(this.numberOfWorkers+1)*(this.numberOfWorkers+1)];
 			int startingIndex = 0;
-			for(int i = 0; i<temp.length;i++){
-				System.arraycopy(temp[i], 0, this.allSamplePoints, startingIndex, temp[i].length);
-				startingIndex+=temp[i].length;
-			}
+			for(int i = 0; i<this.samplePoints.length;i++){
+				for(int j = 0; j<this.samplePoints[i].length;j++){
+					if(this.samplePoints[i][j]!=null){
+						this.allSamplePoints[startingIndex] = this.samplePoints[i][j];
+						startingIndex++;
+					}
+				}
+			}		
 			this.allSamplePoints = sort(this.allSamplePoints);
 			phaseTwo = true;
 			makePivotValues();
@@ -234,11 +223,13 @@ public class ParallelSortingRegularSampling {
 		 */
 		private void makePivotValues(){
 			int size = allSamplePoints.length;
-			this.pivotPoints = new RatedSchedule[numberOfWorkers];
+			this.pivotPoints = new RatedSchedule[this.numberOfWorkers];
 			int counter = 0;
-			for(int i = size/numberOfWorkers; i < size; i+=size/numberOfWorkers){
+			int i = size/(this.numberOfWorkers+1);
+			while( i < size ){
 				this.pivotPoints[counter] = allSamplePoints[i];
 				counter++;
+				i+=size/(this.numberOfWorkers+1);
 			}
 			phaseThree = true;
 		}
@@ -254,93 +245,65 @@ public class ParallelSortingRegularSampling {
 		 * Phase IV: requires lock
 		 * The Worker threads use this method to send the i parts of their local data to the Root, so that it may gather them and redistribute them to the i-th worker
 		 */
-		public boolean sendParts(RatedSchedule[][] parts){
-			boolean lockAcquired = false;
-			try{
-				phaseFourLockPartOne.tryLock();
-				try{
-					lockAcquired = true;
-					workersReported++;
-					for(int i = 0; i < parts.length; i++){
-						for(int j = 0; j< parts[i].length;j++){
-							this.assembledParts.get(i).add(parts[i][j]);
-						}
-					}
-					if(workersReported == numberOfWorkers+1){
-						workersReported = 0;
-						phaseFive = true;
-					}
-				}finally{
-					if(lockAcquired){
-						phaseFourLockPartOne.unlock();
-						return true;
-					}
+		public synchronized boolean sendParts(RatedSchedule[][] parts, int id){
+			workersReported++;
+			int i = 0; 
+			while(i < parts.length){
+				this.assembledParts[id][i] = new RatedSchedule[parts[i].length];
+				System.arraycopy(parts[i], 0, this.assembledParts[id][i], 0, parts[i].length);
+				i++;
+				
+			}
+			if(workersReported >= (this.numberOfWorkers+1)){
+				workersReported = 0;
+				phaseFourPartTwo = true;
+			}
+			return true;
+		}
+		
+		private RatedSchedule[][] createParts(){
+			RatedSchedule[][][] temp = new RatedSchedule[numberOfWorkers+1][numberOfWorkers+1][];
+			int[] numberOfPartElements = new int[numberOfWorkers+1];
+			for(int i = 0; i<this.assembledParts.length;i++){
+				numberOfPartElements[i] =0;
+				for(int j = 0; j<this.assembledParts[i].length;j++){
+					temp[i][j] = this.assembledParts[j][i];
+					numberOfPartElements[i]+=temp[i][j].length;
 				}
-			}catch(IllegalMonitorStateException e){
-				return false;
 			}
-			catch(ArrayIndexOutOfBoundsException e){
-				return false;
+			RatedSchedule[][] parts = new RatedSchedule[numberOfWorkers+1][];
+			int currentIndex = 0;
+			for(int i = 0; i<numberOfWorkers+1;i++){
+				parts[i] = new RatedSchedule[numberOfPartElements[i]];
+				for(int j = 0; j<numberOfWorkers+1;j++){
+					System.arraycopy(temp[i][j], 0, parts[i], currentIndex, temp[i][j].length);
+					currentIndex+=temp[i][j].length;
+				}
+				currentIndex = 0;
 			}
-			return false;
+			return parts;
 		}
 		 /*
 		  * Phase IV: Requires Lock
 		  * Used by all threads to get their i-th part from the assembled parts.
 		  */
-		public RatedSchedule[] getPart(int i){
-			boolean lockAcquired = false;
-			RatedSchedule[] part = new RatedSchedule[1];
-			try{
-				phaseFourLockPartTwo.tryLock();
-				try{
-					lockAcquired = true;
-					this.assembledParts.get(i).trimToSize();
-					part = new RatedSchedule[this.assembledParts.get(i).size()];
-					this.assembledParts.get(i).toArray(part);
-				}finally{
-					if(lockAcquired){
-						phaseFourLockPartTwo.unlock();
-						return part;
-					}
-				}
-			}catch(IllegalMonitorStateException e){
-				return null;
-			}
-			catch(ArrayIndexOutOfBoundsException e){
-				return null;
-			}
-			return null;
+		public synchronized RatedSchedule[] getPart(int i){
+			return seperatedParts[i];
 		}
 		
 		/*
 		 * Phase V: Requires Lock
 		 * Once the i-th worker has sorted the i-th part, it returns it to the root via this method.
 		 */
-		public boolean receiveSortedPart(RatedSchedule[] a, int i){
-			boolean lockAcquired = false;
-			try{
-				phaseFiveLock.tryLock();
-				try{
-					lockAcquired = true;
-					this.sortedParts.add(i, a);
-					workersReported++;
-					if(this.numberOfWorkers+1 == workersReported){
-						phaseSix = true;
-					}
-				}finally{
-					if(lockAcquired){
-						phaseFiveLock.unlock();
-						return true;
-					}
-				}
-			}catch(IllegalMonitorStateException e){
-				return false;
+		public synchronized boolean receiveSortedPart(RatedSchedule[] a, int i){
+			this.sortedParts[i] = new RatedSchedule[a.length];
+			System.arraycopy(a, 0, this.sortedParts[i], 0, a.length);
+			workersReported++;
+			if((this.numberOfWorkers+1) == workersReported){
+				workersReported = 0;
+				phaseSix = true;
 			}
-			catch(ArrayIndexOutOfBoundsException e){
-				return false;
-			}
-			return false;
+			return true;
 		}
 		
 		/*
@@ -348,22 +311,19 @@ public class ParallelSortingRegularSampling {
 		 * Once the Root has all parts, it will assemble them in order as one RatedSchedule array and send it back to its schedule caller.
 		 */
 		public void assembleSortedParts(){
-			this.sortedParts.trimToSize();
-			RatedSchedule[][] sortedPartsArray = new RatedSchedule[this.sortedParts.size()][];
-			this.sortedParts.toArray(sortedPartsArray);
-			RatedSchedule[] assembledSortedParts = new RatedSchedule[this.dataSize];
+			RatedSchedule[] assembledSortedParts = new RatedSchedule[totalDataSize];
 			int index = 0;
-			for(int i = 0; i<sortedPartsArray.length;i++){
-				for(int j = 0 ; j<sortedPartsArray[i].length;j++){
-					assembledSortedParts[index] = sortedPartsArray[i][j];
-					index++;
+			for(int i = 0; i<this.sortedParts.length;i++){
+				for(int j = 0 ; j<sortedParts[i].length;j++){
+						assembledSortedParts[index] = this.sortedParts[i][j];
+						index++;
 				}
 			}
 			this.caller.receiveSortedRatedSchedules(assembledSortedParts);
 		}
 		
 		public void start(){
-			System.out.print("Starting "+this.threadName+"\n");
+			//System.out.print("\n"+"Starting "+this.threadName+"\n");
 			if(this.t==null){
 				this.t = new Thread(this, this.threadName);
 			}
@@ -393,64 +353,59 @@ public class ParallelSortingRegularSampling {
 		}
 		
 		public void run(){
+			//System.out.print("\n"+"Running "+threadName+"...\n");
 			//Phase I:
 			this.ratedSchedules = sort(this.ratedSchedules);
 			
 			//Phase II
-			RatedSchedule[] samplePoints = new RatedSchedule[this.numberOfWorkers];
-			for(int i = 0; i<this.numberOfWorkers;i++){
-				int index = (i*this.ratedSchedules.length)/(this.numberOfWorkers*this.numberOfWorkers);
-				samplePoints[i] = this.ratedSchedules[index];
-			}
-			boolean pointsPassed = false;
-			while(!pointsPassed){
-				pointsPassed=this.root.gatherSamplePoints(samplePoints);
-			}
-			
+			RatedSchedule[] samplePoints = createSamplePoints(this.numberOfWorkers, this.ratedSchedules);
+			this.root.gatherSamplePoints(samplePoints, workerID);			
 			while(phaseThree==false){
 				try{
 					wait(10);
 				}catch(InterruptedException e){
 					
+				}catch(IllegalMonitorStateException e){
+				
 				}
 			}
 			
 			//Phase III:
 			this.pivotPoints = this.root.getPivotPoints();
-			
+
 			//Phase IV:
-			ArrayList<ArrayList<RatedSchedule>> parts = new ArrayList<ArrayList<RatedSchedule>>();
-			parts.ensureCapacity(this.numberOfWorkers);
-			int index = 0;
-			for(int i = 0; i<this.ratedSchedules.length&&index<this.numberOfWorkers;i++){
-				parts.get(index).add(this.ratedSchedules[i]);
-				if(this.ratedSchedules[i].rating > this.pivotPoints[index].rating){
-					index++;
-				}
+			RatedSchedule[][] phaseFourSplitting = new RatedSchedule[numberOfWorkers+1][];
+			RatedSchedule[][] temp = new RatedSchedule[2][];
+			temp[1] = this.ratedSchedules;
+			for(int i = 0; i < this.pivotPoints.length;i++){
+				temp = split(temp[1], this.pivotPoints[i].rating);
+				phaseFourSplitting[i] = new RatedSchedule[temp[0].length];
+				System.arraycopy(temp[0], 0, phaseFourSplitting[i], 0, temp[0].length);
 			}
-			parts.trimToSize();
-			RatedSchedule[][] seperatedParts = new RatedSchedule[parts.size()][];
-			parts.toArray(seperatedParts);
+			phaseFourSplitting[numberOfWorkers] = temp[1];
 			boolean partsPassed = false;
-			while(!partsPassed){
-				partsPassed = this.root.sendParts(seperatedParts);
-			}
+			do{
+				partsPassed = this.root.sendParts(phaseFourSplitting, workerID);
+			}while(partsPassed==false);	
 			while(phaseFive == false){
 				try{
 					wait(10);
 				}catch(InterruptedException e){
 					
 				}
+				catch (IllegalMonitorStateException e){
+					
+				}
 			}
 			
+			
 			//Phase V:
-			do{
-				this.ratedSchedules = this.root.getPart(this.workerID);
-			}while(this.ratedSchedules==null);
+			this.ratedSchedules = this.root.getPart(this.workerID);
 			this.ratedSchedules = sort(this.ratedSchedules);
 			
 			//Phase VI:
 			sendSortedPart(this.ratedSchedules, this.workerID);
+			//System.out.println("\n" + this.threadName + " exiting.");
 		}
 		
 		/*
@@ -464,7 +419,7 @@ public class ParallelSortingRegularSampling {
 		}
 		
 		public void start(){
-			System.out.print("Starting "+this.threadName+"\n");
+			//System.out.print("\n"+"Starting "+this.threadName+"\n");
 			if(this.t==null){
 				this.t = new Thread(this, this.threadName);
 			}
@@ -484,14 +439,20 @@ public class ParallelSortingRegularSampling {
 			
 			int higherIndex = 0;
 			int lowerIndex = 0;
-			for(int i = 1;i<a.length;i++){
-				if(a[i].rating>pivot.rating){
-					tempHigher[higherIndex] = a[i];
-					higherIndex++;
-				}else{
-					tempLower[lowerIndex] = a[i];
-					lowerIndex++;
+			int j = 1;
+			while(j<a.length){
+				try{
+					if(a[j].rating>pivot.rating){
+						tempHigher[higherIndex] = a[j];
+						higherIndex++;
+					}else{
+						tempLower[lowerIndex] = a[j];
+						lowerIndex++;
+					}
+				}catch(NullPointerException e){
+					System.out.print("\n"+"Nullpointer Exception at "+j+"\n");
 				}
+				j++;
 			}
 			
 			RatedSchedule[] higher = new RatedSchedule[higherIndex];
@@ -515,4 +476,35 @@ public class ParallelSortingRegularSampling {
 		}
 		return concatonatedSortedSchedules;
 	}
+	
+	public RatedSchedule[][] split(RatedSchedule[] a, double b){
+		int size = a.length;
+		RatedSchedule[][] returnable = new RatedSchedule[2][];
+		int sizeOfLower= 0;
+		boolean splitFound = false;
+		for(int i = 0;i<size&&splitFound==false;i++){
+			if(a[i].rating<=b){
+				sizeOfLower++;
+			}else{
+				splitFound = true;
+			}
+		}
+		returnable[0] = new RatedSchedule[sizeOfLower];
+		returnable[1] = new RatedSchedule[a.length-sizeOfLower];
+		System.arraycopy(a, 0, returnable[0], 0, sizeOfLower);
+		System.arraycopy(a, sizeOfLower, returnable[1], 0, a.length-sizeOfLower);
+		return returnable;
+	}
+	
+	public RatedSchedule[] createSamplePoints(int numberOfWorkers, RatedSchedule[] ratedSchedules){
+		RatedSchedule[] samplePoints = new RatedSchedule[numberOfWorkers+1];
+		int index = 0;
+		for(int i = 0; i<numberOfWorkers+1;i++){
+			samplePoints[i] = ratedSchedules[index];
+			index +=(ratedSchedules.length/(numberOfWorkers+1));
+			
+		}
+		return samplePoints;
+	}
 }
+
