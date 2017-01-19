@@ -5,6 +5,10 @@ public class RatedSchedule {
 	public RatedSchedule(int i){
 		this.schedule = new Action[i];
 	}
+	public RatedSchedule(int i, double p){
+		this.schedule = new Action[i];
+		this.rating = p;
+	}
 	
 	public RatedSchedule(double r, Action[]s){
 		this.rating = r;
