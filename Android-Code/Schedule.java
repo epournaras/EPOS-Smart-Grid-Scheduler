@@ -1,5 +1,9 @@
 package com.example.schedulelibrary;
 
+/**
+ * Created by warrens on 24.01.17.
+ */
+
 import java.util.ArrayList;
 import static java.util.Arrays.sort;
 
