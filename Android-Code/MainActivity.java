@@ -1,149 +1,138 @@
-package com.example.scheduleapp;
+package com.example.application;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.content.Context;
-import android.content.Intent;
-import android.support.v4.app.DialogFragment;
-import android.util.Log;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import com.example.schedulelibrary.Action;
-import com.example.schedulelibrary.Schedule;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import com.example.application.adapter.SlidingMenuAdapter;
+import com.example.application.fragment.Fragment1;
+import com.example.application.fragment.Fragment2;
+import com.example.application.fragment.Fragment3;
+import com.example.application.model.itemSlideMenu;
 import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+/**
+ * Created by warrens on 23.01.17.
+ */
 
-    public String selectedActiv;
-    String[] actionNames = {"cooking", "vacuuming", "charging car", "showering"};
-    String[] actionDurations = {"00:40", "00:25", "01:20", "00:15"};
-    ArrayList<Action> list = new ArrayList<Action>();
-    Schedule lists;
+public class MainActivity extends ActionBarActivity{
 
-    @Override
+    private List<itemSlideMenu> listSliding;
+    private SlidingMenuAdapter adapter;
+    private ListView listViewSliding;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            setContentView(R.layout.activity_main);
-            ArrayAdapter<CharSequence> adapterActiv;
-            Spinner activDrp = (Spinner) findViewById(R.id.spActiv);
-            adapterActiv = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, actionNames);
-            adapterActiv.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            activDrp.setAdapter(adapterActiv);
+        setContentView(R.layout.main_activity);
 
-            selectedActiv = activDrp.getSelectedItem().toString();
+        listViewSliding = (ListView) findViewById(R.id.lv_sliding_menu);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        listSliding = new ArrayList<>();
+        listSliding.add(new itemSlideMenu(R.mipmap.ic_launcher, "Set Tomorrow's Schedule"));
+        listSliding.add(new itemSlideMenu(R.mipmap.ic_launcher, "Tomorrow's Schedule"));
+        listSliding.add(new itemSlideMenu(R.mipmap.ic_launcher, "Today's Schedule"));
 
-        } catch (NullPointerException ex) {
-            ex.printStackTrace();
-        }
+        adapter = new SlidingMenuAdapter(this, listSliding);
+        listViewSliding.setAdapter(adapter);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        setTitle(listSliding.get(0).getTitle());
+
+        listViewSliding.setItemChecked(0, true);
+
+        drawerLayout.closeDrawer(listViewSliding);
+
+        replaceFragment(0);
+
+        listViewSliding.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                setTitle(listSliding.get(position).getTitle());
+                listViewSliding.setItemChecked(position, true);
+                replaceFragment(position);
+
+                drawerLayout.closeDrawer(listViewSliding);
+            }
+        });
+
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_opened, R.string.drawer_closed) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                invalidateOptionsMenu();
+            }
+        };
+
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
     }
 
-    //to indicate whether the time being selected is a min or max, "min" or "max" is sent to the timeFragment to tell it where to store the input.
-    public void showTimePickerDialogMin(View v) {
-        try {
-            FileOutputStream fosThree = openFileOutput("minOrMax.txt", Context.MODE_PRIVATE);
-            fosThree.write("min".getBytes());
-            DialogFragment newFragment = new timeFragment();
-            newFragment.show(getSupportFragmentManager(), "timeFragment");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.main_menu,menu);
+        return true;
     }
 
-    //to indicate whether the time being selected is a min or max, "min" or "max" is sent to the timeFragment to tell it where to store the input.
-    public void showTimePickerDialogMax(View v) {
-        try {
-            FileOutputStream fosThree = openFileOutput("minOrMax.txt", Context.MODE_PRIVATE);
-            fosThree.write("max".getBytes());
-            DialogFragment newFragment = new timeFragment();
-            newFragment.show(getSupportFragmentManager(), "timeFragment");
-        } catch (IOException ex) {
-            ex.printStackTrace();
+    public boolean onOptionsItemSelected(MenuItem item){
+
+        if(actionBarDrawerToggle.onOptionsItemSelected(item)){
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
-    //adds an item to the schedule list.
-    public void addItem(View v) {
-        try {
-            //Log.d("LENGTH",""+list.size()+"\n");
-            Spinner activDrp = (Spinner) findViewById(R.id.spActiv);
-            selectedActiv = activDrp.getSelectedItem().toString();
-
-            //Get the last entered time window.
-            StringBuilder builder = new StringBuilder();
-            FileInputStream fisGetFiles = openFileInput("tempMin.txt");
-            int chr;
-            while ((chr = fisGetFiles.read()) != -1) {
-                builder.append((char) chr);
-            }
-            String tempMin = builder.toString();
-            fisGetFiles = openFileInput("tempMax.txt");
-            builder = new StringBuilder();
-            int ch;
-            while ((ch = fisGetFiles.read()) != -1) {
-                builder.append((char) ch);
-            }
-            String tempMax = builder.toString();
-            String duration = "";
-            boolean notFound = true;
-            for (int i = 0; i < actionNames.length && notFound; i++) {
-                if (selectedActiv.equals(actionNames[i])) {
-                    duration = actionDurations[i];
-                    notFound = false;
-                }
-            }
-            list.add(new Action(selectedActiv, tempMin, tempMax, duration, "00:00", 0));
-
-        } catch (IOException ex) {
-            //Log.d("EXCEPTION", "We never stood a chance \n");
-            ex.printStackTrace();
-        }
+    protected void onPostCreate(Bundle savedInstanceState){
+        super.onPostCreate(savedInstanceState);
+        actionBarDrawerToggle.syncState();
     }
 
-    //Switches to the screen to display the items added and their time windows.
-    //create schedule arrangements from list, pick one, send it on to the display.
-    public void sendMessage(View view) {
-
-        try {
-            String displayName = "";
-            String displayMaxTime = "";
-            String displayMinTime = "";
-            FileOutputStream fosInput = openFileOutput("nameOfAction.txt", Context.MODE_PRIVATE);
-            list.trimToSize();
-            Action[] array = new Action[list.size()];
-            list.toArray(array);
-            lists = new Schedule(array);
-            //Log.d("LISTS",""+list.size()+"\n");
-            lists.makeScheduleList();
-            Action[][] fullList = lists.getTopNSchedules(5);
-            Log.d("LISTS",""+fullList.length+"\n");
-            int i = 0;
-            if (fullList.length !=0) {
-                for (int j = 0; j < fullList[i].length; j++) {
-                    displayName += fullList[i][j].name + ",";
-                    displayMinTime += fullList[i][j].getTimeString(fullList[i][j].windowStart) + ",";
-                    displayMaxTime += fullList[i][j].getTimeString(fullList[i][j].windowEnd) + ",";
-
-                }
-                fosInput.write(displayName.getBytes());
-                fosInput = openFileOutput("minTime.txt", Context.MODE_PRIVATE);
-                fosInput.write(displayMinTime.getBytes());
-                fosInput = openFileOutput("maxTime.txt", Context.MODE_PRIVATE);
-                fosInput.write(displayMaxTime.getBytes());
-            }
-            Intent intent = new Intent(this, DisplayMessageActivity.class);
-            startActivity(intent);
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (NullPointerException ex) {
-            ex.printStackTrace();
+    private void replaceFragment(int pos) {
+        Fragment fragment = null;
+        String title = "";
+        switch(pos) {
+            case 0:
+                fragment = new Fragment1();
+                title = "Set Tomorrow's Schedule";
+                break;
+            case 1:
+                fragment = new Fragment2();
+                title = "Tomorrow's Schedule";
+                break;
+            case 2:
+                fragment = new Fragment3();
+                title = "Today's Schedule";
+                break;
+            default:
+                fragment = new Fragment1();
+                title = "Set Tomorrow's Schedule";
+                break;
+        }
+        if(null!=fragment){
+            FragmentManager fragmentManager = getFragmentManager();
+            getSupportActionBar().setTitle(title);
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.main_content, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
     }
 }
+
