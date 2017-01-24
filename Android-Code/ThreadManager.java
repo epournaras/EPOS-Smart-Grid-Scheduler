@@ -10,13 +10,12 @@ public class ThreadManager implements Runnable{
     private int schedulesToGet;
     private int count = 0;
 
-    public ThreadManager(String name, Action[] list, Schedule caller, int startingIndex){
-        System.out.print("Creating "+name+"\n");
+    public ThreadManager(String name, Action[] list, Schedule caller, int startingIndex, int schedulesToGet){
         this.threadName = name;
         this.list = list;
         this.caller = caller;
         this.startingIndex = startingIndex;
-        this.schedulesToGet = 10000;
+        this.schedulesToGet = schedulesToGet;
     }
 
     /*
@@ -28,8 +27,8 @@ public class ThreadManager implements Runnable{
      * When this process returns you to the first item, get a new starting list.
      */
     public void run(){
-        try{
-            //System.out.print("Running "+threadName+"...\n");
+        //System.out.print("\n"+"Running "+threadName+"...\n");
+        while(this.list!=null){
             this.list = this.caller.getSchedule(this.list, startingIndex+1);
             if(this.list!=null){
                 this.spareList = this.caller.cloneActionArray(this.list);
@@ -39,7 +38,6 @@ public class ThreadManager implements Runnable{
                 while(!done&&count<=schedulesToGet){
                     if(i>startingIndex){
                         this.list[i] = this.caller.changeWindow(i, this.list);
-
                         if(this.list[i]==null){
                             this.list[i] = new Action(this.spareList[i]);
                             i--;
@@ -67,27 +65,13 @@ public class ThreadManager implements Runnable{
                     }
 
                 }
-
             }
-            do{
-                this.list = this.caller.getNextList();
-                if(this.list ==null){
-                    break;
-                }
-            }while(this.list[0].name.equals("Failure"));
-            if(this.list!=null){
-                Thread.sleep(50);
-                this.run();
-            }else{
-                Thread.sleep(50);
-            }
-        }catch (InterruptedException e) {
-            System.out.println("Thread " +  this.threadName + " interrupted.");
+            this.list = this.caller.getNextList();
         }
-        System.out.println("Thread " + this.threadName + " exiting.");
+        //System.out.println("\n" + this.threadName + " exiting.");
     }
     public void start(){
-        System.out.print("Starting "+this.threadName+"\n");
+        //System.out.print("\n"+"Starting "+this.threadName+"\n");
         if(t==null){
             t = new Thread(this, this.threadName);
         }
