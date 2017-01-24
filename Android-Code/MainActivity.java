@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                     notFound = false;
                 }
             }
-            list.add(new Action(selectedActiv, tempMin, tempMax, duration, 0));
+            list.add(new Action(selectedActiv, tempMin, tempMax, duration, "00:00", 0));
 
         } catch (IOException ex) {
             //Log.d("EXCEPTION", "We never stood a chance \n");
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
             lists = new Schedule(array);
             //Log.d("LISTS",""+list.size()+"\n");
             lists.makeScheduleList();
-            Action[][] fullList = lists.getFullList();
+            Action[][] fullList = lists.getTopNSchedules(5);
             Log.d("LISTS",""+fullList.length+"\n");
             int i = 0;
             if (fullList.length !=0) {
