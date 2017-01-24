@@ -1,20 +1,22 @@
 package com.example.schedulelibrary;
-import java.io.File;
-import java.io.FileFilter;
+
 import java.util.ArrayList;
 import static java.util.Arrays.sort;
-import java.util.concurrent.locks.*;
-import java.util.regex.Pattern;
 
 public class Schedule {
     public ArrayList<Action> list = new ArrayList<Action>();
     public Action[] actionList = new Action[1];
     public ArrayList<Action[]> scheduleList = new ArrayList<Action[]>();
     private Action[] lastStartingList;
-    private ReentrantLock lock = new ReentrantLock();
-    private ReentrantLock nextListLock = new ReentrantLock();
+
     int startingIndex;
     int count = 0;
+    private int schedulesToCreate = 400000;
+    private double[] ratings;
+    private int passedSchedulesCount=0;
+    private Action[][] schedulesList;
+    public RatedSchedule[] rankedSchedules;
+    public boolean rankingDone = false;
 
     public Schedule(Action[] a){
         for(int i = 0;i<a.length;i++){
@@ -67,7 +69,7 @@ public class Schedule {
             referenceList[i] = new Action(actionList[i]);
             referenceList[i].windowEnd = referenceList[i].windowStart + referenceList[i].duration;
         }
-        int cores = getNumCores();
+        int cores = Runtime.getRuntime().availableProcessors();
         ArrayList<Action[]> listOfStartingLists = new ArrayList<Action[]>();
         Action[] actionTemp = new Action[referenceList.length];
         boolean positionsLeft = true;
@@ -94,120 +96,91 @@ public class Schedule {
         ArrayList<ThreadManager> threads = new ArrayList<ThreadManager>();
 
         for(int i = 0 ; i<listArray.length; i++){
-            threads.add(new ThreadManager("Thread"+i,listArray[i],this,0));
+            threads.add(new ThreadManager("Thread "+i,listArray[i],this,0,this.schedulesToCreate/cores));
         }
         threads.trimToSize();
         for(int i = 0; i<threads.size();i++){
             threads.get(i).start();
         }
-        for(int i = 0; i<threads.size();i++) {
-            try {
+        for(int i = 0; i<threads.size();i++){
+            try{
                 threads.get(i).t.join();
-            } catch (InterruptedException e) {
-                System.out.print("Thread" + i + " interrupted\n");
+            }catch(InterruptedException e){
+                System.out.print("Thread "+i+" interrupted\n");
             }
         }
+        rankSchedulesByRating();
     }
 
-    public Action[][] getFullList(){
-        scheduleList.trimToSize();
-        Action[][] listArray = new Action[scheduleList.size()][];
-        if(!scheduleList.isEmpty()) {
-            for (int q = 0; q < scheduleList.size(); q++) {
-                if (scheduleList.get(q) != null) {
-                    listArray[q] = scheduleList.get(q);
-                }
-            }
-            return listArray;
-        }else{
-            System.out.print("No schedules exist");
-            return null;
-        }
+    public void setSchedulesToCreate(int a){
+        this.schedulesToCreate = a;
     }
 
-    public void printScheduleList(){
-        int j = 0;
-        //System.out.print("HERE");
-        scheduleList.trimToSize();
-        Action[][] listArray = getFullList();
-        if(listArray != null) {
-            for (int q = 0; q < listArray.length; q++) {
-                for (j = 0; j < listArray[q].length; j++) {
-                    if (listArray[q][j] != null) {
-                        System.out.print(listArray[q][j].name + " "
-                                + listArray[q][j].getTimeString(listArray[q][j].windowStart)
-                                + "-" + listArray[q][j].getTimeString(listArray[q][j].windowEnd) + "\n");
+    public void printTopNRankedSchedules(int n){
+        if(this.rankedSchedules!=null){
+            if(this.rankedSchedules.length == 0){
+                System.out.print("No Schedules Exist");
+            }else{
+                if(n<this.rankedSchedules.length){
+                    for(int i = 0; i<n;i++){
+                        System.out.print("Schedule #"+i+"\n");
+                        printSchedule(this.rankedSchedules[i].schedule);
+                    }
+                }else{
+                    for(int i = 0; i<this.rankedSchedules.length;i++){
+                        System.out.print("Schedule #"+i+"\n");
+                        printSchedule(this.rankedSchedules[i].schedule);
                     }
                 }
             }
+        }
+    }
+
+    public Action[][] getTopNSchedules(int n){
+        Action[][] nSchedules = new Action[n][];
+        for(int i = 0;i<n;i++){
+            nSchedules[i] = new Action[this.rankedSchedules[i].schedule.length];
+            System.arraycopy(this.rankedSchedules[i].schedule,0,nSchedules[i],0,this.rankedSchedules[i].schedule.length);
+        }
+        return nSchedules;
+    }
+
+    public void printSchedule(Action[] a){
+        for(int i = 0; i<a.length;i++){
+            System.out.print(a[i].name+":\t"+a[i].getTimeString(a[i].windowStart)+"\t"+a[i].getTimeString(a[i].windowEnd)+"\t"+a[i].getTimeString(a[i].optimalTime)+"\n");
         }
     }
 
     /*
      * Used by threads to add the schedule they found to the list of schedules
      */
-    public void returnActionList(Action[] list){
-        boolean lockAcquired = false;
-        try{
-            lock.tryLock();
-            try{
-                lockAcquired = true;
-                boolean noConflict = true;
-                if(list!=null) {
-                    for(int i= 0; i<list.length&&noConflict;i++){
-                        noConflict = checkPosition(i, list[i],list);
-                    }
-                    if(noConflict){
-                        scheduleList.add(cloneActionArray(list));
-                    }
-                }
-            }finally{
-                if(lockAcquired){
-                    lock.unlock();
-                }
+    public synchronized void returnActionList(Action[] list){
+        boolean noConflict = true;
+        if(list!=null) {
+            for(int i= 0; i<list.length&&noConflict;i++){
+                noConflict = checkPosition(i, list[i],list);
             }
-        }catch(IllegalMonitorStateException e){
-
-        }
-        catch(ArrayIndexOutOfBoundsException e){
-
+            if(noConflict){
+                scheduleList.add(cloneActionArray(list));
+            }
         }
     }
 
     /*
      * Go to the last list that was given to a thread, use it as an input to changeWindow to get the next list to use to get another schedule
      */
-    public Action[] getNextList(){
-        boolean lockAcquired = false;
+    public synchronized Action[] getNextList(){
         Action[] temp = null;
-        try{
-            nextListLock.tryLock();
-            try{
-                lockAcquired = true;
-                temp = cloneActionArray(lastStartingList);
-                temp[startingIndex].windowStart++;
-                temp[startingIndex].windowEnd=temp[startingIndex].windowStart+temp[startingIndex].duration;
-                temp[startingIndex] = changeWindow(startingIndex, temp);
-                if(temp[startingIndex]!=null){
-                    lastStartingList = temp;
-                }else{
-                    temp = null;
-                }
-            }finally{
-                if(lockAcquired){
-                    nextListLock.unlock();
-                    return temp;
-                }
-            }
-        }catch(IllegalMonitorStateException e){
-
+        temp = cloneActionArray(lastStartingList);
+        temp[startingIndex].windowStart++;
+        temp[startingIndex].windowEnd=temp[startingIndex].windowStart+temp[startingIndex].duration;
+        temp[startingIndex] = changeWindow(startingIndex, temp);
+        if(temp[startingIndex]!=null){
+            lastStartingList = temp;
+        }else{
+            temp = null;
         }
-        catch(ArrayIndexOutOfBoundsException e){
-
-        }
-        Action failure = new Action("Failure","00:00","00:00","00:00",0);
-        Action[] tryFailed = {failure};
-        return tryFailed;
+        return temp;
     }
     /*
      * pass in the list of actions in their original form (original entered window)
@@ -332,34 +305,71 @@ public class Schedule {
         }
         return clone;
     }
-    /**
-     * Gets the number of cores available in this device, across all processors.
-     * Requires: Ability to peruse the filesystem at "/sys/devices/system/cpu"
-     * @return The number of cores, or 1 if failed to get result
+
+    /*
+     * Threads attempt to pass back the ratings they found for the particular schedule they were working on.
      */
-    private int getNumCores() {
-        //Private Class to display only CPU devices in the directory listing
-        class CpuFilter implements FileFilter {
-            @Override
-            public boolean accept(File pathname) {
-                //Check if filename is "cpu", followed by a single digit number
-                if(Pattern.matches("cpu[0-9]+", pathname.getName())) {
-                    return true;
-                }
-                return false;
+    public synchronized void returnRating(int i, double a){
+        ratings[i] = a;
+    }
+
+    /*
+     * Using the ArrayList of Schedules (Arrays of Actions), create their rating by totalling the rating of each of their actions
+     * Then, using this rating rank them in order of lowest to highest rating.
+     */
+    private void rankSchedulesByRating(){
+        scheduleList.trimToSize();
+        scheduleList.trimToSize();
+        schedulesList = new Action[scheduleList.size()][];
+        scheduleList.toArray(schedulesList);
+        RatedSchedule[] ratedScheduleList = new RatedSchedule[schedulesList.length];
+        for(int i = 0; i<schedulesList.length;i++){
+            ratedScheduleList[i] = new RatedSchedule(1);
+            ratedScheduleList[i].schedule = schedulesList[i];
+        }
+        int cores = Runtime.getRuntime().availableProcessors();
+        ArrayList<RankingThreads> threads = new ArrayList<RankingThreads>();
+        ratings = new double[schedulesList.length];
+        for(int i = 0; i<cores;i++){
+            threads.add(new RankingThreads("Thread "+i,this, i, schedulesList[i]));
+            passedSchedulesCount++;
+        }
+        threads.trimToSize();
+        for(int i = 0; i<threads.size();i++){
+            threads.get(i).start();
+        }
+        for(int i = 0; i<threads.size();i++){
+            try{
+                threads.get(i).t.join();
+            }catch(InterruptedException e){
+                System.out.print("Thread "+i+" interrupted\n");
             }
         }
-
-        try {
-            //Get directory containing CPU info
-            File dir = new File("/sys/devices/system/cpu/");
-            //Filter to only list the devices we care about
-            File[] files = dir.listFiles(new CpuFilter());
-            //Return the number of cores (virtual CPU devices)
-            return files.length;
-        } catch(Exception e) {
-            //Default to return 1 core
-            return 1;
+        RatedSchedule[] ratedList = new RatedSchedule[schedulesList.length];
+        for(int i = 0; i<schedulesList.length;i++){
+            ratedList[i] = new RatedSchedule(1, 0);
+            ratedList[i].schedule = schedulesList[i];
+            ratedList[i].rating = ratings[i];
         }
+        ParallelSortingRegularSampling a = new ParallelSortingRegularSampling(ratedList, cores, this);
+    }
+
+    public synchronized ScheduleAndIndex getNewSchedule(){
+
+        ScheduleAndIndex passBack = new ScheduleAndIndex();
+        if(passedSchedulesCount<schedulesList.length){
+            int index = passedSchedulesCount;
+            Action[] schedule = schedulesList[passedSchedulesCount];
+            passBack = new ScheduleAndIndex(index, schedule, false);
+            passedSchedulesCount++;
+        }else{
+            passBack = new ScheduleAndIndex();
+        }
+        return passBack;
+    }
+
+    public synchronized void receiveSortedRatedSchedules(RatedSchedule[] a){
+        this.rankedSchedules = new RatedSchedule[a.length];
+        System.arraycopy(a, 0, this.rankedSchedules, 0, a.length);
     }
 }
