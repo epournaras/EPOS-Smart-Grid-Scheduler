@@ -1,9 +1,9 @@
-package com.example.scheduleapp;
+package com.example.application.fragment;
+
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.widget.TimePicker;
 import android.app.TimePickerDialog;
 import android.app.Dialog;
