@@ -1,5 +1,4 @@
 package com.example.schedulelibrary;
-
 public class Action {
     public String name;
     public int windowStart;
@@ -95,5 +94,13 @@ public class Action {
     public String[] getTimes(){
         String[] times = {getTimeString(this.windowStart), getTimeString(this.windowEnd), getTimeString(this.duration)};
         return times;
+    }
+
+    public int getWindowStart(){
+        return this.windowStart;
+    }
+
+    public int getWindowEnd(){
+        return this.windowEnd;
     }
 }
