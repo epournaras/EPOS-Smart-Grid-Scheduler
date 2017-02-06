@@ -3,29 +3,35 @@ package com.example.schedulelibrary;
 /**
  * Created by warrens on 24.01.17.
  */
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static java.util.Arrays.sort;
 
 public class Schedule {
     public ArrayList<Action> list = new ArrayList<Action>();
-    public Action[] actionList = new Action[1];
-    public ArrayList<Action[]> scheduleList = new ArrayList<Action[]>();
+    private Action[] actionList = new Action[1];
+    private ArrayList<Action[]> scheduleList = new ArrayList<Action[]>();
     private Action[] lastStartingList;
 
-    int startingIndex;
-    int count = 0;
+    private int startingIndex;
+    public int count = 0;
     private int schedulesToCreate = 400000;
     private double[] ratings;
     private int passedSchedulesCount=0;
     private Action[][] schedulesList;
-    public RatedSchedule[] rankedSchedules;
+    private RatedSchedule[] rankedSchedules;
     public boolean rankingDone = false;
 
     public Schedule(Action[] a){
-        for(int i = 0;i<a.length;i++){
-            list.add(a[i]);
-        }
+        list.addAll(Arrays.asList(a));
     }
     public Schedule(){
         this.startingIndex = 0;
@@ -40,30 +46,11 @@ public class Schedule {
 	 * The list of Actions is complete. Now create Schedules from them.
 	 */
 
-    public void initialiseActionList(){
+    private void initialiseActionList(){
+        Collections.sort(list,new actionComparator());
+        this.actionList = list.toArray(new Action[list.size()]);
+        list.clear();
         list.trimToSize();
-        int numberOfActions = list.size();
-        actionList = new Action[numberOfActions];
-        int[] temp = new int[numberOfActions];
-        for(int i = 0; i<numberOfActions; i++){
-            actionList[i] = list.get(i);
-            temp[i] = actionList[i].windowStart;
-        }
-        Action[] tempList = new Action[numberOfActions];
-        sort(temp);
-        boolean found = false;
-        for(int i = 0; i < numberOfActions; i++){
-            for(int j = 0; j<numberOfActions&&!found; j++){
-                if(temp[i] == actionList[j].windowStart){
-                    tempList[i] = actionList[j];
-                    found = true;
-                }
-            }
-            found = false;
-        }
-        actionList = tempList;
-        tempList = null;
-        temp = null;
     }
 
     public void makeScheduleList(){
@@ -149,9 +136,9 @@ public class Schedule {
         return nSchedules;
     }
 
-    public void printSchedule(Action[] a){
-        for(int i = 0; i<a.length;i++){
-            System.out.print(a[i].name+":\t"+a[i].getTimeString(a[i].windowStart)+"\t"+a[i].getTimeString(a[i].windowEnd)+"\t"+a[i].getTimeString(a[i].optimalTime)+"\n");
+    private void printSchedule(Action[] a){
+        for (Action anA : a) {
+            System.out.print(anA.name + ":\t" + anA.getTimeString(anA.windowStart) + "\t" + anA.getTimeString(anA.windowEnd) + "\t" + anA.getTimeString(anA.optimalTime) + "\n");
         }
     }
 
@@ -322,10 +309,12 @@ public class Schedule {
      * Then, using this rating rank them in order of lowest to highest rating.
      */
     private void rankSchedulesByRating(){
-        scheduleList.trimToSize();
-        scheduleList.trimToSize();
+
         schedulesList = new Action[scheduleList.size()][];
         scheduleList.toArray(schedulesList);
+        scheduleList.clear();
+        scheduleList.trimToSize();
+
         RatedSchedule[] ratedScheduleList = new RatedSchedule[schedulesList.length];
         for(int i = 0; i<schedulesList.length;i++){
             ratedScheduleList[i] = new RatedSchedule(1);
@@ -355,7 +344,9 @@ public class Schedule {
             ratedList[i].schedule = schedulesList[i];
             ratedList[i].rating = ratings[i];
         }
-        ParallelSortingRegularSampling a = new ParallelSortingRegularSampling(ratedList, cores, this);
+        List<RatedSchedule> ratedListToPass = Arrays.asList(ratedList);
+        Collections.sort(ratedListToPass,new ratingComparator());
+        this.rankedSchedules = ratedListToPass.toArray(new RatedSchedule[ratedListToPass.size()]);
     }
 
     public synchronized ScheduleAndIndex getNewSchedule(){
@@ -375,5 +366,18 @@ public class Schedule {
     public synchronized void receiveSortedRatedSchedules(RatedSchedule[] a){
         this.rankedSchedules = new RatedSchedule[a.length];
         System.arraycopy(a, 0, this.rankedSchedules, 0, a.length);
+    }
+}
+
+class ratingComparator implements Comparator<RatedSchedule> {
+
+    public int compare(RatedSchedule a, RatedSchedule b){
+        return Double.compare(b.getRating(), a.getRating());
+    }
+}
+
+class actionComparator implements Comparator<Action>{
+    public int compare(Action a, Action b){
+        return Integer.compare(a.getWindowStart(),b.getWindowStart());
     }
 }
