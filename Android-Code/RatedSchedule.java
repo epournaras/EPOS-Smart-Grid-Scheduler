@@ -20,4 +20,8 @@ public class RatedSchedule {
         this.rating = r;
         this.schedule =s;
     }
+
+    public double getRating(){
+        return this.rating;
+    }
 }
