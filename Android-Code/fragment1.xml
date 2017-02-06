@@ -16,7 +16,7 @@
    <TextView
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:text="Set Tomorrow's Schedule"
+       android:text="Action Name"
        android:layout_gravity="center"
        android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
    <Spinner
@@ -52,7 +52,7 @@
        android:textAppearance="@style/TextAppearance.AppCompat.Button" />
 
    <TextView
-       android:text=" "
+       android:text="   Action  Window  Optimal Time"
        android:layout_width="match_parent"
        android:layout_height="277dp"
        android:id="@+id/addedActions"
@@ -78,6 +78,7 @@
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
        android:id="@+id/removeButton"
+       android:layout_gravity="start"
        android:layout_weight="1" />
 
    <Button
@@ -85,7 +86,7 @@
        android:layout_height="wrap_content"
        android:text ="@string/button_send"
        android:onClick="sendMessage"
-       android:layout_gravity="right"
+       android:layout_gravity="end"
        android:layout_weight="1"
        android:id="@+id/sendButton" />
    </LinearLayout>
