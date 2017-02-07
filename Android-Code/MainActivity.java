@@ -1,4 +1,5 @@
 package com.example.application;
+package com.example.application;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -43,7 +44,7 @@ public class MainActivity extends ActionBarActivity{
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     public static String display;
-    public ArrayList<Action> list;
+    public String list;
     public String fragOneText;
     private String today;
 
@@ -72,9 +73,13 @@ public class MainActivity extends ActionBarActivity{
                 String fileName = "PastSchedules.txt";
                 String todaySchedule = "TodaySchedule.txt";
                 String tomorrowSchedule = "TomorrowSchedule.txt";
+                String listAsItWas = "ActionInputList.txt";
+                String boxText = "BoxText.txt";
                 File file = new File(this.getFilesDir(), fileName);
                 File todayFile = new File(this.getFilesDir(), todaySchedule);
                 File tomorrowFile = new File(this.getFilesDir(), tomorrowSchedule);
+                File listFile = new File(this.getFilesDir(), listAsItWas);
+                File boxTextFile = new File(this.getFilesDir(), boxText);
                 // first time task
 
                 // record the fact that the app has been started at least once
@@ -83,7 +88,7 @@ public class MainActivity extends ActionBarActivity{
         }else{
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-hh:mm:ss");
             String dateTest = simpleDateFormat.format(new Date());
-            if(!(today.equals(dateTest))){
+            if(!(today.equals(dateTest))){// change so it only examines the day and nothing else
                 try {
                     FileInputStream fis = openFileInput("TomorrowSchedule.txt");
                     StringBuilder builder = new StringBuilder();
@@ -212,19 +217,55 @@ public class MainActivity extends ActionBarActivity{
         return this.display;
     }
 
-    public void setList(ArrayList<Action> a){
+    public void setList(String a){
+        try{
+            FileOutputStream fos = new FileOutputStream("ActionInputList.txt", false);
+            fos.write(a.getBytes());
+            fos.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         this.list = a;
     }
 
     public void setFragOneText(String a){
         this.fragOneText = a;
+        try{
+            FileOutputStream fos = new FileOutputStream("BoxText.txt", false);
+            fos.write(a.getBytes());
+            fos.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     public String sendFragOneText(){
+        try {
+            FileInputStream fis = this.openFileInput("BoxText.txt");
+            int ch;
+            StringBuilder builder = new StringBuilder();
+            while ((ch = fis.read()) != -1) {
+                builder.append((char) ch);
+            }
+            this.fragOneText = builder.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return this.fragOneText;
     }
 
-    public ArrayList<Action> sendActionList(){
+    public String sendActionList(){
+        try {
+            FileInputStream fis = this.openFileInput("ActionInputList.txt");
+            int ch;
+            StringBuilder builder = new StringBuilder();
+            while ((ch = fis.read()) != -1) {
+                builder.append((char) ch);
+            }
+            this.list = builder.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return this.list;
     }
 
