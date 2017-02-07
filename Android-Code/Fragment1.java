@@ -248,6 +248,7 @@ public class Fragment1 extends Fragment {
 
                         list.remove(ind);
                         list.trimToSize();
+                        count --;
 
                     }catch(IOException e){
                         String toastString = "Internal error";
@@ -275,12 +276,15 @@ public class Fragment1 extends Fragment {
     }
 
     public void getList(){
-        ArrayList<Action> a = ((MainActivity)getActivity()).sendActionList();
-        try{
-            this.list = a;
-            this.count = list.size();
-        }catch(NullPointerException e){
-            this.list = new ArrayList<Action>();
+        String a = ((MainActivity)getActivity()).sendActionList();
+        if(a!=null){
+            String[] testArray = a.split("[\\r\\n]+");
+            for(int i = 0; i<testArray.length;i++){
+                String[] temp = testArray[i].split(",");
+                list.add(new Action(temp[0],temp[1],temp[2],temp[3],temp[4],0));
+                actions.add(count, count+".\t"+temp[0]+"\t"+temp[1]+"-"+temp[2]+"\t"+temp[4]);
+                count++;
+            }
         }
     }
 
@@ -297,6 +301,10 @@ public class Fragment1 extends Fragment {
         ((MainActivity)getActivity()).setFragOneText(currentText);
     }
     public void setList(){
-        ((MainActivity)getActivity()).setList(list);
+        String listCSV = "";
+        for(Action a: list){
+            listCSV+=a.name+","+a.getTimeString(a.windowStart)+","+a.getTimeString(a.windowEnd)+","+a.getTimeString(a.duration)+","+a.getTimeString(a.optimalTime)+"\n";
+        }
+        ((MainActivity)getActivity()).setList(listCSV);
     }
 }
