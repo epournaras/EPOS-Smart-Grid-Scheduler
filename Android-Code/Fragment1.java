@@ -25,6 +25,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import com.example.application.R;
 
@@ -51,8 +53,7 @@ public class Fragment1 extends Fragment {
         final View layoutView = inflater.inflate(R.layout.fragment1, container, false);
         Button b = (Button) layoutView.findViewById(R.id.minTime);
         myContext = getActivity();
-        getBoxText(layoutView);
-        getList();
+        getList(layoutView);
         ArrayAdapter<CharSequence> adapterActiv;
         final Spinner activDrp = (Spinner)layoutView.findViewById(R.id.spActiv);
         adapterActiv = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, actionNames);
@@ -132,11 +133,10 @@ public class Fragment1 extends Fragment {
                     TextView addedActions = (TextView)layoutView.findViewById(R.id.addedActions);
 
                     currentText = addedActions.getText().toString();
-                    currentText+="\n"+count+".\t"+selectedActiv+"\t"+tempMin+"-"+tempMax+"\t"+optimalTime;
+                    currentText+=selectedActiv+"\t"+tempMin+"-"+tempMax+"\t"+optimalTime+"\n";
 
-                    String text = count+".\t"+selectedActiv+"\t"+tempMin+"-"+tempMax+"\t"+optimalTime;
+                    String text = selectedActiv+"\t"+tempMin+"-"+tempMax+"\t"+optimalTime;
                     actions.add(count, text);
-
                     count++;
 
                     addedActions.setText(currentText);
@@ -146,6 +146,7 @@ public class Fragment1 extends Fragment {
                     int durationOfToast = Toast.LENGTH_SHORT;
                     Toast toast = Toast.makeText(context, toastString, durationOfToast);
                     toast.show();
+                    setList();
                 } catch (IOException ex) {
                     //Log.d("EXCEPTION", "We never stood a chance \n");
                     ex.printStackTrace();
@@ -156,9 +157,9 @@ public class Fragment1 extends Fragment {
         bFour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getList(layoutView);
+
                 try {
-                    setList();
-                    setText();
                     list.trimToSize();
                     Action[] array = new Action[list.size()];
                     list.toArray(array);
@@ -182,76 +183,35 @@ public class Fragment1 extends Fragment {
                 } catch (NullPointerException ex) {
                     ex.printStackTrace();
                 }
+                getList(layoutView);
             }
         });
         Button bRemove = (Button) layoutView.findViewById(R.id.removeButton);
         bRemove.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
+                getList(layoutView);
                 if(!actions.isEmpty()){
                     actions.trimToSize();
                     String[] currentActions = new String[actions.size()];
                     actions.toArray(currentActions);
+                    String ca = "";
+                    FileOutputStream fos = null;
                     try{
-                        FileOutputStream fos = myContext.openFileOutput("currentActions.txt", Context.MODE_APPEND);
+                        fos = myContext.openFileOutput("currentActions.txt", Context.MODE_PRIVATE);
                         for(int i = 0; i<currentActions.length;i++){
-                            fos.write(currentActions[i].getBytes());
-                            fos.write(",".getBytes());
+                            ca+=currentActions[i]+",";
                         }
-                    }catch(IOException e){
-
-                    }
-                    DialogFragment newFragment = new removeFragment();
-                    FragmentManager fragManager = ((FragmentActivity)myContext).getSupportFragmentManager();
-                    newFragment.show(fragManager, "removeFragment");
-                    try{
-                        FileInputStream toRemove = myContext.openFileInput("RemoveAction.txt");
-                        StringBuilder builder = new StringBuilder();
-                        int ch;
-                        String index = "";
-                        while((ch = toRemove.read()) != -1){
-                            if((char)ch=='.'){
-                                index = builder.toString();
-                            }else{
-                                builder.append((char)ch);
-                            }
-                        };
-                        int ind = Integer.parseInt(index);
-                        String removeAction = builder.toString();
-
-                        actions.remove(ind);
-                        actions.trimToSize();
-                        for(int i = 0; i<actions.size();i++){
-                            String change = "";
-                            String oldString = actions.get(i);
-                            int j = oldString.indexOf('.');
-                            char[] oldStringCharArray = oldString.toCharArray();
-                            char[] changeCharArray = new char[oldStringCharArray.length];
-                            if(j>=0){
-                                for(int a = j; a<oldStringCharArray.length;a++){
-                                    changeCharArray[a] = oldStringCharArray[a];
-                                }
-                                change = new String(changeCharArray);
-                                change = i+change;
-                                actions.add(i, change);
-                            }
-                        }
-
-                        actions.trimToSize();
-                        String[] display = new String[actions.size()];
-                        actions.toArray(display);
-                        String actualDisplay = "\tAction\tWindow\tOptimal Time";
-                        for(int i =0; i<display.length;i++){
-                            actualDisplay+="\n"+display[i];
-                        }
-                        TextView addedActions = (TextView)layoutView.findViewById(R.id.addedActions);
-                        addedActions.setText(actualDisplay);
-
-                        list.remove(ind);
-                        list.trimToSize();
-                        count --;
-
-                    }catch(IOException e){
-                        String toastString = "Internal error";
+                        fos.write(ca.getBytes());
+                        DialogFragment newFragment = new removeFragment();
+                        FragmentManager fragManager = ((FragmentActivity)myContext).getSupportFragmentManager();
+                        newFragment.show(fragManager, "removeFragment");
+                        String toastString = "Remove Item menu showing";
+                        Context context = getActivity();
+                        int durationOfToast = Toast.LENGTH_SHORT;
+                        Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                        toast.show();
+                    }catch(Exception e){
+                        String toastString = "Remove error";
                         Context context = getActivity();
                         int durationOfToast = Toast.LENGTH_SHORT;
                         Toast toast = Toast.makeText(context, toastString, durationOfToast);
@@ -270,36 +230,35 @@ public class Fragment1 extends Fragment {
 
 
         //ToDo have the Flexibility slider change how many Schedules are displayed.
-        //ToDo stop the change of screens after send and add a toast to declare the job done.
         //ToDo restrict window Max input
         return layoutView;  // this replaces 'setContentView'
     }
 
-    public void getList(){
+    public void getList(View v){
         String a = ((MainActivity)getActivity()).sendActionList();
         if(a!=null){
             String[] testArray = a.split("[\\r\\n]+");
+            list = new ArrayList<Action>();
+            actions = new ArrayList<String>();
+            count  = 0;
+            currentText = "";
             for(int i = 0; i<testArray.length;i++){
                 String[] temp = testArray[i].split(",");
                 list.add(new Action(temp[0],temp[1],temp[2],temp[3],temp[4],0));
-                actions.add(count, count+".\t"+temp[0]+"\t"+temp[1]+"-"+temp[2]+"\t"+temp[4]);
+                actions.add(count, temp[0]+"\t"+temp[1]+"-"+temp[2]+"\t"+temp[4]);
+                currentText+=temp[0]+"\t"+temp[1]+"-"+temp[2]+"\t"+temp[4]+"\n";
                 count++;
             }
-        }
-    }
-
-    public void getBoxText(View v){
-        String s = ((MainActivity)getActivity()).sendFragOneText();
-        if(s!=null){
             TextView addedActions = (TextView)v.findViewById(R.id.addedActions);
-            currentText = s;
-            addedActions.setText(s);
+            addedActions.setText(currentText);
         }
+        String toastString = list.size()+" is the size of the List";
+        Context context = getActivity();
+        int durationOfToast = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, toastString, durationOfToast);
+        toast.show();
     }
 
-    public void setText(){
-        ((MainActivity)getActivity()).setFragOneText(currentText);
-    }
     public void setList(){
         String listCSV = "";
         for(Action a: list){
