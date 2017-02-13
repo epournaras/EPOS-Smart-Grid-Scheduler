@@ -81,16 +81,46 @@ public class MainActivity extends ActionBarActivity{
             String tomorrowSchedule = "TomorrowSchedule.txt";
             String listAsItWas = "ActionInputList.txt";
             String boxText = "BoxText.txt";
+            String todayDate = "Date.txt";
+            String tomorrowDate = "TomorrowsDate.txt";
+            File todayDateFile = new File(this.getFilesDir(),todayDate);
+            File tomorrowDateFile = new File(this.getFilesDir(), tomorrowDate);
             File file = new File(this.getFilesDir(), fileName);
             File todayFile = new File(this.getFilesDir(), todaySchedule);
             File tomorrowFile = new File(this.getFilesDir(), tomorrowSchedule);
             File listFile = new File(this.getFilesDir(), listAsItWas);
             File boxTextFile = new File(this.getFilesDir(), boxText);
             // first time task
+            try{
+                FileOutputStream fosDate = this.openFileOutput("Date.txt", MODE_PRIVATE);
+                fosDate.write(date.getBytes());
+                fosDate= this.openFileOutput("TomorrowsDate.txt", MODE_PRIVATE);
+                fosDate.write(tomorrowsDate.getBytes());
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
 
             // record the fact that the app has been started at least once
             settings.edit().putBoolean("my_first_time", false).commit();
         }else{
+            try{
+                FileInputStream fisDate = this.openFileInput("Date.txt");
+                int ch;
+                StringBuilder builder = new StringBuilder();
+                while ((ch = fisDate.read()) != -1) {
+                    builder.append((char) ch);
+                }
+                date = builder.toString();
+                fisDate = this.openFileInput("TomorrowsDate.txt");
+                builder = new StringBuilder();
+                while ((ch = fisDate.read()) != -1) {
+                    builder.append((char) ch);
+                }
+                tomorrowsDate = builder.toString();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
             String dateTest = simpleDateFormat.format(new Date());
             dateTest = dateTest.substring(0,10);
@@ -108,6 +138,14 @@ public class MainActivity extends ActionBarActivity{
                     date = dateTest;
                     fullTime = simpleDateFormat.format(new Date(((new Date()).getTime() + 86400000)));
                     tomorrowsDate = fullTime.substring(0,10);
+                    try{
+                        FileOutputStream fosDate = this.openFileOutput("Date.txt", MODE_PRIVATE);
+                        fosDate.write(date.getBytes());
+                        fosDate= this.openFileOutput("TomorrowsDate.txt", MODE_PRIVATE);
+                        fosDate.write(tomorrowsDate.getBytes());
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
                 }catch(Exception e){
                     String toastString = "Internal error";
                     int durationOfToast = Toast.LENGTH_SHORT;
@@ -221,10 +259,6 @@ public class MainActivity extends ActionBarActivity{
 
     public void setDisplay(String s){
         this.display = s;
-        String toastString = "Display set";
-        int durationOfToast = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(this, toastString, durationOfToast);
-        toast.show();
     }
 
     public String getDisplay(){
@@ -237,10 +271,6 @@ public class MainActivity extends ActionBarActivity{
             fos.write(a.getBytes());
             fos.close();
         }catch(Exception e){
-            String toastString = "List Set Error";
-            int durationOfToast = Toast.LENGTH_SHORT;
-            Toast toast = Toast.makeText(this, toastString, durationOfToast);
-            toast.show();
             e.printStackTrace();
         }
         this.list = a;
@@ -256,10 +286,6 @@ public class MainActivity extends ActionBarActivity{
             }
             this.list = builder.toString();
         } catch (Exception e) {
-            String toastString = "List Error";
-            int durationOfToast = Toast.LENGTH_SHORT;
-            Toast toast = Toast.makeText(this, toastString, durationOfToast);
-            toast.show();
             e.printStackTrace();
         }
         return this.list;
@@ -279,7 +305,7 @@ public class MainActivity extends ActionBarActivity{
         for(int i = 0; i<testArray.length;i++){
             String[] temp = testArray[i].split(",");
             actionList.add(new Action(temp[0],temp[1],temp[2],temp[3],temp[4],0));
-            actionStrings.add(temp[0]+"\t"+temp[1]+"-"+temp[2]+"\t"+temp[4]+"\n");
+            actionStrings.add(temp[0]+"\t"+temp[1]+"-"+temp[2]+"\t"+temp[4]);
         }
         String[] currentActions = new String[actionStrings.size()];
         actionStrings.toArray(currentActions);
@@ -289,7 +315,7 @@ public class MainActivity extends ActionBarActivity{
                 indexOfRemoval = i;
                 currentActions[i] = null;
                 int durationOfToast = Toast.LENGTH_SHORT;
-                String toastString = removeAction+" should be removed.";
+                String toastString = removeAction+" removed.";
                 Toast toast = Toast.makeText(this, toastString, durationOfToast);
                 toast.show();
             }
@@ -300,11 +326,16 @@ public class MainActivity extends ActionBarActivity{
         }
 
         actionList.removeAll(Collections.singleton(null));
+        actionList.trimToSize();
         String listCSV = "";
         for(Action a: actionList){
             listCSV+=a.name+","+a.getTimeString(a.windowStart)+","+a.getTimeString(a.windowEnd)+","+a.getTimeString(a.duration)+","+a.getTimeString(a.optimalTime)+"\n";
         }
-        setList(listCSV);
+        if(actionList.size()==0){
+            setList(null);
+        }else{
+            setList(listCSV);
+        }
         setRemoveStatus(false);
     }
 }
