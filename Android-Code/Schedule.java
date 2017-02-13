@@ -1,19 +1,13 @@
 package com.example.schedulelibrary;
 
-/**
+/*
  * Created by warrens on 24.01.17.
  */
-import android.os.Build;
-import android.support.annotation.RequiresApi;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.util.Arrays.sort;
 
 public class Schedule {
     public ArrayList<Action> list = new ArrayList<Action>();
@@ -23,7 +17,7 @@ public class Schedule {
 
     private int startingIndex;
     public int count = 0;
-    private int schedulesToCreate = 400000;
+    private int schedulesToCreate = 40000;
     private double[] ratings;
     private int passedSchedulesCount=0;
     private Action[][] schedulesList;
@@ -54,53 +48,55 @@ public class Schedule {
     }
 
     public void makeScheduleList(){
-        initialiseActionList();
-        Action[] referenceList = new Action[actionList.length];
-        for(int i = 0 ; i < referenceList.length ; i++ ){
-            referenceList[i] = new Action(actionList[i]);
-            referenceList[i].windowEnd = referenceList[i].windowStart + referenceList[i].duration;
-        }
-        int cores = Runtime.getRuntime().availableProcessors();
-        ArrayList<Action[]> listOfStartingLists = new ArrayList<Action[]>();
-        Action[] actionTemp = new Action[referenceList.length];
-        boolean positionsLeft = true;
-        for(int i = 0; i<cores&&positionsLeft;i++){
-            if(i==0){
-                actionTemp[0] = intialiseListForSplit(referenceList, 0);
-            }else{
-                actionTemp[0].windowStart++;
-                actionTemp[0].windowEnd=actionTemp[0].windowStart+actionTemp[0].duration;
-                actionTemp[0] = intialiseListForSplit(actionTemp,0);
+        if(list.size()>0){
+            initialiseActionList();
+            Action[] referenceList = new Action[actionList.length];
+            for(int i = 0 ; i < referenceList.length ; i++ ){
+                referenceList[i] = new Action(actionList[i]);
+                referenceList[i].windowEnd = referenceList[i].windowStart + referenceList[i].duration;
             }
-            if(actionTemp[0]!=null){
-                listOfStartingLists.add(cloneActionArray(actionTemp));
-            }else{
-                positionsLeft = false;
+            int cores = Runtime.getRuntime().availableProcessors();
+            ArrayList<Action[]> listOfStartingLists = new ArrayList<Action[]>();
+            Action[] actionTemp = new Action[referenceList.length];
+            boolean positionsLeft = true;
+            for(int i = 0; i<cores&&positionsLeft;i++){
+                if(i==0){
+                    actionTemp[0] = intialiseListForSplit(referenceList, 0);
+                }else{
+                    actionTemp[0].windowStart++;
+                    actionTemp[0].windowEnd=actionTemp[0].windowStart+actionTemp[0].duration;
+                    actionTemp[0] = intialiseListForSplit(actionTemp,0);
+                }
+                if(actionTemp[0]!=null){
+                    listOfStartingLists.add(cloneActionArray(actionTemp));
+                }else{
+                    positionsLeft = false;
+                }
             }
-        }
-        startingIndex = 0;
-        listOfStartingLists.trimToSize();
-        Action[][] listArray = new Action[listOfStartingLists.size()][];
-        listOfStartingLists.toArray(listArray);
+            startingIndex = 0;
+            listOfStartingLists.trimToSize();
+            Action[][] listArray = new Action[listOfStartingLists.size()][];
+            listOfStartingLists.toArray(listArray);
 
-        lastStartingList = listArray[listArray.length-1];
-        ArrayList<ThreadManager> threads = new ArrayList<ThreadManager>();
+            lastStartingList = listArray[listArray.length-1];
+            ArrayList<ThreadManager> threads = new ArrayList<ThreadManager>();
 
-        for(int i = 0 ; i<listArray.length; i++){
-            threads.add(new ThreadManager("Thread "+i,listArray[i],this,0,this.schedulesToCreate/cores));
-        }
-        threads.trimToSize();
-        for(int i = 0; i<threads.size();i++){
-            threads.get(i).start();
-        }
-        for(int i = 0; i<threads.size();i++){
-            try{
-                threads.get(i).t.join();
-            }catch(InterruptedException e){
-                System.out.print("Thread "+i+" interrupted\n");
+            for(int i = 0 ; i<listArray.length; i++){
+                threads.add(new ThreadManager("Thread "+i,listArray[i],this,0,this.schedulesToCreate/cores));
             }
+            threads.trimToSize();
+            for(int i = 0; i<threads.size();i++){
+                threads.get(i).start();
+            }
+            for(int i = 0; i<threads.size();i++){
+                try{
+                    threads.get(i).t.join();
+                }catch(InterruptedException e){
+                    System.out.print("Thread "+i+" interrupted\n");
+                }
+            }
+            rankSchedulesByRating();
         }
-        rankSchedulesByRating();
     }
 
     public void setSchedulesToCreate(int a){
@@ -346,6 +342,7 @@ public class Schedule {
         }
         List<RatedSchedule> ratedListToPass = Arrays.asList(ratedList);
         Collections.sort(ratedListToPass,new ratingComparator());
+        Collections.reverse(ratedListToPass);
         this.rankedSchedules = ratedListToPass.toArray(new RatedSchedule[ratedListToPass.size()]);
     }
 
