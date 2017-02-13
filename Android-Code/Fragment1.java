@@ -126,27 +126,41 @@ public class Fragment1 extends Fragment {
                     Action opt = new Action();
                     int min = opt.getIntTime(tempMin);
                     int max = opt.getIntTime(tempMax);
-                    int optInt = min + (int)(Math.random() * ((max - min) + 1));
-                    String optimalTime = opt.getTimeString(optInt);
+                    int dur = opt.getIntTime(duration);
+                    if(min+dur<=max){
+                        int optInt = min + (int)(Math.random() * ((max - min) + 1));
+                        String optimalTime = opt.getTimeString(optInt);
 
-                    list.add(count, new Action(selectedActiv, tempMin, tempMax, duration, optimalTime, 0));
-                    TextView addedActions = (TextView)layoutView.findViewById(R.id.addedActions);
+                        list.add(count, new Action(selectedActiv, tempMin, tempMax, duration, optimalTime, 0));
+                        TextView addedActions = (TextView)layoutView.findViewById(R.id.addedActions);
 
-                    currentText = addedActions.getText().toString();
-                    currentText+=selectedActiv+"\t"+tempMin+"-"+tempMax+"\t"+optimalTime+"\n";
+                        currentText = addedActions.getText().toString();
+                        currentText+=selectedActiv+"\t"+tempMin+"-"+tempMax+"\t"+optimalTime+"\n";
 
-                    String text = selectedActiv+"\t"+tempMin+"-"+tempMax+"\t"+optimalTime;
-                    actions.add(count, text);
-                    count++;
+                        String text = selectedActiv+"\t"+tempMin+"-"+tempMax+"\t"+optimalTime;
+                        actions.add(count, text);
+                        count++;
 
-                    addedActions.setText(currentText);
+                        addedActions.setText(currentText);
 
-                    String toastString = "Added "+selectedActiv+" with window "+tempMin+"-"+tempMax+" with optimal time "+optimalTime;
-                    Context context = getActivity();
-                    int durationOfToast = Toast.LENGTH_SHORT;
-                    Toast toast = Toast.makeText(context, toastString, durationOfToast);
-                    toast.show();
-                    setList();
+                        String toastString = "Added "+selectedActiv+" with window "+tempMin+"-"+tempMax+" with optimal time "+optimalTime;
+                        Context context = getActivity();
+                        int durationOfToast = Toast.LENGTH_SHORT;
+                        Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                        toast.show();
+                        setList();
+                    }else{
+                        String toastString = "Window not Large enough.";
+                        if(max<min){
+                            toastString = "Bad Input: Window End before Window Start.";
+                        }
+                        Context context = getActivity();
+                        int durationOfToast = Toast.LENGTH_SHORT;
+                        Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                        toast.show();
+                        setList();
+                    }
+
                 } catch (IOException ex) {
                     //Log.d("EXCEPTION", "We never stood a chance \n");
                     ex.printStackTrace();
@@ -158,28 +172,31 @@ public class Fragment1 extends Fragment {
             @Override
             public void onClick(View v) {
                 getList(layoutView);
-
+                String display = "";
                 try {
                     list.trimToSize();
                     Action[] array = new Action[list.size()];
                     list.toArray(array);
-                    lists = new Schedule(array);
-                    //Log.d("LISTS",""+list.size()+"\n");
-                    lists.makeScheduleList();
-                    Action[][] fullList = lists.getTopNSchedules(5);
-                    String display = "";
-                    for(int i = 0; i<fullList.length;i++){
-                        display+="Schedule "+i+"\n";
-                        for(int j = 0; j<fullList[i].length;j++){
-                            display+= fullList[i][j].name+"\t"+fullList[i][j].getTimeString(fullList[i][j].windowStart)+"-"+fullList[i][j].getTimeString(fullList[i][j].windowEnd)+"\n";
+                    if(array.length>0){
+                        lists = new Schedule(array);
+                        //Log.d("LISTS",""+list.size()+"\n");
+                        lists.makeScheduleList();
+                        Action[][] fullList = lists.getTopNSchedules(5);
+
+                        for(int i = 0; i<fullList.length;i++){
+                            display+="Schedule "+i+"\n";
+                            for(int j = 0; j<fullList[i].length;j++){
+                                display+= fullList[i][j].name+"\t"+fullList[i][j].getTimeString(fullList[i][j].windowStart)+"-"+fullList[i][j].getTimeString(fullList[i][j].windowEnd)+"\n";
+                            }
                         }
+                    }else{
+                        String toastString = "No input";
+                        Context context = getActivity();
+                        int durationOfToast = Toast.LENGTH_SHORT;
+                        Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                        toast.show();
                     }
                     ((MainActivity)getActivity()).setDisplay(display);
-                    String toastString = "Done creating schedules";
-                    Context context = getActivity();
-                    int durationOfToast = Toast.LENGTH_SHORT;
-                    Toast toast = Toast.makeText(context, toastString, durationOfToast);
-                    toast.show();
                 } catch (NullPointerException ex) {
                     ex.printStackTrace();
                 }
@@ -205,11 +222,6 @@ public class Fragment1 extends Fragment {
                         DialogFragment newFragment = new removeFragment();
                         FragmentManager fragManager = ((FragmentActivity)myContext).getSupportFragmentManager();
                         newFragment.show(fragManager, "removeFragment");
-                        String toastString = "Remove Item menu showing";
-                        Context context = getActivity();
-                        int durationOfToast = Toast.LENGTH_SHORT;
-                        Toast toast = Toast.makeText(context, toastString, durationOfToast);
-                        toast.show();
                     }catch(Exception e){
                         String toastString = "Remove error";
                         Context context = getActivity();
@@ -242,21 +254,20 @@ public class Fragment1 extends Fragment {
             actions = new ArrayList<String>();
             count  = 0;
             currentText = "";
-            for(int i = 0; i<testArray.length;i++){
-                String[] temp = testArray[i].split(",");
-                list.add(new Action(temp[0],temp[1],temp[2],temp[3],temp[4],0));
-                actions.add(count, temp[0]+"\t"+temp[1]+"-"+temp[2]+"\t"+temp[4]);
-                currentText+=temp[0]+"\t"+temp[1]+"-"+temp[2]+"\t"+temp[4]+"\n";
-                count++;
+            String[] testEmpty = testArray[0].split(",");
+            if(testEmpty.length>4) {
+                for (int i = 0; i < testArray.length; i++) {
+                    String[] temp = testArray[i].split(",");
+                    list.add(new Action(temp[0], temp[1], temp[2], temp[3], temp[4], 0));
+                    actions.add(count, temp[0] + "\t" + temp[1] + "-" + temp[2] + "\t" + temp[4]);
+                    currentText += temp[0] + "\t" + temp[1] + "-" + temp[2] + "\t" + temp[4] + "\n";
+                    count++;
+                }
+
             }
-            TextView addedActions = (TextView)v.findViewById(R.id.addedActions);
+            TextView addedActions = (TextView) v.findViewById(R.id.addedActions);
             addedActions.setText(currentText);
         }
-        String toastString = list.size()+" is the size of the List";
-        Context context = getActivity();
-        int durationOfToast = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, toastString, durationOfToast);
-        toast.show();
     }
 
     public void setList(){
