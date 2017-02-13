@@ -13,6 +13,7 @@ import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,7 +43,7 @@ public class Fragment1 extends Fragment {
     private Context myContext;
     public int count = 0;
     private String currentText;
-
+    private int progressChangedValue = 0;
     public Fragment1() {
         // Required empty public constructor
     }
@@ -181,7 +182,7 @@ public class Fragment1 extends Fragment {
                         lists = new Schedule(array);
                         //Log.d("LISTS",""+list.size()+"\n");
                         lists.makeScheduleList();
-                        Action[][] fullList = lists.getTopNSchedules(5);
+                        Action[][] fullList = lists.getTopNSchedules(progressChangedValue);
 
                         for(int i = 0; i<fullList.length;i++){
                             display+="Schedule "+i+"\n";
@@ -238,9 +239,29 @@ public class Fragment1 extends Fragment {
                 }
             }
         });
+        SeekBar simpleSeekBar;
 
+        simpleSeekBar=(SeekBar)layoutView.findViewById(R.id.flexibilitySeekBar);
+        simpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progressChangedValue = progress;
+            }
 
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+            }
 
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if(progressChangedValue == 0 ) {
+                    progressChangedValue = 1;
+                }
+                String toastString = "Seek bar progress is :" + progressChangedValue;
+                Context context = getActivity();
+                int durationOfToast = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                toast.show();
+            }
+        });
         //ToDo have the Flexibility slider change how many Schedules are displayed.
         //ToDo restrict window Max input
         return layoutView;  // this replaces 'setContentView'
