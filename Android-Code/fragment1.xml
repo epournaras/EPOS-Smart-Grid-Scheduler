@@ -52,9 +52,14 @@
        android:textAppearance="@style/TextAppearance.AppCompat.Button" />
 
    <TextView
-       android:text="   Action  Window  Optimal Time"
+       android:text="Action  Start - End  Optimal Time"
        android:layout_width="match_parent"
-       android:layout_height="277dp"
+       android:layout_height="wrap_content"
+       android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+   <TextView
+       android:text=""
+       android:layout_width="match_parent"
+       android:layout_height="279dp"
        android:id="@+id/addedActions"
        android:textAppearance="@style/TextAppearance.AppCompat.Button" />
 
@@ -69,7 +74,9 @@
    <SeekBar
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:id="@+id/seekBar" />
+       android:id="@+id/flexibilitySeekBar"
+       android:max = "30"
+       android:progress = "5"/>
 
   <LinearLayout android:layout_width="match_parent"
       android:layout_height="match_parent">
@@ -92,5 +99,3 @@
    </LinearLayout>
   </LinearLayout>
  </RelativeLayout>
-
-</ScrollView>
