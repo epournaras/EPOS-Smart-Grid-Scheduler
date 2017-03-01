@@ -44,6 +44,7 @@ public class Fragment1 extends Fragment {
     public int count = 0;
     private String currentText;
     private int progressChangedValue = 0;
+    private String timings;
     public Fragment1() {
         // Required empty public constructor
     }
@@ -129,7 +130,7 @@ public class Fragment1 extends Fragment {
                     int max = opt.getIntTime(tempMax);
                     int dur = opt.getIntTime(duration);
                     if(min+dur<=max){
-                        int optInt = min + (int)(Math.random() * ((max - min) + 1));
+                        int optInt = min + (int)(Math.random() * (((max-dur) - min) + 1));
                         String optimalTime = opt.getTimeString(optInt);
 
                         list.add(count, new Action(selectedActiv, tempMin, tempMax, duration, optimalTime, 0));
@@ -175,30 +176,104 @@ public class Fragment1 extends Fragment {
                 getList(layoutView);
                 String display = "";
                 try {
+                    String battery;
+                    Context context = getActivity();
+                    list.removeAll(Collections.singleton(null));
                     list.trimToSize();
                     Action[] array = new Action[list.size()];
                     list.toArray(array);
                     if(array.length>0){
                         lists = new Schedule(array);
                         //Log.d("LISTS",""+list.size()+"\n");
+                        try{
+                            battery = ((MainActivity)getActivity()).getBatteryLevels();
+                            FileOutputStream fos= context.openFileOutput("batteryLevelFile.txt", context.MODE_APPEND);
+                            fos.write(battery.getBytes());
+                            ((MainActivity)getActivity()).setBatteryLevels("");
+                            fos.write("Start Make Schedules".getBytes());
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
                         lists.makeScheduleList();
-                        Action[][] fullList = lists.getTopNSchedules(progressChangedValue);
+                        try{
+                            battery = ((MainActivity)getActivity()).getBatteryLevels();
+                            FileOutputStream fos= context.openFileOutput("batteryLevelFile.txt", context.MODE_APPEND);
+                            fos.write(battery.getBytes());
+                            ((MainActivity)getActivity()).setBatteryLevels("");
+                            fos.write("End Make Schedules".getBytes());
+                            fos.write("Start Rate Schedules".getBytes());
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        lists.rankSchedulesByRating();
+                        try{
+                            battery = ((MainActivity)getActivity()).getBatteryLevels();
+                            FileOutputStream fos= context.openFileOutput("batteryLevelFile.txt", context.MODE_APPEND);
+                            fos.write(battery.getBytes());
+                            ((MainActivity)getActivity()).setBatteryLevels("");
+                            fos.write("End Rate Schedules".getBytes());
+                            fos.write("Start Rank Schedules".getBytes());
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+
+                        try{
+                            battery = ((MainActivity)getActivity()).getBatteryLevels();
+                            FileOutputStream fos= context.openFileOutput("batteryLevelFile.txt", context.MODE_APPEND);
+                            fos.write(battery.getBytes());
+                            ((MainActivity)getActivity()).setBatteryLevels("");
+                            fos.write("End Rank Schedules".getBytes());
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        timings = lists.getTimings();
+
+                        try{
+                            FileOutputStream fosTimings = context.openFileOutput("Timings.txt", context.MODE_APPEND);
+                            fosTimings.write(timings.getBytes());
+                            FileInputStream fisTimings = context.openFileInput("Timings.txt");
+                            int ch;
+                            StringBuilder builder = new StringBuilder();
+                            while ((ch = fisTimings.read()) != -1) {
+                                builder.append((char) ch);
+                            }
+                            String ttt = builder.toString();
+                            Log.d("Timings", ttt);
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+
+                        Action[][] fullList;
+                        if(progressChangedValue>5){
+                            fullList = lists.getTopNSchedules(progressChangedValue);
+                        }else{
+                            fullList = lists.getTopNSchedules(5);
+                        }
 
                         for(int i = 0; i<fullList.length;i++){
-                            display+="Schedule "+i+"\n";
+                            int index = i+1;
+                            display+="\n"+"Schedule "+index+"\n";
                             for(int j = 0; j<fullList[i].length;j++){
                                 display+= fullList[i][j].name+"\t"+fullList[i][j].getTimeString(fullList[i][j].windowStart)+"-"+fullList[i][j].getTimeString(fullList[i][j].windowEnd)+"\n";
                             }
                         }
+                        String toastString = "Display set";
+                        int durationOfToast = Toast.LENGTH_SHORT;
+                        Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                        toast.show();
                     }else{
                         String toastString = "No input";
-                        Context context = getActivity();
                         int durationOfToast = Toast.LENGTH_SHORT;
                         Toast toast = Toast.makeText(context, toastString, durationOfToast);
                         toast.show();
                     }
                     ((MainActivity)getActivity()).setDisplay(display);
                 } catch (NullPointerException ex) {
+                    String toastString = "Error Send.";
+                    Context context = getActivity();
+                    int durationOfToast = Toast.LENGTH_SHORT;
+                    Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                    toast.show();
                     ex.printStackTrace();
                 }
                 getList(layoutView);
@@ -248,21 +323,21 @@ public class Fragment1 extends Fragment {
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
+
             }
 
             public void onStopTrackingTouch(SeekBar seekBar) {
-                if(progressChangedValue == 0 ) {
-                    progressChangedValue = 1;
+                if(progressChangedValue <= 5 ) {
+                    progressChangedValue = 5;
                 }
-                String toastString = "Seek bar progress is :" + progressChangedValue;
+                String toastString = "Seek bar progress is: " + progressChangedValue;
                 Context context = getActivity();
                 int durationOfToast = Toast.LENGTH_SHORT;
                 Toast toast = Toast.makeText(context, toastString, durationOfToast);
                 toast.show();
             }
         });
-        //ToDo have the Flexibility slider change how many Schedules are displayed.
+
         //ToDo restrict window Max input
         return layoutView;  // this replaces 'setContentView'
     }
