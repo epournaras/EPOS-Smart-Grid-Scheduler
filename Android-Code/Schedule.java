@@ -3,13 +3,30 @@ package com.example.schedulelibrary;
 /*
  * Created by warrens on 24.01.17.
  */
+import android.util.TimingLogger;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
+
 public class Schedule {
+    private long startTimeCreateSchedule;
+    private long endTimeCreateSchedule;
+    private long startTimeRateSchedule;
+    private long endTimeRateSchedule;
+    private long startTimeRankSchedule;
+    private long endTimeRankScehdule;
+    private long start;
+    private long end;
+    private long createScheduleDuration;
+    private long rateScheduleDuration;
+    private long rankScheduleDuration;
+    private long fullDuration;
+    private String timings;
     public ArrayList<Action> list = new ArrayList<Action>();
     private Action[] actionList = new Action[1];
     private ArrayList<Action[]> scheduleList = new ArrayList<Action[]>();
@@ -17,13 +34,13 @@ public class Schedule {
 
     private int startingIndex;
     public int count = 0;
-    private int schedulesToCreate = 40000;
+    private int schedulesToCreate = 80000;
     private double[] ratings;
     private int passedSchedulesCount=0;
     private Action[][] schedulesList;
     private RatedSchedule[] rankedSchedules;
     public boolean rankingDone = false;
-
+    public RatedSchedule[] ratedList;
     public Schedule(Action[] a){
         list.addAll(Arrays.asList(a));
     }
@@ -48,6 +65,8 @@ public class Schedule {
     }
 
     public void makeScheduleList(){
+        start = System.nanoTime();
+        startTimeCreateSchedule = System.nanoTime();
         if(list.size()>0){
             initialiseActionList();
             Action[] referenceList = new Action[actionList.length];
@@ -95,7 +114,9 @@ public class Schedule {
                     System.out.print("Thread "+i+" interrupted\n");
                 }
             }
-            rankSchedulesByRating();
+            endTimeCreateSchedule = System.nanoTime();
+            createScheduleDuration = (endTimeCreateSchedule - startTimeCreateSchedule)/1000000;
+
         }
     }
 
@@ -304,8 +325,8 @@ public class Schedule {
      * Using the ArrayList of Schedules (Arrays of Actions), create their rating by totalling the rating of each of their actions
      * Then, using this rating rank them in order of lowest to highest rating.
      */
-    private void rankSchedulesByRating(){
-
+    public void rankSchedulesByRating(){
+        startTimeRateSchedule = System.nanoTime();
         schedulesList = new Action[scheduleList.size()][];
         scheduleList.toArray(schedulesList);
         scheduleList.clear();
@@ -334,18 +355,27 @@ public class Schedule {
                 System.out.print("Thread "+i+" interrupted\n");
             }
         }
-        RatedSchedule[] ratedList = new RatedSchedule[schedulesList.length];
+        this.ratedList = new RatedSchedule[schedulesList.length];
         for(int i = 0; i<schedulesList.length;i++){
-            ratedList[i] = new RatedSchedule(1, 0);
-            ratedList[i].schedule = schedulesList[i];
-            ratedList[i].rating = ratings[i];
+            this.ratedList[i] = new RatedSchedule(ratings[i], schedulesList[i]);
         }
+        endTimeRateSchedule = System.nanoTime();
+        rateScheduleDuration = (endTimeRateSchedule-startTimeRateSchedule)/1000000;
+        startTimeRankSchedule = System.nanoTime();
+        sortSchedulesByRating();
+        endTimeRankScehdule = System.nanoTime();
+        rankScheduleDuration = (endTimeRankScehdule - startTimeRankSchedule)/1000000;
+        end = System.nanoTime();
+        fullDuration = (end - start)/1000000;
+        this.timings = createScheduleDuration+","+rateScheduleDuration+","+rankScheduleDuration+","+fullDuration+"\n";
+    }
+
+    public void sortSchedulesByRating(){
         List<RatedSchedule> ratedListToPass = Arrays.asList(ratedList);
         Collections.sort(ratedListToPass,new ratingComparator());
         Collections.reverse(ratedListToPass);
         this.rankedSchedules = ratedListToPass.toArray(new RatedSchedule[ratedListToPass.size()]);
     }
-
     public synchronized ScheduleAndIndex getNewSchedule(){
 
         ScheduleAndIndex passBack = new ScheduleAndIndex();
@@ -363,6 +393,10 @@ public class Schedule {
     public synchronized void receiveSortedRatedSchedules(RatedSchedule[] a){
         this.rankedSchedules = new RatedSchedule[a.length];
         System.arraycopy(a, 0, this.rankedSchedules, 0, a.length);
+    }
+
+    public String getTimings(){
+        return this.timings;
     }
 }
 
