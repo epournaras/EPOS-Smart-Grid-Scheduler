@@ -1,0 +1,28 @@
+When an action is added, it also creates a list of all possible positions that it can be fixed in in its window. 
+Each possible position also calculates and stores its own rating.
+
+The threads then take the lists of all the possible positions for all the actions, and calculate the number of possible 
+combinations.
+This number is then divided by the number of cores. The parts of this number are ranges that are given to the threads
+(where the number of threads = number of cores) who then step through the range 
+(where the step = the number of combinations/the max number of combinations each thread can process). 
+At each step, the number between 0 and the number of combinations represents a combination. 
+This is passed into the method get combination, which returns a list of indexes for each list of action positions.
+
+Taking the actions from this list at that position, the thread then checks if it is valid, 
+if it is, it stores it, if not, it steps again until it exceeds its range.
+
+Get combinations code: (i is the number of the combination on the initial call)
+
+public static long[] getCombination(long i, Action[] lists, int index, long[] indeces){
+  indeces[index] = (i-1)%lists[index].versions.length;
+  long passOn = (((i-1)-indeces[index])/lists[index].versions.length)+1;
+  if(index+1<lists.length){
+    indeces = getCombination(passOn, lists, index+1, indeces);
+  }
+  return indeces;
+}
+
+The list of lists of actions is then sorted using Collections.sort and a comparator. 
+The comparator sums the ratings of the actions in each list, returning the higher of the two.
+The flexibility then indicates the number of these to return.
