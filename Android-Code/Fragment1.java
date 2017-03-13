@@ -1,5 +1,6 @@
 package com.example.application.fragment;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -53,8 +54,18 @@ public class Fragment1 extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         final View layoutView = inflater.inflate(R.layout.fragment1, container, false);
-        Button b = (Button) layoutView.findViewById(R.id.minTime);
+
+        final String PREFS_NAME = "MyPrefs";
         myContext = getActivity();
+        SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        if(settings.getBoolean("first_time", true)) {
+            DialogFragment newFragment = new surveyFragment();
+            FragmentManager fragManager = ((FragmentActivity)myContext).getSupportFragmentManager();
+            newFragment.show(fragManager, "surveyFragment");
+            settings.edit().putBoolean("first_time", false).commit();
+        }
+        Button b = (Button) layoutView.findViewById(R.id.minTime);
+
         getList(layoutView);
         ArrayAdapter<CharSequence> adapterActiv;
         final Spinner activDrp = (Spinner)layoutView.findViewById(R.id.spActiv);
@@ -133,7 +144,7 @@ public class Fragment1 extends Fragment {
                         int optInt = min + (int)(Math.random() * (((max-dur) - min) + 1));
                         String optimalTime = opt.getTimeString(optInt);
 
-                        list.add(count, new Action(selectedActiv, tempMin, tempMax, duration, optimalTime, 0));
+                        list.add(count, new Action(selectedActiv, tempMin, tempMax, duration, optimalTime));
                         TextView addedActions = (TextView)layoutView.findViewById(R.id.addedActions);
 
                         currentText = addedActions.getText().toString();
@@ -205,7 +216,7 @@ public class Fragment1 extends Fragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
-                        lists.rankSchedulesByRating();
+                        lists.sortSchedulesByRating();
                         try{
                             battery = ((MainActivity)getActivity()).getBatteryLevels();
                             FileOutputStream fos= context.openFileOutput("batteryLevelFile.txt", context.MODE_APPEND);
@@ -213,16 +224,6 @@ public class Fragment1 extends Fragment {
                             ((MainActivity)getActivity()).setBatteryLevels("");
                             fos.write("End Rate Schedules".getBytes());
                             fos.write("Start Rank Schedules".getBytes());
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-
-                        try{
-                            battery = ((MainActivity)getActivity()).getBatteryLevels();
-                            FileOutputStream fos= context.openFileOutput("batteryLevelFile.txt", context.MODE_APPEND);
-                            fos.write(battery.getBytes());
-                            ((MainActivity)getActivity()).setBatteryLevels("");
-                            fos.write("End Rank Schedules".getBytes());
                         }catch(Exception e){
                             e.printStackTrace();
                         }
@@ -245,9 +246,9 @@ public class Fragment1 extends Fragment {
 
                         Action[][] fullList;
                         if(progressChangedValue>5){
-                            fullList = lists.getTopNSchedules(progressChangedValue);
+                            fullList = lists.getTopNRankedSchedules(progressChangedValue);
                         }else{
-                            fullList = lists.getTopNSchedules(5);
+                            fullList = lists.getTopNRankedSchedules(5);
                         }
 
                         for(int i = 0; i<fullList.length;i++){
@@ -354,7 +355,7 @@ public class Fragment1 extends Fragment {
             if(testEmpty.length>4) {
                 for (int i = 0; i < testArray.length; i++) {
                     String[] temp = testArray[i].split(",");
-                    list.add(new Action(temp[0], temp[1], temp[2], temp[3], temp[4], 0));
+                    list.add(new Action(temp[0], temp[1], temp[2], temp[3], temp[4]));
                     actions.add(count, temp[0] + "\t" + temp[1] + "-" + temp[2] + "\t" + temp[4]);
                     currentText += temp[0] + "\t" + temp[1] + "-" + temp[2] + "\t" + temp[4] + "\n";
                     count++;
