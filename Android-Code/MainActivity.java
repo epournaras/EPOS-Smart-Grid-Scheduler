@@ -1,6 +1,10 @@
 package com.example.application;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -19,6 +23,7 @@ import com.example.application.adapter.SlidingMenuAdapter;
 import com.example.application.fragment.Fragment1;
 import com.example.application.fragment.Fragment2;
 import com.example.application.fragment.Fragment3;
+import com.example.application.fragment.Fragment4;
 import com.example.application.model.itemSlideMenu;
 
 import java.io.File;
@@ -26,7 +31,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -44,12 +48,18 @@ public class MainActivity extends ActionBarActivity{
     private ActionBarDrawerToggle actionBarDrawerToggle;
     public static String display;
     public String list;
-    public String fragOneText;
     private String fullTime;
     private String date;
     private String tomorrowsDate;
-    private boolean removeComplete = false;
     private Fragment fragment = null;
+    private String batteryLevels = "";
+    private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver(){
+        @Override
+        public void onReceive(Context ctxt, Intent intent) {
+            int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+            batteryLevels+=level+"\n";
+        }
+    };
 
 
 
@@ -65,17 +75,22 @@ public class MainActivity extends ActionBarActivity{
         listSliding.add(new itemSlideMenu(R.mipmap.ic_launcher, "Set Tomorrow's Schedule"));
         listSliding.add(new itemSlideMenu(R.mipmap.ic_launcher, "Tomorrow's Schedule"));
         listSliding.add(new itemSlideMenu(R.mipmap.ic_launcher, "Today's Schedule"));
+        listSliding.add(new itemSlideMenu(R.mipmap.ic_launcher,"Output Survey"));
         final String PREFS_NAME = "MyPrefsFile";
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         if(settings.getBoolean("my_first_time", true)){
+            String toastString = "First Open.";
+            int durationOfToast = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(this, toastString, durationOfToast);
+            toast.show();
             //the app is being launched for first time, do something
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
             fullTime= simpleDateFormat.format(new Date());
             date = fullTime.substring(0,10);
             fullTime = simpleDateFormat.format(new Date(((new Date()).getTime() + 86400000)));
             tomorrowsDate = fullTime.substring(0,10);
-
+            String batteryLevelFile = "batteryLevelFile.txt";
             String fileName = "PastSchedules.txt";
             String todaySchedule = "TodaySchedule.txt";
             String tomorrowSchedule = "TomorrowSchedule.txt";
@@ -83,6 +98,11 @@ public class MainActivity extends ActionBarActivity{
             String boxText = "BoxText.txt";
             String todayDate = "Date.txt";
             String tomorrowDate = "TomorrowsDate.txt";
+            String timings = "Timings.txt";
+            String demographics = "demographics.txt";
+            String password = "Password.txt";
+
+            File timingsFile = new File(this.getFilesDir(),timings);
             File todayDateFile = new File(this.getFilesDir(),todayDate);
             File tomorrowDateFile = new File(this.getFilesDir(), tomorrowDate);
             File file = new File(this.getFilesDir(), fileName);
@@ -90,11 +110,16 @@ public class MainActivity extends ActionBarActivity{
             File tomorrowFile = new File(this.getFilesDir(), tomorrowSchedule);
             File listFile = new File(this.getFilesDir(), listAsItWas);
             File boxTextFile = new File(this.getFilesDir(), boxText);
+            File batteryFile = new File(this.getFilesDir(), batteryLevelFile);
+            File demographicsFile = new File(this.getFilesDir(), demographics);
+            File passwordFile = new File(this.getFilesDir(), password);
             // first time task
             try{
-                FileOutputStream fosDate = this.openFileOutput("Date.txt", MODE_PRIVATE);
+                FileOutputStream fosPass = this.openFileOutput(password, MODE_PRIVATE);
+                fosPass.write("Password1234".getBytes());
+                FileOutputStream fosDate = this.openFileOutput(todayDate, MODE_PRIVATE);
                 fosDate.write(date.getBytes());
-                fosDate= this.openFileOutput("TomorrowsDate.txt", MODE_PRIVATE);
+                fosDate = this.openFileOutput(tomorrowDate, MODE_PRIVATE);
                 fosDate.write(tomorrowsDate.getBytes());
             }catch(Exception e){
                 e.printStackTrace();
@@ -215,7 +240,7 @@ public class MainActivity extends ActionBarActivity{
         actionBarDrawerToggle.syncState();
     }
 
-    private void replaceFragment(int pos) {
+    public void replaceFragment(int pos) {
 
         String title = "";
         switch(pos) {
@@ -242,6 +267,10 @@ public class MainActivity extends ActionBarActivity{
                 fragment.setArguments(c);
                 title = date+"'s Schedule";
                 break;
+            case 3:
+                fragment = new Fragment4();
+                title = "Output Survey";
+                break;
             default:
                 fragment = new Fragment1();
                 title = "Set "+tomorrowsDate+"'s Schedule";
@@ -258,6 +287,13 @@ public class MainActivity extends ActionBarActivity{
     }
 
     public void setDisplay(String s){
+        try{
+            FileOutputStream fos = this.openFileOutput("TomorrowSchedule.txt", this.MODE_PRIVATE);
+            fos.write(s.getBytes());
+            fos.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         this.display = s;
     }
 
@@ -291,20 +327,13 @@ public class MainActivity extends ActionBarActivity{
         return this.list;
     }
 
-    public boolean getRemoveStatus(){
-        return this.removeComplete;
-    }
-
-    public void setRemoveStatus(Boolean a){
-        this.removeComplete = a;
-    }
     public void removeItem(String removeAction){
         ArrayList<Action> actionList = new ArrayList<Action>();
         ArrayList<String> actionStrings = new ArrayList<String>();
         String[] testArray = list.split("[\\r\\n]+");
         for(int i = 0; i<testArray.length;i++){
             String[] temp = testArray[i].split(",");
-            actionList.add(new Action(temp[0],temp[1],temp[2],temp[3],temp[4],0));
+            actionList.add(new Action(temp[0],temp[1],temp[2],temp[3],temp[4]));
             actionStrings.add(temp[0]+"\t"+temp[1]+"-"+temp[2]+"\t"+temp[4]);
         }
         String[] currentActions = new String[actionStrings.size()];
@@ -331,11 +360,14 @@ public class MainActivity extends ActionBarActivity{
         for(Action a: actionList){
             listCSV+=a.name+","+a.getTimeString(a.windowStart)+","+a.getTimeString(a.windowEnd)+","+a.getTimeString(a.duration)+","+a.getTimeString(a.optimalTime)+"\n";
         }
-        if(actionList.size()==0){
-            setList(null);
-        }else{
-            setList(listCSV);
-        }
-        setRemoveStatus(false);
+        setList(listCSV);
+    }
+
+    public String getBatteryLevels(){
+        return this.batteryLevels;
+    }
+
+    public void setBatteryLevels(String a){
+        this.batteryLevels = a;
     }
 }
