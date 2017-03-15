@@ -1,21 +1,18 @@
 package com.example.schedulelibrary;
-
 public class ThreadManager implements Runnable{
     public Thread t;
     private String threadName;
     private Action[] list;
     private Schedule caller;
-    private int startingIndex;
-    private Action[] spareList;
-    private int schedulesToGet;
-    private int count = 0;
+    private long startingIndex;
+    private long endingIndex;
 
-    public ThreadManager(String name, Action[] list, Schedule caller, int startingIndex, int schedulesToGet){
+    public ThreadManager(String name, Action[] list, Schedule caller, long startingIndex, long endingIndex){
         this.threadName = name;
         this.list = list;
         this.caller = caller;
         this.startingIndex = startingIndex;
-        this.schedulesToGet = schedulesToGet;
+        this.endingIndex = endingIndex;
     }
 
     /*
@@ -27,27 +24,104 @@ public class ThreadManager implements Runnable{
      * When this process returns you to the first item, get a new starting list.
      */
     public void run(){
-        //System.out.print("\n"+"Running "+threadName+"...\n");
-        while(this.list!=null){
-            this.list = this.caller.getSchedule(this.list, startingIndex+1);
-            if(this.list!=null){
-                this.spareList = this.caller.cloneActionArray(this.list);
-                this.caller.returnActionList(this.caller.cloneActionArray(this.list));
-                boolean done = false;
-                int i = this.list.length -1;
-                while(!done&&count<=schedulesToGet){
-                    if(i>startingIndex){
-                        this.list[i] = this.caller.changeWindow(i, this.list);
-                        if(this.list[i]==null){
-                            this.list[i] = new Action(this.spareList[i]);
-                            i--;
-                            if(!done){
-                                if(i!=startingIndex){
-                                    this.list[i].windowStart++;
-                                }
-                            }
-                        }else{
-                            if(i==this.list.length-1){
+        long count = 0;
+        long maxCount = 250000L;
+        long step = endingIndex/maxCount;
+        if(step<1){
+            step = 1;
+        }
+        System.out.print("\n"+"Running "+threadName+"...\n");
+        long optimalPoint = 0L;
+        long multiplier = 1L;
+        for(int i = 0; i< list.length;i++){
+            optimalPoint+=list[i].getOptimalIndex()*multiplier;
+            multiplier*=list[i].versions.length;
+        }
+        long[] indeces = new long[list.length];
+        if(optimalPoint>startingIndex&&optimalPoint<endingIndex){
+            indeces = getCombination(optimalPoint+1,list,0,indeces);
+            Action[] check = new Action[list.length];
+            for(int j = 0; j< list.length; j++){
+                check[j] = list[j].getVersion((int)indeces[j]);
+            }
+            if(checkList(check)){
+                caller.returnActionList(check);
+            }
+        }
+        for(long i = startingIndex; i<endingIndex&&count<maxCount;i+=step){
+            count++;
+            if(i!=optimalPoint){
+                indeces = getCombination(i+1,list,0,indeces);
+                Action[] check = new Action[list.length];
+                for(int j = 0; j< list.length; j++){
+                    check[j] = list[j].getVersion((int)indeces[j]);
+                }
+                if(checkList(check)){
+                    caller.returnActionList(check);
+                }
+            }
+        }
+        System.out.println("\n" + this.threadName + " exiting.");
+    }
+    public void start(){
+        System.out.print("\n"+"Starting "+this.threadName+"\n");
+        if(t==null){
+            t = new Thread(this, this.threadName);
+        }
+        t.start();
+    }
+
+    public boolean checkConflict(Action a, Action b, boolean reverse){
+        if(a.windowStart<=b.windowStart&&a.windowEnd<=b.windowEnd&&a.windowEnd>=b.windowStart){
+            //System.out.print("Conflict between "+a.name+" and "+b.name+"\n");
+            return false;
+        }
+        if(a.windowStart>=b.windowStart&&a.windowEnd<=b.windowEnd){
+            //System.out.print("Conflict between "+a.name+" and "+b.name+"\n");
+            return false;
+        }
+        if(!reverse){
+            if(a.windowStart == b.windowStart){
+                return false;
+            }
+            if(a.windowEnd == b.windowEnd){
+                return false;
+            }
+            return checkConflict(b,a, true);
+        }
+        else{
+            return true;
+        }
+    }
+
+    public boolean checkPosition(int indexOfItem, Action a, Action[] currentSchedule){
+        boolean noConflict = true;
+        for(int i = 0; i<currentSchedule.length&&noConflict; i++){
+            if(currentSchedule[i]!=null&&i!=indexOfItem){
+                noConflict = checkConflict(a,currentSchedule[i], false);
+            }
+        }
+        return noConflict;
+    }
+
+    public boolean checkList(Action[] list){
+        boolean check = true;
+        for(int i = 0; i<list.length&&check;i++){
+            check = checkPosition(i, list[i], list);
+        }
+        return check;
+    }
+
+    public static long[] getCombination(long i, Action[] lists, int index, long[] indeces){
+        indeces[index] = (i-1)%lists[index].versions.length;
+        long passOn = (((i-1)-indeces[index])/lists[index].versions.length)+1;
+        if(index+1<lists.length){
+            indeces = getCombination(passOn, lists, index+1, indeces);
+        }
+        return indeces;
+    }
+}
+
                                 this.caller.returnActionList(this.caller.cloneActionArray(this.list));
                                 i--;
                                 count++;
