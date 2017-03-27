@@ -7,12 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -38,22 +36,16 @@ public class Fragment2 extends Fragment {
                     }
                     display = builder.toString();
                 }catch(Exception e){
+                    String toastString = "Couldnt get Tomorrow's schedule.";
+                    int durationOfToast = Toast.LENGTH_SHORT;
+                    Context context = getActivity();
+                    Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                    toast.show();
                     e.printStackTrace();
                 }
             }else{
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-hh:mm:ss");
-                String format = simpleDateFormat.format(new Date());
-                String toStore = "\n"+format+"\n"+display;
-                String fileName = "PastSchedules.txt";
                 String tomorrowsSchedule = "TomorrowSchedule.txt";
                 FileOutputStream fos;
-                try {
-                    fos = getActivity().openFileOutput(fileName, Context.MODE_PRIVATE);
-                    fos.write(toStore.getBytes());
-                    fos.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
                 try {
                     fos = new FileOutputStream(tomorrowsSchedule, false);
                     fos.write(display.getBytes());
