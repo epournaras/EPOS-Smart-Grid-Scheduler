@@ -1,0 +1,14 @@
+The program to match the house and user via their demographic questions works in the following way:
+1. The program looks for the answers to the following questions: 
+  -House Occupancy
+  -Year Built
+  -House Type
+  -Number of Bedrooms
+2. The program examines the 20 houses from the REFIT data, and checks whether the answers to the questions match the details of any house.
+3. The matching of answers is weighted. Some factors are more important than others.
+    -The House Occupancy of a house, if equal to the user's answer, will add 0.533 to the score of that house.
+    -The number of bedrooms in a house, if equal to the user's answer, will add 0.267 to the score of that house.
+    -The type of house that a house is, if equal to the user's answer, will add 0.133 to the score of that house.
+    -The Year the house was Built, if equal to the user's answer, will add 0.067 to the score of that house.
+    (if a house has a score of 1, it is an exact match with all the answers of the user)
+4. The house with the highest score is matched with the user. If multiple houses match, the choice is random between those houses.
