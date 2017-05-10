@@ -18,17 +18,17 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Demographics Survey"
+                android:text="User Survey"
                 android:id = "@+id/titleText"
                 android:layout_gravity="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="House Type"
+                android:text="Which year were you born?"
                 android:id = "@+id/text"
                 android:layout_gravity="left"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
             <LinearLayout android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
@@ -42,10 +42,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="House Size"
+                android:text="In which country were you born?"
                 android:id = "@+id/text1"
                 android:layout_gravity="left"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
             <LinearLayout android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
@@ -59,10 +59,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Built Approximately"
+                android:text="What is your gender?"
                 android:id = "@+id/text2"
                 android:layout_gravity="left"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
             <LinearLayout android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
@@ -76,10 +76,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Number of Occupants"
+                android:text="In which country have you lived most of your life?"
                 android:id = "@+id/text3"
                 android:layout_gravity="left"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
             <LinearLayout android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
@@ -93,10 +93,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Question 5"
+                android:text="What is the highest level of education you have completed"
                 android:id = "@+id/text4"
                 android:layout_gravity="left"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
             <LinearLayout android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
@@ -107,32 +107,195 @@
                     android:id="@+id/spinnerAnswers4"
                     android:layout_gravity="left"/>
             </LinearLayout>
-            <Button
-                android:id = "@+id/Submit"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Submit Answers"
-                android:layout_gravity="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button" />
-        </LinearLayout>
+                android:text="Which of the following best describes your employment status?"
+                android:id = "@+id/text5"
+                android:layout_gravity="left"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true">
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinnerAnswers5"
+                    android:layout_gravity="left"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="What type of house do you live in?"
+                android:id = "@+id/text6"
+                android:layout_gravity="left"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true">
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinnerAnswers6"
+                    android:layout_gravity="left"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="What size is your house?"
+                android:id = "@+id/text7"
+                android:layout_gravity="left"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true">
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinnerAnswers7"
+                    android:layout_gravity="left"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Approximately when was your house built?"
+                android:id = "@+id/text8"
+                android:layout_gravity="left"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true">
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinnerAnswers8"
+                    android:layout_gravity="left"/>
+            </LinearLayout>
+            <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="How many occupants live in your house?"
+            android:id = "@+id/text9"
+            android:layout_gravity="left"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true">
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinnerAnswers9"
+                    android:layout_gravity="left"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Which of the following appliances do you have in your house?"
+                android:id = "@+id/text10"
+                android:layout_gravity="left"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true">
 
-    </RelativeLayout>
-</ScrollView>
-                android:layout_alignParentTop="true"
-                android:layout_alignParentBottom="true">
-                <Spinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/spinnerAnswers1"
-                    android:layout_gravity="left"/>
             </LinearLayout>
+            <CheckBox
+                android:id="@+id/chk1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/chk2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/chk3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/chk4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/chk5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/chk6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/chk7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/chk8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/chk9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/chk10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/chk11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/chk12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/chk13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/chk14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Question 3"
-                android:id = "@+id/text2"
+                android:text="I am concerned about the amount of my residential energy consumption."
+                android:id = "@+id/text11"
                 android:layout_gravity="left"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
             <LinearLayout android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
@@ -140,16 +303,16 @@
                 <Spinner
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/spinnerAnswers2"
+                    android:id="@+id/spinnerAnswers11"
                     android:layout_gravity="left"/>
             </LinearLayout>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Question 4"
-                android:id = "@+id/text3"
+                android:text="I would like to consume lower energy at home."
+                android:id = "@+id/text12"
                 android:layout_gravity="left"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
             <LinearLayout android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
@@ -157,16 +320,16 @@
                 <Spinner
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/spinnerAnswers3"
+                    android:id="@+id/spinnerAnswers12"
                     android:layout_gravity="left"/>
             </LinearLayout>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Question 5"
-                android:id = "@+id/text4"
+                android:text="I would like to consume energy at home more efficiently."
+                android:id = "@+id/text13"
                 android:layout_gravity="left"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
             <LinearLayout android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
@@ -174,8 +337,415 @@
                 <Spinner
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/spinnerAnswers4"
+                    android:id="@+id/spinnerAnswers13"
                     android:layout_gravity="left"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I would like to make a more efficient energy usage for the following reasons:"
+                android:id = "@+id/text14"
+                android:layout_gravity="left"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <CheckBox
+                android:id="@+id/Q15chk1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q15chk2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q15chk3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q15chk4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q15chk5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I would like to use the following means to make a more efficient residential usage of energy:"
+                android:id = "@+id/text15"
+                android:layout_gravity="left"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <CheckBox
+                android:id="@+id/Q16chk1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q16chk2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Discomfort, by automated control of residential appliances for a more efficient energy usage, results in:"
+                android:id = "@+id/text16"
+                android:layout_gravity="left"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <CheckBox
+                android:id="@+id/Q17chk1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q17chk2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q17chk3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q17chk4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I would like to accept discomfort to make more efficient energy usage."
+                android:id = "@+id/text17"
+                android:layout_gravity="left"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true">
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinnerAnswers17"
+                    android:layout_gravity="left"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I would like to sacrifice energy efficiency to experience a low discomfort."
+                android:id = "@+id/text18"
+                android:layout_gravity="left"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true">
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinnerAnswers18"
+                    android:layout_gravity="left"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I would like to be more energy efficient if I know that others are more energy efficient as well."
+                android:id = "@+id/text19"
+                android:layout_gravity="left"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true">
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinnerAnswers19"
+                    android:layout_gravity="left"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I can accept a discomfort caused by energy efficiency if others can accept it as well."
+                android:id = "@+id/text20"
+                android:layout_gravity="left"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true">
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinnerAnswers20"
+                    android:layout_gravity="left"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I would not like to be energy efficient if others are not energy efficient as well."
+                android:id = "@+id/text21"
+                android:layout_gravity="left"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true">
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinnerAnswers21"
+                    android:layout_gravity="left"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I would not like to experience higher discomfort by energy efficiency if others do not experience higher as well."
+                android:id = "@+id/text22"
+                android:layout_gravity="left"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true">
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinnerAnswers22"
+                    android:layout_gravity="left"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I would like to allow technology to schedule a more efficient energy usage of my appliances."
+                android:id = "@+id/text23"
+                android:layout_gravity="left"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true">
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinnerAnswers23"
+                    android:layout_gravity="left"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I am willing to schedule the use of appliances to make more efficient energy usage."
+                android:id = "@+id/text24"
+                android:layout_gravity="left"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true">
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinnerAnswers24"
+                    android:layout_gravity="left"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Scheduling of appliances to make a more efficient energy usage best works for me:"
+                android:id = "@+id/text25"
+                android:layout_gravity="left"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <CheckBox
+                android:id="@+id/Q26chk1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q26chk2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q26chk3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q26chk4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q26chk5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q26chk6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q26chk7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="For which discomfort level would you like to overtake control back over an appliance scheduled for an efficient energy usage?"
+                android:id = "@+id/text26"
+                android:layout_gravity="left"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true">
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinnerAnswers26"
+                    android:layout_gravity="left"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="To which devices you would allow automated control for a more efficient energy usage?"
+                android:id = "@+id/text27"
+                android:layout_gravity="left"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <CheckBox
+                android:id="@+id/Q28chk1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q28chk2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q28chk3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q28chk4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q28chk5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q28chk6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q28chk7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q28chk8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q28chk9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q28chk10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q28chk11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q28chk12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q28chk13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q28chk14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+            <CheckBox
+                android:id="@+id/Q28chk15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:checked="false" />
+        <LinearLayout android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enter Password"
+                android:id = "@+id/titleText2"
+                android:layout_gravity="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:text=""
+                android:ems="10"
+                android:id="@+id/editText" />
             </LinearLayout>
             <Button
                 android:id = "@+id/Submit"
