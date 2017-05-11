@@ -23,6 +23,7 @@ import com.example.application.fragment.Fragment1;
 import com.example.application.fragment.Fragment2;
 import com.example.application.fragment.Fragment3;
 import com.example.application.fragment.Fragment4;
+import com.example.application.fragment.createSchedules;
 import com.example.application.model.itemSlideMenu;
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,6 +34,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import com.example.schedulelibrary.Action;
+import com.example.schedulelibrary.Schedule;
+
 /**
  * Created by warrens on 23.01.17.
  */
@@ -79,6 +82,8 @@ public class MainActivity extends ActionBarActivity{
         final String PREFS_NAME = "MyPrefsFile";
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        settings.edit().putBoolean("putMin", false);
+        settings.edit().putBoolean("putMax", false);
         if(settings.getBoolean("my_first_time", true)){
             String[] perms = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"};
 
@@ -307,7 +312,11 @@ public class MainActivity extends ActionBarActivity{
         }
         this.display = s;
     }
-
+    public void callBackgroundTasks(Action[] array, int progressChangedValue){
+        Schedule lists = new Schedule(array);
+        Schedule[] pass = new Schedule[]{lists};
+        new createSchedules(MainActivity.this,progressChangedValue, this).execute(pass);
+    }
     public String getDisplay(){
         return this.display;
     }
