@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -35,6 +36,11 @@ public class Fragment4 extends Fragment {
     private String selectedAnswerOne,selectedAnswerTwo,selectedAnswerThree,selectedAnswerFour,selectedAnswerFive,selectedAnswerSix,selectedAnswerSeven,selectedAnswerEight,
             selectedAnswerNine, selectedAnswerTen, selectedAnswerEleven,selectedAnswerTwelve, selectedAnswerThirteen, selectedAnswerFourteen,selectedAnswerFifteen,selectedAnswerSixteen;
     private String android_id;
+    private SeekBar qOneOneSimpleSeekBar,qOneTwoSimpleSeekBar,qOneThreeSimpleSeekBar,qOneFourSimpleSeekBar,qOneFiveSimpleSeekBar,qOneSixSimpleSeekBar,qOneSevenSimpleSeekBar,qOneEightSimpleSeekBar,
+            qTwoOneSimpleSeekBar,qTwoTwoSimpleSeekBar,qTwoThreeSimpleSeekBar,qTwoFourSimpleSeekBar,qTwoFiveSimpleSeekBar,qTwoSixSimpleSeekBar,qTwoSevenSimpleSeekBar,qTwoEightSimpleSeekBar;
+    private int qOneOneProgressChangedValue,qOneTwoProgressChangedValue,qOneThreeProgressChangedValue,qOneFourProgressChangedValue,qOneFiveProgressChangedValue,qOneSixProgressChangedValue,qOneSevenProgressChangedValue,qOneEightProgressChangedValue,
+            qTwoOneProgressChangedValue,qTwoTwoProgressChangedValue,qTwoThreeProgressChangedValue,qTwoFourProgressChangedValue,qTwoFiveProgressChangedValue,qTwoSixProgressChangedValue,qTwoSevenProgressChangedValue,qTwoEightProgressChangedValue;
+
     public Fragment4() {
         // Required empty public constructor
     }
@@ -44,142 +50,199 @@ public class Fragment4 extends Fragment {
         View v = inflater.inflate(R.layout.fragment4, container, false);
         Context myContext = getActivity();
         String[] QIDs = new String[]{
-                "1",
-                "2",
-                "3",
-                "4",
-                "5",
-                "6",
-                "7",
-                "8",
-                "9",
-                "10",
-                "11",
-                "12",
-                "13",
-                "14",
-                "15",
-                "16"
+                "1-1",
+                "1-2",
+                "1-3",
+                "1-4",
+                "1-5",
+                "1-6",
+                "1-7",
+                "1-8",
+                "2-1",
+                "2-2",
+                "2-3",
+                "2-4",
+                "2-5",
+                "2-6",
+                "2-7",
+                "2-8"
         };
-        String [] answers = new String[]{
-                "Yes - Definitely",
-                "Yes - Moderately",
-                "Not really",
-                "Not at all"
-        };
+        //put a seek bar agree disagree for each appkliance for both questions.
 
-        ArrayAdapter<CharSequence> adapterActive;
-        final Spinner activeDrp = (Spinner)v.findViewById(R.id.spinnerAnswers1);
-        adapterActive = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, answers);
-        adapterActive.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        activeDrp.setAdapter(adapterActive);
-        selectedAnswerOne = activeDrp.getSelectedItem().toString();
+        qOneOneSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q11SeekBar);
+        qOneOneSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                qOneOneProgressChangedValue = progress;
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
 
-        ArrayAdapter<CharSequence> adapterActiveOne;
-        final Spinner activeDrpOne = (Spinner)v.findViewById(R.id.spinnerAnswers2);
-        adapterActiveOne = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, answers);
-        adapterActiveOne.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        activeDrpOne.setAdapter(adapterActiveOne);
-        selectedAnswerTwo = activeDrpOne.getSelectedItem().toString();
+        qOneTwoSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q12SeekBar);
+        qOneTwoSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                qOneTwoProgressChangedValue = progress;
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
 
-        ArrayAdapter<CharSequence> adapterActiveTwo;
-        final Spinner activeDrpTwo = (Spinner)v.findViewById(R.id.spinnerAnswers3);
-        adapterActiveTwo = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, answers);
-        adapterActiveTwo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        activeDrpTwo.setAdapter(adapterActiveTwo);
-        selectedAnswerThree = activeDrpTwo.getSelectedItem().toString();
+        qOneThreeSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q13SeekBar);
+        qOneThreeSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                qOneThreeProgressChangedValue = progress;
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
 
-        ArrayAdapter<CharSequence> adapterActiveThree;
-        final Spinner activeDrpThree = (Spinner)v.findViewById(R.id.spinnerAnswers4);
-        adapterActiveThree = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, answers);
-        adapterActiveThree.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        activeDrpThree.setAdapter(adapterActiveThree);
-        selectedAnswerFour = activeDrpThree.getSelectedItem().toString();
+        qOneFourSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q14SeekBar);
+        qOneFourSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                qOneFourProgressChangedValue = progress;
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
 
-        ArrayAdapter<CharSequence> adapterActiveFour;
-        final Spinner activeDrpFour = (Spinner)v.findViewById(R.id.spinnerAnswers5);
-        adapterActiveFour = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, answers);
-        adapterActiveFour.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        activeDrpFour.setAdapter(adapterActiveFour);
-        selectedAnswerFive = activeDrpFour.getSelectedItem().toString();
+        qOneFiveSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q15SeekBar);
+        qOneFiveSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                qOneFiveProgressChangedValue = progress;
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
 
-        ArrayAdapter<CharSequence> adapterActiveFive;
-        final Spinner activeDrpFive = (Spinner)v.findViewById(R.id.spinnerAnswers6);
-        adapterActiveFive = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, answers);
-        adapterActiveFive.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        activeDrpFive.setAdapter(adapterActiveFive);
-        selectedAnswerSix = activeDrpFive.getSelectedItem().toString();
+        qOneSixSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q16SeekBar);
+        qOneSixSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                qOneSixProgressChangedValue = progress;
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
 
-        ArrayAdapter<CharSequence> adapterActiveSix;
-        final Spinner activeDrpSix = (Spinner)v.findViewById(R.id.spinnerAnswers7);
-        adapterActiveSix = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, answers);
-        adapterActiveSix.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        activeDrpSix.setAdapter(adapterActiveSix);
-        selectedAnswerSeven = activeDrpSix.getSelectedItem().toString();
+        qOneSevenSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q17SeekBar);
+        qOneSevenSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                qOneSevenProgressChangedValue = progress;
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
 
-        ArrayAdapter<CharSequence> adapterActiveSeven;
-        final Spinner activeDrpSeven = (Spinner)v.findViewById(R.id.spinnerAnswers8);
-        adapterActiveSeven = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, answers);
-        adapterActiveSeven.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        activeDrpSeven.setAdapter(adapterActiveSix);
-        selectedAnswerEight = activeDrpSeven.getSelectedItem().toString();
+        qOneEightSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q18SeekBar);
+        qOneEightSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                qOneEightProgressChangedValue = progress;
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
 
-        ArrayAdapter<CharSequence> adapterActiveEight;
-        final Spinner activeDrpEight = (Spinner)v.findViewById(R.id.spinnerAnswers9);
-        adapterActiveEight = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, answers);
-        adapterActiveEight.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        activeDrpEight.setAdapter(adapterActiveEight);
-        selectedAnswerNine = activeDrpEight.getSelectedItem().toString();
+        qTwoOneSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q21SeekBar);
+        qTwoOneSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                qTwoOneProgressChangedValue = progress;
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
 
-        ArrayAdapter<CharSequence> adapterActiveNine;
-        final Spinner activeDrpNine = (Spinner)v.findViewById(R.id.spinnerAnswers10);
-        adapterActiveNine = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, answers);
-        adapterActiveNine.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        activeDrpNine.setAdapter(adapterActiveNine);
-        selectedAnswerTen = activeDrpNine.getSelectedItem().toString();
+        qTwoTwoSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q22SeekBar);
+        qTwoTwoSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                qTwoTwoProgressChangedValue = progress;
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
 
-        ArrayAdapter<CharSequence> adapterActiveTen;
-        final Spinner activeDrpTen = (Spinner)v.findViewById(R.id.spinnerAnswers11);
-        adapterActiveTen = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, answers);
-        adapterActiveTen.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        activeDrpTen.setAdapter(adapterActiveTen);
-        selectedAnswerEleven = activeDrpTen.getSelectedItem().toString();
+        qTwoThreeSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q23SeekBar);
+        qTwoThreeSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                qTwoThreeProgressChangedValue = progress;
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
 
-        ArrayAdapter<CharSequence> adapterActiveEleven;
-        final Spinner activeDrpEleven = (Spinner)v.findViewById(R.id.spinnerAnswers12);
-        adapterActiveEleven = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, answers);
-        adapterActiveEleven.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        activeDrpEleven.setAdapter(adapterActiveEleven);
-        selectedAnswerTwelve = activeDrpEleven.getSelectedItem().toString();
+        qTwoFourSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q24SeekBar);
+        qTwoFourSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                qTwoFourProgressChangedValue = progress;
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
 
-        ArrayAdapter<CharSequence> adapterActiveTwelve;
-        final Spinner activeDrpTwelve = (Spinner)v.findViewById(R.id.spinnerAnswers13);
-        adapterActiveTwelve = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, answers);
-        adapterActiveTwelve.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        activeDrpTwelve.setAdapter(adapterActiveTwelve);
-        selectedAnswerThirteen = activeDrpTwelve.getSelectedItem().toString();
+        qTwoFiveSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q25SeekBar);
+        qTwoFiveSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                qTwoFiveProgressChangedValue = progress;
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
 
-        ArrayAdapter<CharSequence> adapterActiveThirteen;
-        final Spinner activeDrpThirteen = (Spinner)v.findViewById(R.id.spinnerAnswers14);
-        adapterActiveThirteen = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, answers);
-        adapterActiveThirteen.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        activeDrpThirteen.setAdapter(adapterActiveThirteen);
-        selectedAnswerFourteen = activeDrpThirteen.getSelectedItem().toString();
+        qTwoSixSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q26SeekBar);
+        qTwoSixSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                qTwoSixProgressChangedValue = progress;
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
 
-        ArrayAdapter<CharSequence> adapterActiveFourteen;
-        final Spinner activeDrpFourteen = (Spinner)v.findViewById(R.id.spinnerAnswers15);
-        adapterActiveFourteen = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, answers);
-        adapterActiveFourteen.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        activeDrpFourteen.setAdapter(adapterActiveFourteen);
-        selectedAnswerFifteen = activeDrpFourteen.getSelectedItem().toString();
-
-        ArrayAdapter<CharSequence> adapterActiveFifteen;
-        final Spinner activeDrpFifteen = (Spinner)v.findViewById(R.id.spinnerAnswers16);
-        adapterActiveFifteen = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, answers);
-        adapterActiveFifteen.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        activeDrpFifteen.setAdapter(adapterActiveFifteen);
-        selectedAnswerSixteen = activeDrpFifteen.getSelectedItem().toString();
-
+        qTwoSevenSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q27SeekBar);
+        qTwoSevenSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                qTwoSevenProgressChangedValue = progress;
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+        qTwoEightSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q28SeekBar);
+        qTwoEightSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                qTwoEightProgressChangedValue = progress;
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
         DialogFragment newFragment = new passwordFragment();
         FragmentManager fragManager = ((FragmentActivity)myContext).getSupportFragmentManager();
         newFragment.show(fragManager, "passwordFragment");
@@ -189,27 +252,27 @@ public class Fragment4 extends Fragment {
             @Override
             public void onClick(View g) {
                 android_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-                String[] Answers  = new String[]{
-                        selectedAnswerOne,
-                        selectedAnswerTwo,
-                        selectedAnswerThree,
-                        selectedAnswerFour,
-                        selectedAnswerFive,
-                        selectedAnswerSix,
-                        selectedAnswerSeven,
-                        selectedAnswerEight,
-                        selectedAnswerNine,
-                        selectedAnswerTen,
-                        selectedAnswerEleven,
-                        selectedAnswerTwelve,
-                        selectedAnswerThirteen,
-                        selectedAnswerFourteen,
-                        selectedAnswerFifteen,
-                        selectedAnswerSixteen
+                int[] answers = new int[]{
+                        qOneOneProgressChangedValue,
+                        qOneTwoProgressChangedValue,
+                        qOneThreeProgressChangedValue,
+                        qOneFourProgressChangedValue,
+                        qOneFiveProgressChangedValue,
+                        qOneSixProgressChangedValue,
+                        qOneSevenProgressChangedValue,
+                        qOneEightProgressChangedValue,
+                        qTwoOneProgressChangedValue,
+                        qTwoTwoProgressChangedValue,
+                        qTwoThreeProgressChangedValue,
+                        qTwoFourProgressChangedValue,
+                        qTwoFiveProgressChangedValue,
+                        qTwoSixProgressChangedValue,
+                        qTwoSevenProgressChangedValue,
+                        qTwoEightProgressChangedValue
                 };
                 String submitString = "QID,Answer\n";
                 for(int i =0; i<QIDs.length;i++){
-                    submitString = QIDs[i]+","+Answers[i]+"\n";
+                    submitString = QIDs[i]+","+answers[i]+"\n";
                 }
                 String fileName = android_id+"OUTPUTSURVEY.txt";
                 String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
