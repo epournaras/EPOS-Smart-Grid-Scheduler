@@ -302,12 +302,6 @@ public class Fragment1 extends Fragment {
                             count++;
 
                             addedActions.setText(currentText);
-
-                            String toastString = "Added "+selectedActiv+" with window "+tempMin+"-"+tempMax+" with optimal time "+selectedOptimalTime;
-                            Context context = getActivity();
-                            int durationOfToast = Toast.LENGTH_SHORT;
-                            Toast toast = Toast.makeText(context, toastString, durationOfToast);
-                            toast.show();
                             setList();
                         }else{
                             String toastString = "Window not large enough.";
@@ -348,141 +342,24 @@ public class Fragment1 extends Fragment {
         bFour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String toastStringu = "Please wait...";
-                Context contextu = getActivity();
-                int durationOfToastu = Toast.LENGTH_SHORT;
-                Toast toastu = Toast.makeText(contextu, toastStringu, durationOfToastu);
-                toastu.show();
+
                 getList(layoutView);
                 String display = "";
-                String[][][] parseableData = new String[1][1][1];
-                parseableData[0][0][0] = "0";
                 try {
-                    String battery;
                     Context context = getActivity();
                     list.removeAll(Collections.singleton(null));
                     list.trimToSize();
+                    MainActivity passMain = ((MainActivity)getActivity());
                     Action[] array = new Action[list.size()];
                     list.toArray(array);
                     if(array.length>0){
-                        lists = new Schedule(array);
-                        //Log.d("LISTS",""+list.size()+"\n");
-                        try{
-                            battery = ((MainActivity)getActivity()).getBatteryLevels();
-                            FileOutputStream fos= context.openFileOutput("batteryLevelFile.txt", context.MODE_APPEND);
-                            fos.write(battery.getBytes());
-                            ((MainActivity)getActivity()).setBatteryLevels("");
-                            fos.write("Start Make Schedules".getBytes());
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-                        lists.makeScheduleList();
-                        try{
-                            battery = ((MainActivity)getActivity()).getBatteryLevels();
-                            FileOutputStream fos= context.openFileOutput("batteryLevelFile.txt", context.MODE_APPEND);
-                            fos.write(battery.getBytes());
-                            ((MainActivity)getActivity()).setBatteryLevels("");
-                            fos.write("End Make Schedules".getBytes());
-                            fos.write("Start Rate Schedules".getBytes());
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-                        lists.sortSchedulesByRating();
-                        try{
-                            battery = ((MainActivity)getActivity()).getBatteryLevels();
-                            FileOutputStream fos= context.openFileOutput("batteryLevelFile.txt", context.MODE_APPEND);
-                            fos.write(battery.getBytes());
-                            ((MainActivity)getActivity()).setBatteryLevels("");
-                            fos.write("End Rate Schedules".getBytes());
-                            fos.write("Start Rank Schedules".getBytes());
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-                        timings = lists.getTimings();
-
-                        try{
-                            FileOutputStream fosTimings = context.openFileOutput("Timings.txt", context.MODE_APPEND);
-                            fosTimings.write(timings.getBytes());
-                            FileInputStream fisTimings = context.openFileInput("Timings.txt");
-                            int ch;
-                            StringBuilder builder = new StringBuilder();
-                            while ((ch = fisTimings.read()) != -1) {
-                                builder.append((char) ch);
-                            }
-                            String ttt = builder.toString();
-                            Log.d("Timings", ttt);
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-
-                        Action[][] fullList;
-                        if(progressChangedValue>5){
-                            fullList = lists.getTopNRankedSchedules(progressChangedValue);
-                        }else{
-                            fullList = lists.getTopNRankedSchedules(5);
-                        }
-
-                        parseableData = new String[fullList.length][actionNames.length][1440];
-                        for(int i = 0; i<parseableData.length;i++){
-                            for(int j = 0; j<parseableData[i].length;j++){
-                                for(int q = 0; q<parseableData[i][j].length;q++){
-                                    parseableData[i][j][q] = "0";
-                                }
-                            }
-                            for(int j = 0; j<fullList[i].length;j++){
-                                int index = 0;
-                                switch(fullList[i][j].name){
-                                    case "cooking (Hob)":
-                                        index = 0;
-                                        break;
-                                    case "cooking(Oven)":
-                                        index = 1;
-                                        break;
-                                    case "Dry clothes (Tumble Dryer)":
-                                        index = 2;
-                                        break;
-                                    case "Wash clothes (Washing Machine)":
-                                        index = 3;
-                                        break;
-                                    case "Use Computer":
-                                        index = 4;
-                                        break;
-                                    case "Boil Water (Kettle)":
-                                        index = 5;
-                                        break;
-                                    case "Wash Dishes (dishwasher)":
-                                        index = 6;
-                                        break;
-                                    case "Shower":
-                                        index = 7;
-                                        break;
-                                    default:
-                                        index = 7;
-                                        break;
-                                }
-                                for(int q = fullList[i][j].windowStart;q<fullList[i][j].windowEnd+1;q++){
-                                    parseableData[i][index][q] = "1";
-                                }
-                            }
-                        }
-                        for(int i = 0; i<fullList.length;i++){
-                            int index = i+1;
-                            display+="\n"+"Schedule "+index+"\n";
-                            for(int j = 0; j<fullList[i].length;j++){
-                                display+= fullList[i][j].name+"\t"+fullList[i][j].getTimeString(fullList[i][j].windowStart)+"-"+fullList[i][j].getTimeString(fullList[i][j].windowEnd)+"\n";
-                            }
-                        }
-                        String toastString = "Tomorrow's Schedule Set";
-                        int durationOfToast = Toast.LENGTH_SHORT;
-                        Toast toast = Toast.makeText(context, toastString, durationOfToast);
-                        toast.show();
+                        passMain.callBackgroundTasks(array,progressChangedValue);
                     }else{
                         String toastString = "No input";
                         int durationOfToast = Toast.LENGTH_SHORT;
                         Toast toast = Toast.makeText(context, toastString, durationOfToast);
                         toast.show();
                     }
-                    storeData(parseableData);
                     ((MainActivity)getActivity()).setDisplay(display);
                 } catch (NullPointerException ex) {
                     String toastString = "Error Send.";
@@ -591,107 +468,6 @@ public class Fragment1 extends Fragment {
         }
         ((MainActivity)getActivity()).setList(listCSV);
     }
-    /* store data in the following way:
-     *"Plan/Time,00:00,00:01:,00:02,...,23:59
-     * Plan 1,[0 or 1],[0 or 1],[0 or 1],...,[0 or 1]
-     * Plan 2,[0 or 1],[0 or 1],[0 or 1],...,[0 or 1]
-     * Plan 3,[0 or 1],[0 or 1],[0 or 1],...,[0 or 1]
-     *                      .
-     *                      .
-     *                      .
-     * Plan X,[0 or 1],[0 or 1],[0 or 1],...,[0 or 1]"
-     *
-     * A file of this type should be made for every appliance
-     * The title should be USER_ID-APPLIANCE_NAME-DATE-SETUP.txt
-     * where SETUP is a count of how many other schedules were created that day prior to this one.
-     *
-     *
-     */
-    //a[Schedule][Device][Whether on or off at this index converted to a time+1]
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public void storeData(String[][][] a) {
-        if(a.length>1){
-            if(a[0].length>1){
-                Action helper = new Action();
-                String[] device = new String[a[0].length];
-
-                String title = "Plan/Time,";
-                for(int i = 0; i<1440;i++){
-                    if(i!=1439){
-                        title += helper.getTimeString(i)+",";
-                    }else{
-                        title += helper.getTimeString(i)+"\n";
-                    }
-                }
-                for(int i = 0; i<device.length;i++){
-                    device[i] = title;
-                }
-                for(int i = 0; i<a.length;i++){
-                    for(int j = 0; j<a[i].length;j++){
-                        int planNumber = i+1;
-                        device[j]+="Plan "+planNumber+",";
-                        for(int q = 0; q<a[i][j].length;q++){
-                            if(q<=a[i][j].length-1){
-                                device[j]+=a[i][j][q]+",";
-                            }else{
-                                device[j]+=a[i][j][q]+"\n";
-                            }
-                        }
-                    }
-                }
-
-
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-hh_mm_ss-a");
-                String date = simpleDateFormat.format(new Date());
-
-
-
-                try {
-                    FileInputStream fisPSched = getActivity().openFileInput("PastSchedules.txt");
-                    int ch;
-                    StringBuilder builder = new StringBuilder();
-                    while ((ch = fisPSched.read()) != -1) {
-                        char s = (char) ch;
-                        String st = ""+s;
-                        if(!st.equals(null)){
-                            builder.append((char) ch);
-                        }
-                    }
-                    String setup = builder.toString();
-                    int setupInt = Integer.parseInt(setup);
-                    setupInt++;
-                    String android_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-                    String fileFirstHalfTitle = android_id+"-";
-                    String fileSecondHalfTitle = "-"+date+"-"+setupInt+".txt" ;
-                    String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-                    FileOutputStream fOut=null;
-                    for(int i = 0; i<device.length;i++){
-                        String submitString = device[i];
-                        String fileName = fileFirstHalfTitle+actionFileNames[i]+"-"+fileSecondHalfTitle;
-                        File file1 = new File(root+ File.separator + fileName);
-                        if(!file1.exists()) {
-                            try {
-                                file1.createNewFile();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        try {
-                            fOut = new FileOutputStream(file1);
-                            fOut.write(submitString.getBytes());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    fOut = getActivity().openFileOutput("PastSchedules.txt", Context.MODE_PRIVATE);
-                    setup = ""+setupInt;
-                    fOut.write(setup.getBytes());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
     public void setLimits(View layoutView){
         final Handler handler = new Handler();
@@ -758,4 +534,3 @@ public class Fragment1 extends Fragment {
         }, 100);
     }
 }
-
