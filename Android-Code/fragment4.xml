@@ -33,89 +33,216 @@
                 android:text="Hob"
                 android:layout_gravity="left"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-
-                <Spinner
+            <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/spinnerAnswers1"
-                    android:layout_gravity="left"/>
+                    android:text="Disagree"
+                    android:layout_alignParentStart="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agree"
+                    android:layout_alignParentEnd="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            </RelativeLayout>
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/Q11SeekBar"
+                android:max = "4"
+                android:progress = "2"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Oven"
                 android:layout_gravity="left"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-                <Spinner
+            <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/spinnerAnswers2"
-                    android:layout_gravity="left"/>
+                    android:text="Disagree"
+                    android:layout_alignParentStart="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agree"
+                    android:layout_alignParentEnd="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            </RelativeLayout>
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/Q12SeekBar"
+                android:max = "4"
+                android:progress = "2"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tumble Dryer"
                 android:layout_gravity="left"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-                <Spinner
+            <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/spinnerAnswers3"
-                    android:layout_gravity="left"/>
+                    android:text="Disagree"
+                    android:layout_alignParentStart="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agree"
+                    android:layout_alignParentEnd="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            </RelativeLayout>
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/Q13SeekBar"
+                android:max = "4"
+                android:progress = "2"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Washing Machine"
                 android:layout_gravity="left"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-                <Spinner
+            <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/spinnerAnswers4"
-                    android:layout_gravity="left"/>
+                    android:text="Disagree"
+                    android:layout_alignParentStart="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agree"
+                    android:layout_alignParentEnd="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            </RelativeLayout>
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/Q14SeekBar"
+                android:max = "4"
+                android:progress = "2"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Computer"
                 android:layout_gravity="left"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-                <Spinner
+            <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/spinnerAnswers5"
-                    android:layout_gravity="left"/>
+                    android:text="Disagree"
+                    android:layout_alignParentStart="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agree"
+                    android:layout_alignParentEnd="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            </RelativeLayout>
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/Q15SeekBar"
+                android:max = "4"
+                android:progress = "2"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Kettle"
                 android:layout_gravity="left"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-                <Spinner
+            <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/spinnerAnswers6"
-                    android:layout_gravity="left"/>
+                    android:text="Disagree"
+                    android:layout_alignParentStart="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agree"
+                    android:layout_alignParentEnd="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            </RelativeLayout>
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/Q16SeekBar"
+                android:max = "4"
+                android:progress = "2"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Dishwasher"
                 android:layout_gravity="left"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-                <Spinner
+            <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/spinnerAnswers7"
-                    android:layout_gravity="left"/>
+                    android:text="Disagree"
+                    android:layout_alignParentStart="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agree"
+                    android:layout_alignParentEnd="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            </RelativeLayout>
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/Q17SeekBar"
+                android:max = "4"
+                android:progress = "2"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Shower"
                 android:layout_gravity="left"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-            <Spinner
-                android:layout_width="wrap_content"
+            <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Disagree"
+                    android:layout_alignParentStart="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agree"
+                    android:layout_alignParentEnd="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            </RelativeLayout>
+            <SeekBar
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/spinnerAnswers8"
-                android:layout_gravity="left"/>
+                android:id="@+id/Q18SeekBar"
+                android:max = "4"
+                android:progress = "2"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -129,88 +256,216 @@
                 android:text="Hob"
                 android:layout_gravity="left"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-            <Spinner
-                android:layout_width="wrap_content"
+            <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Disagree"
+                    android:layout_alignParentStart="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agree"
+                    android:layout_alignParentEnd="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            </RelativeLayout>
+            <SeekBar
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/spinnerAnswers9"
-                android:layout_gravity="left"/>
+                android:id="@+id/Q21SeekBar"
+                android:max = "4"
+                android:progress = "2"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Oven"
                 android:layout_gravity="left"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-            <Spinner
-                android:layout_width="wrap_content"
+            <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Disagree"
+                    android:layout_alignParentStart="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agree"
+                    android:layout_alignParentEnd="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            </RelativeLayout>
+            <SeekBar
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/spinnerAnswers10"
-                android:layout_gravity="left"/>
+                android:id="@+id/Q22SeekBar"
+                android:max = "4"
+                android:progress = "2"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tumble Dryer"
                 android:layout_gravity="left"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-            <Spinner
-                android:layout_width="wrap_content"
+            <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Disagree"
+                    android:layout_alignParentStart="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agree"
+                    android:layout_alignParentEnd="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            </RelativeLayout>
+            <SeekBar
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/spinnerAnswers11"
-                android:layout_gravity="left"/>
+                android:id="@+id/Q23SeekBar"
+                android:max = "4"
+                android:progress = "2"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Washing Machine"
                 android:layout_gravity="left"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-            <Spinner
-                android:layout_width="wrap_content"
+            <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Disagree"
+                    android:layout_alignParentStart="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agree"
+                    android:layout_alignParentEnd="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            </RelativeLayout>
+            <SeekBar
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/spinnerAnswers12"
-                android:layout_gravity="left"/>
+                android:id="@+id/Q24SeekBar"
+                android:max = "4"
+                android:progress = "2"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Computer"
                 android:layout_gravity="left"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-            <Spinner
-                android:layout_width="wrap_content"
+            <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Disagree"
+                    android:layout_alignParentStart="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agree"
+                    android:layout_alignParentEnd="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            </RelativeLayout>
+            <SeekBar
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/spinnerAnswers13"
-                android:layout_gravity="left"/>
+                android:id="@+id/Q25SeekBar"
+                android:max = "4"
+                android:progress = "2"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Kettle"
                 android:layout_gravity="left"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-            <Spinner
-                android:layout_width="wrap_content"
+            <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Disagree"
+                    android:layout_alignParentStart="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agree"
+                    android:layout_alignParentEnd="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            </RelativeLayout>
+            <SeekBar
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/spinnerAnswers14"
-                android:layout_gravity="left"/>
+                android:id="@+id/Q26SeekBar"
+                android:max = "4"
+                android:progress = "2"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Dishwasher"
                 android:layout_gravity="left"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-            <Spinner
-                android:layout_width="wrap_content"
+            <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Disagree"
+                    android:layout_alignParentStart="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agree"
+                    android:layout_alignParentEnd="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            </RelativeLayout>
+            <SeekBar
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/spinnerAnswers15"
-                android:layout_gravity="left"/>
+                android:id="@+id/Q27SeekBar"
+                android:max = "4"
+                android:progress = "2"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Shower"
                 android:layout_gravity="left"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-            <Spinner
-                android:layout_width="wrap_content"
+            <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Disagree"
+                    android:layout_alignParentStart="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agree"
+                    android:layout_alignParentEnd="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            </RelativeLayout>
+            <SeekBar
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/spinnerAnswers16"
-                android:layout_gravity="left"/>
+                android:id="@+id/Q28SeekBar"
+                android:max = "4"
+                android:progress = "2"/>
             <Button
                 android:id = "@+id/Submit"
                 android:layout_width="wrap_content"
