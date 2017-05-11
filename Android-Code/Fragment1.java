@@ -1,6 +1,7 @@
 package com.example.application.fragment;
 
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -132,7 +133,7 @@ public class Fragment1 extends Fragment {
             }
             durations[a-1] = result;
         }
-        final String PREFS_NAME = "MyPrefs";
+        final String PREFS_NAME = "MyPrefsFile";
         myContext = getActivity();
         SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         if(settings.getBoolean("first_time", true)||settings.getBoolean("unanswered",true)) {
@@ -220,6 +221,7 @@ public class Fragment1 extends Fragment {
             @Override
             public void onClick(View v) {
                 try {
+                    settings.edit().putBoolean("putMin",true).commit();
                     FileOutputStream fosThree = getActivity().openFileOutput("minOrMax.txt", Context.MODE_PRIVATE);
                     fosThree.write("min".getBytes());
                     DialogFragment newFragment = new timeFragment();
@@ -238,6 +240,7 @@ public class Fragment1 extends Fragment {
             @Override
             public void onClick(View v) {
                 try {
+                    settings.edit().putBoolean("putMax",true).commit();
                     FileOutputStream fosThree = getActivity().openFileOutput("minOrMax.txt", Context.MODE_PRIVATE);
                     fosThree.write("max".getBytes());
                     DialogFragment newFragment = new timeFragment();
@@ -256,70 +259,88 @@ public class Fragment1 extends Fragment {
         bThree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    //Log.d("LENGTH",""+list.size()+"\n")
-                    selectedActiv = activDrp.getSelectedItem().toString();
+                if(settings.getBoolean("putMin", false)&&settings.getBoolean("putMax",false)){
+                    try {
+                        //Log.d("LENGTH",""+list.size()+"\n")
+                        selectedActiv = activDrp.getSelectedItem().toString();
 
-                    //Get the last entered time window.
-                    StringBuilder builder = new StringBuilder();
-                    FileInputStream fisGetFiles = getActivity().openFileInput("tempMin.txt");
-                    int chr;
-                    while ((chr = fisGetFiles.read()) != -1) {
-                        builder.append((char) chr);
-                    }
-                    String tempMin = builder.toString();
-                    fisGetFiles = getActivity().openFileInput("tempMax.txt");
-                    builder = new StringBuilder();
-                    int ch;
-                    while ((ch = fisGetFiles.read()) != -1) {
-                        builder.append((char) ch);
-                    }
-                    String tempMax = builder.toString();
-                    boolean notFound = true;
-                    for (int i = 0; i < actionNames.length && notFound; i++) {
-                        if (selectedActiv.equals(actionNames[i])) {
-                            notFound = false;
+                        //Get the last entered time window.
+                        StringBuilder builder = new StringBuilder();
+                        FileInputStream fisGetFiles = getActivity().openFileInput("tempMin.txt");
+                        int chr;
+                        while ((chr = fisGetFiles.read()) != -1) {
+                            builder.append((char) chr);
                         }
+                        String tempMin = builder.toString();
+                        fisGetFiles = getActivity().openFileInput("tempMax.txt");
+                        builder = new StringBuilder();
+                        int ch;
+                        while ((ch = fisGetFiles.read()) != -1) {
+                            builder.append((char) ch);
+                        }
+                        String tempMax = builder.toString();
+                        boolean notFound = true;
+                        for (int i = 0; i < actionNames.length && notFound; i++) {
+                            if (selectedActiv.equals(actionNames[i])) {
+                                notFound = false;
+                            }
+                        }
+
+                        Action opt = new Action();
+                        int min = opt.getIntTime(tempMin);
+                        int max = opt.getIntTime(tempMax);
+                        int dur = opt.getIntTime(selectedDuration);
+                        if(min+dur<=max){
+                            list.add(count, new Action(selectedActiv, tempMin, tempMax, selectedDuration, selectedOptimalTime, false));
+                            TextView addedActions = (TextView)layoutView.findViewById(R.id.addedActions);
+
+                            currentText = addedActions.getText().toString();
+                            currentText+=selectedActiv+"\t"+tempMin+"-"+tempMax+"\t"+selectedOptimalTime+"\n";
+
+                            String text = selectedActiv+"\t"+tempMin+"-"+tempMax+"\t"+selectedOptimalTime;
+                            actions.add(count, text);
+                            count++;
+
+                            addedActions.setText(currentText);
+
+                            String toastString = "Added "+selectedActiv+" with window "+tempMin+"-"+tempMax+" with optimal time "+selectedOptimalTime;
+                            Context context = getActivity();
+                            int durationOfToast = Toast.LENGTH_SHORT;
+                            Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                            toast.show();
+                            setList();
+                        }else{
+                            String toastString = "Window not large enough.";
+                            if(max<min){
+                                toastString = "Bad Input: Window End before Window Start.";
+                            }
+                            Context context = getActivity();
+                            int durationOfToast = Toast.LENGTH_SHORT;
+                            Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                            toast.show();
+                            setList();
+                        }
+                        selectedOptimalTime = activeDrpTwo.getSelectedItem().toString();
+                    } catch (IOException ex) {
+                        //Log.d("EXCEPTION", "We never stood a chance \n");
+                        ex.printStackTrace();
                     }
-
-                    Action opt = new Action();
-                    int min = opt.getIntTime(tempMin);
-                    int max = opt.getIntTime(tempMax);
-                    int dur = opt.getIntTime(selectedDuration);
-                    if(min+dur<=max){
-                        list.add(count, new Action(selectedActiv, tempMin, tempMax, selectedDuration, selectedOptimalTime, false));
-                        TextView addedActions = (TextView)layoutView.findViewById(R.id.addedActions);
-
-                        currentText = addedActions.getText().toString();
-                        currentText+=selectedActiv+"\t"+tempMin+"-"+tempMax+"\t"+selectedOptimalTime+"\n";
-
-                        String text = selectedActiv+"\t"+tempMin+"-"+tempMax+"\t"+selectedOptimalTime;
-                        actions.add(count, text);
-                        count++;
-
-                        addedActions.setText(currentText);
-
-                        String toastString = "Added "+selectedActiv+" with window "+tempMin+"-"+tempMax+" with optimal time "+selectedOptimalTime;
+                }else{
+                    if(!settings.getBoolean("putMin", false)){
+                        String toastString = "Enter both a window end and start.";
                         Context context = getActivity();
                         int durationOfToast = Toast.LENGTH_SHORT;
                         Toast toast = Toast.makeText(context, toastString, durationOfToast);
                         toast.show();
-                        setList();
                     }else{
-                        String toastString = "Window not Large enough.";
-                        if(max<min){
-                            toastString = "Bad Input: Window End before Window Start.";
+                        if(!settings.getBoolean("putMax", false)){
+                            String toastString = "Enter both a window start and end.";
+                            Context context = getActivity();
+                            int durationOfToast = Toast.LENGTH_SHORT;
+                            Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                            toast.show();
                         }
-                        Context context = getActivity();
-                        int durationOfToast = Toast.LENGTH_SHORT;
-                        Toast toast = Toast.makeText(context, toastString, durationOfToast);
-                        toast.show();
-                        setList();
                     }
-                    selectedOptimalTime = activeDrpTwo.getSelectedItem().toString();
-                } catch (IOException ex) {
-                    //Log.d("EXCEPTION", "We never stood a chance \n");
-                    ex.printStackTrace();
                 }
             }
         });
@@ -327,6 +348,11 @@ public class Fragment1 extends Fragment {
         bFour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String toastStringu = "Please wait...";
+                Context contextu = getActivity();
+                int durationOfToastu = Toast.LENGTH_SHORT;
+                Toast toastu = Toast.makeText(contextu, toastStringu, durationOfToastu);
+                toastu.show();
                 getList(layoutView);
                 String display = "";
                 String[][][] parseableData = new String[1][1][1];
@@ -469,6 +495,7 @@ public class Fragment1 extends Fragment {
                 getList(layoutView);
             }
         });
+
         Button bRemove = (Button) layoutView.findViewById(R.id.removeButton);
         bRemove.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
@@ -517,10 +544,10 @@ public class Fragment1 extends Fragment {
             }
 
             public void onStopTrackingTouch(SeekBar seekBar) {
-                if(progressChangedValue <= 5 ) {
-                    progressChangedValue = 5;
+                if(progressChangedValue <= 1 ) {
+                    progressChangedValue = 1;
                 }
-                String toastString = "Seek bar progress is: " + progressChangedValue;
+                String toastString = progressChangedValue+"";
                 Context context = getActivity();
                 int durationOfToast = Toast.LENGTH_SHORT;
                 Toast toast = Toast.makeText(context, toastString, durationOfToast);
@@ -731,3 +758,4 @@ public class Fragment1 extends Fragment {
         }, 100);
     }
 }
+
