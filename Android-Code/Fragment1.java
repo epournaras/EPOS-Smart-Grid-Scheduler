@@ -1,14 +1,9 @@
 package com.example.application.fragment;
 
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.os.Environment;
 import android.os.Handler;
-import android.provider.Settings;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -17,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.content.Context;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -28,20 +22,12 @@ import android.widget.Toast;
 import com.example.application.MainActivity;
 import com.example.schedulelibrary.Action;
 import com.example.schedulelibrary.Schedule;
-
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
-
 import com.example.application.R;
-
-
 
 public class Fragment1 extends Fragment {
     public String selectedActiv;
@@ -87,6 +73,8 @@ public class Fragment1 extends Fragment {
         String tempMin = "";
         String tempMax = "";
         String[] optimalTimes = new String[1];
+        setList();
+        ((MainActivity)getActivity()).setDisplay("Nothing to show yet!");
         try{
             FileInputStream fisGetFiles = getActivity().openFileInput("tempMin.txt");
             int chr;
