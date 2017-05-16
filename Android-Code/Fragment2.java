@@ -10,9 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 
 import com.example.application.R;
 
@@ -57,6 +54,8 @@ public class Fragment2 extends Fragment {
             TextView textView = (TextView)v.findViewById(R.id.text);
             textView.setText(display);
         }catch(NullPointerException ex){
+            TextView textView = (TextView)v.findViewById(R.id.text);
+            textView.setText("Nothing to show yet!");
             ex.printStackTrace();
         }
         return v;  // this replaces 'setContentView'
