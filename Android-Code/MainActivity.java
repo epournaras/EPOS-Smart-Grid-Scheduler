@@ -1,14 +1,17 @@
 package com.example.application;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,11 +26,13 @@ import com.example.application.fragment.Fragment1;
 import com.example.application.fragment.Fragment2;
 import com.example.application.fragment.Fragment3;
 import com.example.application.fragment.Fragment4;
+import com.example.application.fragment.changeDateTask;
 import com.example.application.fragment.createSchedules;
 import com.example.application.model.itemSlideMenu;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,8 +55,8 @@ public class MainActivity extends ActionBarActivity{
     public static String display;
     public String list;
     private String fullTime;
-    private String date;
-    private String tomorrowsDate;
+    public String date;
+    public String tomorrowsDate;
     private Fragment fragment = null;
     private String batteryLevels = "";
     private int numberOfActions = 8;
@@ -62,9 +67,7 @@ public class MainActivity extends ActionBarActivity{
             batteryLevels+=level+"\n";
         }
     };
-
-
-
+    @SuppressLint({"NewAPI", "NewApi"})
     protected void onCreate(Bundle savedInstanceState) {
         int MY_PERMISSIONS_REQUEST_STORAGE = 200;
         super.onCreate(savedInstanceState);
@@ -86,10 +89,12 @@ public class MainActivity extends ActionBarActivity{
         settings.edit().putBoolean("putMax", false);
         if(settings.getBoolean("my_first_time", true)){
             String[] perms = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"};
+            int version = Build.VERSION.SDK_INT;
+            if(version>=23){
+                int permsRequestCode = MY_PERMISSIONS_REQUEST_STORAGE;
+                requestPermissions(perms, permsRequestCode);
+            }
 
-            int permsRequestCode = MY_PERMISSIONS_REQUEST_STORAGE;
-
-            requestPermissions(perms, permsRequestCode);
             //the app is being launched for first time, do something
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
             fullTime= simpleDateFormat.format(new Date());
@@ -145,14 +150,20 @@ public class MainActivity extends ActionBarActivity{
             // record the fact that the app has been started at least once
             settings.edit().putBoolean("my_first_time", false).commit();
         }else{
+            FileInputStream fisDate;
+            int ch;
+            StringBuilder builder;
             try{
-                FileInputStream fisDate = this.openFileInput("Date.txt");
-                int ch;
-                StringBuilder builder = new StringBuilder();
+                fisDate = this.openFileInput("Date.txt");
+                builder = new StringBuilder();
                 while ((ch = fisDate.read()) != -1) {
                     builder.append((char) ch);
                 }
                 date = builder.toString();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            try{
                 fisDate = this.openFileInput("TomorrowsDate.txt");
                 builder = new StringBuilder();
                 while ((ch = fisDate.read()) != -1) {
@@ -168,25 +179,13 @@ public class MainActivity extends ActionBarActivity{
             if(!(date.equals(dateTest))){// change so it only examines the day and nothing else
                 try {
                     FileInputStream fis = this.openFileInput("TomorrowSchedule.txt");
-                    StringBuilder builder = new StringBuilder();
-                    int ch;
+                    builder = new StringBuilder();
                     while((ch = fis.read()) != -1){
                         builder.append((char)ch);
                     }
                     String todaySch = builder.toString();
                     FileOutputStream fos = this.openFileOutput("TodaySchedule.txt", this.MODE_PRIVATE);
                     fos.write(todaySch.getBytes());
-                    date = dateTest;
-                    fullTime = simpleDateFormat.format(new Date(((new Date()).getTime() + 86400000)));
-                    tomorrowsDate = fullTime.substring(0,10);
-                    try{
-                        FileOutputStream fosDate = this.openFileOutput("Date.txt", MODE_PRIVATE);
-                        fosDate.write(date.getBytes());
-                        fosDate= this.openFileOutput("TomorrowsDate.txt", MODE_PRIVATE);
-                        fosDate.write(tomorrowsDate.getBytes());
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
                 }catch(Exception e){
                     String toastString = "Internal error";
                     int durationOfToast = Toast.LENGTH_SHORT;
@@ -194,9 +193,20 @@ public class MainActivity extends ActionBarActivity{
                     toast.show();
                     e.printStackTrace();
                 }
+                date = dateTest;
+                fullTime = simpleDateFormat.format(new Date(((new Date()).getTime() + 86400000)));
+                tomorrowsDate = fullTime.substring(0,10);
+                try{
+                    FileOutputStream fosDate = this.openFileOutput("Date.txt", MODE_PRIVATE);
+                    fosDate.write(date.getBytes());
+                    fosDate= this.openFileOutput("TomorrowsDate.txt", MODE_PRIVATE);
+                    fosDate.write(tomorrowsDate.getBytes());
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
             }
         }
-
+        chngDateTask(this);
         adapter = new SlidingMenuAdapter(this, listSliding);
         listViewSliding.setAdapter(adapter);
 
@@ -302,6 +312,49 @@ public class MainActivity extends ActionBarActivity{
         }
     }
 
+    public void setDate(String da, String tda){
+        FileInputStream fisDate;
+        StringBuilder builder;
+        int ch;
+        String dateTest = "";
+        try{
+            fisDate = this.openFileInput("Date.txt");
+            builder = new StringBuilder();
+            while ((ch = fisDate.read()) != -1) {
+                builder.append((char) ch);
+            }
+            dateTest = builder.toString();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        if(dateTest.equals(da)){
+
+        }else{
+            this.date = da;
+            this.tomorrowsDate = tda;
+            FileOutputStream fosDate;
+            try{
+                fosDate =this.openFileOutput("Date.txt",MODE_PRIVATE);
+                fosDate.write(da.getBytes());
+                fosDate = this.openFileOutput("TomorrowsDate.txt",MODE_PRIVATE);
+                fosDate.write(tda.getBytes());
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+            try {
+                FileInputStream fis = this.openFileInput("TomorrowSchedule.txt");
+                builder = new StringBuilder();
+                while((ch = fis.read()) != -1){
+                    builder.append((char)ch);
+                }
+                String todaySch = builder.toString();
+                FileOutputStream fos = this.openFileOutput("TodaySchedule.txt", this.MODE_PRIVATE);
+                fos.write(todaySch.getBytes());
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
     public void setDisplay(String s){
         try{
             FileOutputStream fos = this.openFileOutput("TomorrowSchedule.txt", this.MODE_PRIVATE);
@@ -389,5 +442,17 @@ public class MainActivity extends ActionBarActivity{
 
     public void setBatteryLevels(String a){
         this.batteryLevels = a;
+    }
+
+    public void chngDateTask(MainActivity m){
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                String s = "";
+                new changeDateTask(date, tomorrowsDate, m).execute(s);
+                handler.postDelayed(this, 100);
+            }
+        }, 100);
     }
 }
