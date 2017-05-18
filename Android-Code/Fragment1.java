@@ -32,7 +32,13 @@ import com.example.application.R;
 public class Fragment1 extends Fragment {
     public String selectedActiv;
     public String selectedDuration;
-    public String selectedOptimalTime;
+
+    public String selectedOptItemOne="00",selectedOptItemTwo="00";
+    public int startMinMin = 0, endMinMax=59;
+    public int startHour=0,endHour=23;
+    public ArrayList<String> hours = new ArrayList<String>();
+    public ArrayList<String> minutes =new ArrayList<String>();
+
     private String[] actionNames = {
             "cooking (Hob)",
             "cooking(Oven)",
@@ -51,7 +57,6 @@ public class Fragment1 extends Fragment {
             "Kettle",
             "Dishwasher",
             "Shower"};
-//    private  String[] actionDurations = {"00:40", "00:25", "01:20", "00:15"};
     boolean optimalTimePicked = false;
     private ArrayList<Action> list = new ArrayList<Action>();
     private ArrayList<String> actions = new ArrayList<String>();
@@ -61,11 +66,10 @@ public class Fragment1 extends Fragment {
     private String currentText;
     private int progressChangedValue = 0;
     private String timings;
+
     public Fragment1() {
         // Required empty public constructor
     }
-
-
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         final View layoutView = inflater.inflate(R.layout.fragment1, container, false);
@@ -73,7 +77,8 @@ public class Fragment1 extends Fragment {
         String tempMin = "";
         String tempMax = "";
         String[] optimalTimes = new String[1];
-        setList();
+        getList(layoutView);
+        setTimes(layoutView);
         ((MainActivity)getActivity()).setDisplay("Nothing to show yet!");
         try{
             FileInputStream fisGetFiles = getActivity().openFileInput("tempMin.txt");
@@ -140,13 +145,6 @@ public class Fragment1 extends Fragment {
         activDrp.setAdapter(adapterActiv);
         selectedActiv = activDrp.getSelectedItem().toString();
 
-        ArrayAdapter<CharSequence> adapterActiveTwo;
-        final Spinner activeDrpTwo = (Spinner)layoutView.findViewById(R.id.spOptimalTimes);
-        adapterActiveTwo = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, optimalTimes);
-        adapterActiveTwo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        activeDrpTwo.setAdapter(adapterActiveTwo);
-        selectedOptimalTime = activeDrpTwo.getSelectedItem().toString();
-
         ArrayAdapter<CharSequence> adapterActive;
         final Spinner activeDrp = (Spinner)layoutView.findViewById(R.id.spDuration);
         adapterActive = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, durations);
@@ -165,13 +163,36 @@ public class Fragment1 extends Fragment {
 
             }
         });
+        final Spinner spinnerOptHr = (Spinner)layoutView.findViewById(R.id.spinnerOptHr);
+        ArrayAdapter<String> spinnerOptHrAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,hours);
+        spinnerOptHrAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerOptHr.setAdapter(spinnerOptHrAdapter);
+        for(int i = 0; i<24;i++){
+            if(i<10){
+                spinnerOptHrAdapter.add("0"+i);
+            }else{
+                spinnerOptHrAdapter.add(""+i);
+            }
+        }
+        spinnerOptHrAdapter.notifyDataSetChanged();
 
+        final Spinner spinnerOptMin = (Spinner)layoutView.findViewById(R.id.spinnerOptMin);
+        ArrayAdapter<String> spinnerOptMinAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,minutes);
+        spinnerOptMinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerOptMin.setAdapter(spinnerOptMinAdapter);
+        for(int i = 0; i<60;i++){
+            if(i<10){
+                spinnerOptMinAdapter.add("0"+i);
+            }else{
+                spinnerOptMinAdapter.add(""+i);
+            }
+        }
+        spinnerOptMinAdapter.notifyDataSetChanged();
 
-
-        activDrp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerOptHr.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-                selectedActiv = activDrp.getSelectedItem().toString();
+                selectedOptItemOne = spinnerOptHr.getSelectedItem().toString();
             }
 
             @Override
@@ -180,23 +201,21 @@ public class Fragment1 extends Fragment {
             }
         });
 
-        layoutView.findViewById(R.id.spOptimalTimes).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                optimalTimePicked = true;
-                return false;
-            }
-        });
-
-        activeDrpTwo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerOptMin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-                selectedOptimalTime = activeDrpTwo.getSelectedItem().toString();
+                selectedOptItemTwo = spinnerOptMin.getSelectedItem().toString();
             }
 
-            public boolean onTouch(View v, MotionEvent event){
-                optimalTimePicked = true;
-                return false;
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        activDrp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                selectedActiv = activDrp.getSelectedItem().toString();
             }
 
             @Override
@@ -216,7 +235,6 @@ public class Fragment1 extends Fragment {
                     FragmentManager fragManager = ((FragmentActivity)myContext).getSupportFragmentManager();
                     newFragment.show(fragManager, "timeFragment");
                     optimalTimePicked = false;
-                    setLimits(layoutView);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -235,7 +253,6 @@ public class Fragment1 extends Fragment {
                     FragmentManager fragManager = ((FragmentActivity)myContext).getSupportFragmentManager();
                     newFragment.show(fragManager, "timeFragment");
                     optimalTimePicked = false;
-                    setLimits(layoutView);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -251,7 +268,9 @@ public class Fragment1 extends Fragment {
                     try {
                         //Log.d("LENGTH",""+list.size()+"\n")
                         selectedActiv = activDrp.getSelectedItem().toString();
-
+                        selectedOptItemOne = spinnerOptHr.getSelectedItem().toString();
+                        selectedOptItemTwo = spinnerOptMin.getSelectedItem().toString();
+                        String selectedOptimalTime= selectedOptItemOne+":"+selectedOptItemTwo;
                         //Get the last entered time window.
                         StringBuilder builder = new StringBuilder();
                         FileInputStream fisGetFiles = getActivity().openFileInput("tempMin.txt");
@@ -302,7 +321,6 @@ public class Fragment1 extends Fragment {
                             toast.show();
                             setList();
                         }
-                        selectedOptimalTime = activeDrpTwo.getSelectedItem().toString();
                     } catch (IOException ex) {
                         //Log.d("EXCEPTION", "We never stood a chance \n");
                         ex.printStackTrace();
@@ -419,7 +437,8 @@ public class Fragment1 extends Fragment {
                 toast.show();
             }
         });
-        this.setLimits(layoutView);
+        this.setHourChoices(layoutView,spinnerOptHrAdapter);
+        this.setMinuteChoices(layoutView,spinnerOptMinAdapter,spinnerOptHr);
         this.setListView(layoutView);
         //ToDo restrict window Max input
         return layoutView;  // this replaces 'setContentView'
@@ -457,66 +476,167 @@ public class Fragment1 extends Fragment {
         ((MainActivity)getActivity()).setList(listCSV);
     }
 
-    public void setLimits(View layoutView){
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                String[] optimalTimes = new String[1];
-                String tempMini = "";
-                String tempMaxi = "";
-                try{
-                    FileInputStream fisGetFiles = getActivity().openFileInput("tempMin.txt");
-                    int chr;
-                    StringBuilder builder = new StringBuilder();
-                    while ((chr = fisGetFiles.read()) != -1) {
-                        builder.append((char) chr);
-                    }
-                    tempMini = builder.toString();
-                    fisGetFiles = getActivity().openFileInput("tempMax.txt");
-                    builder = new StringBuilder();
-                    int ch;
-                    while ((ch = fisGetFiles.read()) != -1) {
-                        builder.append((char) ch);
-                    }
-                    tempMaxi = builder.toString();
-                }catch(Exception e) {
-                    e.printStackTrace();
-                }
-                Action help = new Action();
-                int tempMinStart = help.getIntTime(tempMini);
-                int tempMaxStart = help.getIntTime(tempMaxi);
-                int theWindowSize = tempMaxStart-tempMinStart;
-                if(tempMinStart<tempMaxStart){
-                    if(theWindowSize>0){
-                        optimalTimes = new String[theWindowSize];
-                        for(int i = tempMinStart;i<tempMaxStart;i++){
-                            optimalTimes[i-tempMinStart] = help.getTimeString(i);
-                        }
-                    }
-                }else{
-                    optimalTimes = new String[1440];
-                    for(int i = 0;i<1440;i++){
-                        optimalTimes[i] = help.getTimeString(i);
-                    }
-                }
-                final Spinner activeDrpTwo = (Spinner)layoutView.findViewById(R.id.spOptimalTimes);
-                ArrayAdapter<CharSequence> adapterActiveTwo = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, optimalTimes);
-                adapterActiveTwo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                activeDrpTwo.setAdapter(adapterActiveTwo);
-                selectedOptimalTime = activeDrpTwo.getSelectedItem().toString();
-                if(!optimalTimePicked){
-                    handler.postDelayed(this, 100);
-                }
-            }
-        }, 100);
-    }
     public void setListView(View layoutView){
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 getList(layoutView);
+                handler.postDelayed(this, 100);
+            }
+        }, 100);
+    }
+
+    public void setTimes(View layoutView){
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                StringBuilder builder = new StringBuilder();
+                String tempMin = "00:00";
+                String tempMax = "23:59";
+                try{
+                    FileInputStream fisGetFiles = getActivity().openFileInput("tempMin.txt");
+                    int chr;
+                    while ((chr = fisGetFiles.read()) != -1) {
+                        builder.append((char) chr);
+                    }
+                    tempMin = builder.toString();
+                    fisGetFiles = getActivity().openFileInput("tempMax.txt");
+                    builder = new StringBuilder();
+                    int ch;
+                    while ((ch = fisGetFiles.read()) != -1) {
+                        builder.append((char) ch);
+                    }
+                    tempMax = builder.toString();
+                }catch(Exception e) {
+                    e.printStackTrace();
+                }
+                TextView min = (TextView)layoutView.findViewById(R.id.startTimeTxt);
+                TextView max = (TextView)layoutView.findViewById(R.id.endTimeTxt);
+                String startHourS = tempMin.substring(0,2);
+                String startMinMinS = tempMin.substring(3,5);
+                String endHourS = tempMax.substring(0,2);
+                String endMinMaxS =tempMax.substring(3,5);
+                startHour = Integer.parseInt(startHourS);
+                startMinMin = Integer.parseInt(startMinMinS);
+                endHour = Integer.parseInt(endHourS);
+                endMinMax = Integer.parseInt(endMinMaxS);
+                min.setText(tempMin);
+                max.setText(tempMax);
+                handler.postDelayed(this, 100);
+            }
+        }, 100);
+    }
+    public void setMinuteChoices(View layoutView, ArrayAdapter<String> s,Spinner sT){
+        final Handler handler = new Handler();
+        final ArrayAdapter<String> use = s;
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                selectedOptItemOne = sT.getSelectedItem().toString();
+                StringBuilder builder = new StringBuilder();
+                String tempMin = "00:00";
+                String tempMax = "23:59";
+                try{
+                    FileInputStream fisGetFiles = getActivity().openFileInput("tempMin.txt");
+                    int chr;
+                    while ((chr = fisGetFiles.read()) != -1) {
+                        builder.append((char) chr);
+                    }
+                    tempMin = builder.toString();
+                    fisGetFiles = getActivity().openFileInput("tempMax.txt");
+                    builder = new StringBuilder();
+                    int ch;
+                    while ((ch = fisGetFiles.read()) != -1) {
+                        builder.append((char) ch);
+                    }
+                    tempMax = builder.toString();
+                }catch(Exception e) {
+                    e.printStackTrace();
+                }
+                String startHourS = tempMin.substring(0,2);
+                String startMinMinS = tempMin.substring(3,5);
+                String endHourS = tempMax.substring(0,2);
+                String endMinMaxS =tempMax.substring(3,5);
+                startHour = Integer.parseInt(startHourS);
+                startMinMin = Integer.parseInt(startMinMinS);
+                endHour = Integer.parseInt(endHourS);
+                endMinMax = Integer.parseInt(endMinMaxS);
+                int test = Integer.parseInt(selectedOptItemOne);
+                for(int i = 0; i<60;i++){
+                    if(i<10){
+                        use.remove("0"+i);
+                    }else{
+                        use.remove(""+i);
+                    }
+                }
+                if((test == endHour)&&(test==startHour)){
+                    for(int i = startMinMin; i<endMinMax;i++){
+                        if(i<10){
+                            use.add("0"+i);
+                        }else{
+                            use.add(""+i);
+                        }
+                    }
+                }else{
+                    if(test == startHour){
+                        for(int i = startMinMin; i<60;i++){
+                            if(i<10){
+                                use.add("0"+i);
+                            }else{
+                                use.add(""+i);
+                            }
+                        }
+                    }else{
+                        if(test == endHour){
+                            for(int i = 0; i<endMinMax;i++){
+                                if(i<10){
+                                    use.add("0"+i);
+                                }else{
+                                    use.add(""+i);
+                                }
+                            }
+                        }else{
+
+                            for(int i = 0; i<60;i++) {
+                                if (i < 10) {
+                                    use.add("0" + i);
+                                } else {
+                                    use.add("" + i);
+                                }
+                            }
+                        }
+                    }
+                }
+                handler.postDelayed(this, 100);
+            }
+        }, 100);
+    }
+
+    public void setHourChoices(View layoutView, ArrayAdapter<String> s){
+        final Handler handler = new Handler();
+        final ArrayAdapter<String> use = s;
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                for(int i = 0; i<60;i++){
+                    if(i<10){
+                        use.remove("0"+i);
+                    }else{
+                        use.remove(""+i);
+                    }
+                }
+                if(startHour<=endHour){
+
+                }
+                for(int i = startHour; i<endHour+1;i++){
+                    if(i<10){
+                        use.add("0"+i);
+                    }else{
+                        use.add(""+i);
+                    }
+                }
                 handler.postDelayed(this, 100);
             }
         }, 100);
