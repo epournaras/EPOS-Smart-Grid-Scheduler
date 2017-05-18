@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ScrollView01"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
@@ -23,6 +24,39 @@
        android:id="@+id/spActiv"
        android:layout_width="match_parent"
        android:layout_height="wrap_content" />
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:weightSum="1">
+          <RelativeLayout
+              android:layout_width="99dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="end"
+              android:layout_weight="0.29">
+
+              <TextView
+                  android:id="@+id/startTimeTxt"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_alignParentEnd="true"
+                  android:text="00:00"
+                  android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+          </RelativeLayout>
+          <RelativeLayout
+              android:layout_width="170dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="end"
+              android:layout_weight="0.24">
+
+              <TextView
+                  android:id="@+id/endTimeTxt"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_alignParentEnd="true"
+                  android:text="23:59"
+                  android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+          </RelativeLayout>
+      </LinearLayout>
   <LinearLayout android:layout_width="match_parent"
       android:layout_height="match_parent">
    <Button
@@ -42,47 +76,130 @@
        android:layout_weight="1"
        android:textAppearance="@style/TextAppearance.AppCompat.Button" />
    </LinearLayout>
+
+
   <LinearLayout android:layout_width="match_parent"
-      android:layout_height="match_parent">
+      android:layout_height="match_parent"
+      android:weightSum="1">
    <TextView
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:text="Duration. "
-       android:layout_gravity="center"
-       android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
-   <TextView
-       android:layout_width="wrap_content"
+       android:text="Duration (hh:mm)"
+       android:layout_gravity="start"
+       android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+       android:layout_weight="0.67" />
+   <RelativeLayout
+       android:layout_width="220dp"
        android:layout_height="wrap_content"
-       android:text="Best Start Time."
-       android:layout_gravity="center"
-       android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
-   </LinearLayout>
-  <LinearLayout android:layout_width="match_parent"
-      android:layout_height="match_parent">
-      <Spinner
-          android:id="@+id/spDuration"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="start"/>
-      <Spinner
-          android:id="@+id/spOptimalTimes"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="start"/>
-   <Button
-       android:id ="@+id/addItemButton"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:text="@string/button_add"
-       android:layout_gravity="end"
-       android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+       android:layout_weight="0.28">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Best Start Time (hh:mm)"
+        android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+
+   </RelativeLayout>
+
    </LinearLayout>
 
-   <TextView
-       android:text="Action  Start - End  Optimal Time"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:weightSum="1">
+          <RelativeLayout
+              android:layout_width="80dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="end"
+              android:layout_weight="0.33">
+              <Spinner
+                  android:id="@+id/spDuration"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_alignParentEnd="true"
+                  />
+          </RelativeLayout>
+
+          <RelativeLayout
+              android:layout_width="123dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="end"
+              android:layout_weight="0.74">
+              <LinearLayout
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_alignParentEnd="true">
+                  <Spinner
+                      android:id="@+id/spinnerOptHr"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                       />
+                  <TextView
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text=":"
+                      android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+                  <Spinner
+                      android:id="@+id/spinnerOptMin"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content" />
+              </LinearLayout>
+
+
+          </RelativeLayout>
+          <RelativeLayout
+              android:layout_width="91dp"
+              android:layout_height="wrap_content">
+              <Button
+                  android:id ="@+id/addItemButton"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/button_add"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                  android:layout_alignParentEnd="true" />
+          </RelativeLayout>
+      </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+     <RelativeLayout
+         android:layout_width="90dp"
+         android:layout_height="wrap_content">
+      <TextView
+          android:text="Action"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+     </RelativeLayout>
+     <RelativeLayout
+         android:layout_width="90dp"
+         android:layout_height="wrap_content">
+      <TextView
+          android:text="Start"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+     </RelativeLayout>
+     <RelativeLayout
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+      <TextView
+          android:text="End"
+          android:layout_width="90dp"
+          android:layout_height="wrap_content"
+          android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+     </RelativeLayout>
+     <RelativeLayout
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+      <TextView
+          android:text="Optimal Time"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+     </RelativeLayout>
+
+    </LinearLayout>
+
    <TextView
        android:text=""
        android:layout_width="match_parent"
@@ -91,7 +208,7 @@
        android:textAppearance="@style/TextAppearance.AppCompat.Button" />
 
    <TextView
-       android:text="How many Schedules should be displayed? (Minimum 5, Maximum 30)"
+       android:text="Flexibility in time range"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
        android:layout_gravity="center"
@@ -103,7 +220,7 @@
        android:layout_height="wrap_content"
        android:id="@+id/flexibilitySeekBar"
        android:max = "30"
-       android:progress = "5"/>
+       android:progress = "1"/>
 
   <LinearLayout android:layout_width="match_parent"
       android:layout_height="match_parent">
