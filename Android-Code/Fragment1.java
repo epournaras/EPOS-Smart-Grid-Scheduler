@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,13 +33,14 @@ import com.example.application.R;
 public class Fragment1 extends Fragment {
     public String selectedActiv;
     public String selectedDuration;
-
+    public String selectedDurHr  ="00",selectedDurMin = "00";
     public String selectedOptItemOne="00",selectedOptItemTwo="00";
     public int startMinMin = 0, endMinMax=59;
     public int startHour=0,endHour=23;
     public ArrayList<String> hours = new ArrayList<String>();
     public ArrayList<String> minutes =new ArrayList<String>();
-
+    public String[] durHours = new String[]{"00","01","02","03"};
+    public String[] durMins = new String[59];
     private String[] actionNames = {
             "cooking (Hob)",
             "cooking(Oven)",
@@ -79,7 +81,6 @@ public class Fragment1 extends Fragment {
         String[] optimalTimes = new String[1];
         getList(layoutView);
         setTimes(layoutView);
-        ((MainActivity)getActivity()).setDisplay("Nothing to show yet!");
         try{
             FileInputStream fisGetFiles = getActivity().openFileInput("tempMin.txt");
             int chr;
@@ -107,6 +108,13 @@ public class Fragment1 extends Fragment {
                 for(int i = tempMinStart;i<tempMaxStart;i++){
                     optimalTimes[i-tempMinStart] = help.getTimeString(i);
                 }
+            }
+        }
+        for(int i = 1; i<60;i++){
+            if(i<10){
+                durMins[i-1] = "0"+i;
+            }else{
+                durMins[i-1] = ""+i;
             }
         }
         String[] durations = new String[180];
@@ -146,16 +154,35 @@ public class Fragment1 extends Fragment {
         selectedActiv = activDrp.getSelectedItem().toString();
 
         ArrayAdapter<CharSequence> adapterActive;
-        final Spinner activeDrp = (Spinner)layoutView.findViewById(R.id.spDuration);
-        adapterActive = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, durations);
+        final Spinner activeDrp = (Spinner)layoutView.findViewById(R.id.spinnerDurHr);
+        adapterActive = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, durHours);
         adapterActive.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         activeDrp.setAdapter(adapterActive);
-        selectedDuration = activeDrp.getSelectedItem().toString();
+        selectedDurHr = activeDrp.getSelectedItem().toString();
+
+        ArrayAdapter<CharSequence> adapterActiveDurMin;
+        final Spinner activeDrpDurMin = (Spinner)layoutView.findViewById(R.id.spinnerDurMin);
+        adapterActiveDurMin = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, durMins);
+        adapterActiveDurMin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        activeDrpDurMin.setAdapter(adapterActiveDurMin);
+        selectedDurHr = activeDrpDurMin.getSelectedItem().toString();
 
         activeDrp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-                selectedDuration = activeDrp.getSelectedItem().toString();
+                selectedDurHr = activeDrp.getSelectedItem().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        activeDrp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                selectedDurMin = activeDrpDurMin.getSelectedItem().toString();
             }
 
             @Override
@@ -270,7 +297,10 @@ public class Fragment1 extends Fragment {
                         selectedActiv = activDrp.getSelectedItem().toString();
                         selectedOptItemOne = spinnerOptHr.getSelectedItem().toString();
                         selectedOptItemTwo = spinnerOptMin.getSelectedItem().toString();
+                        selectedDurHr = activeDrp.getSelectedItem().toString();
+                        selectedDurMin = activeDrpDurMin.getSelectedItem().toString();
                         String selectedOptimalTime= selectedOptItemOne+":"+selectedOptItemTwo;
+                        selectedDuration = selectedDurHr+":"+selectedDurMin;
                         //Get the last entered time window.
                         StringBuilder builder = new StringBuilder();
                         FileInputStream fisGetFiles = getActivity().openFileInput("tempMin.txt");
@@ -297,6 +327,7 @@ public class Fragment1 extends Fragment {
                         int min = opt.getIntTime(tempMin);
                         int max = opt.getIntTime(tempMax);
                         int dur = opt.getIntTime(selectedDuration);
+                        System.out.print(selectedDuration+"\n");
                         if(min+dur<=max){
                             list.add(count, new Action(selectedActiv, tempMin, tempMax, selectedDuration, selectedOptimalTime, false));
                             TextView addedActions = (TextView)layoutView.findViewById(R.id.addedActions);
@@ -440,7 +471,6 @@ public class Fragment1 extends Fragment {
         this.setHourChoices(layoutView,spinnerOptHrAdapter);
         this.setMinuteChoices(layoutView,spinnerOptMinAdapter,spinnerOptHr);
         this.setListView(layoutView);
-        //ToDo restrict window Max input
         return layoutView;  // this replaces 'setContentView'
     }
 
@@ -534,7 +564,11 @@ public class Fragment1 extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                selectedOptItemOne = sT.getSelectedItem().toString();
+                try{
+                    selectedOptItemOne = sT.getSelectedItem().toString();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
                 StringBuilder builder = new StringBuilder();
                 String tempMin = "00:00";
                 String tempMax = "23:59";
