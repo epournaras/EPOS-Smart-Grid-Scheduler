@@ -1,24 +1,20 @@
 package com.example.application.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
-import android.provider.Settings;
+import android.provider.Settings.Secure;
 import android.widget.Toast;
-
 import com.example.application.MainActivity;
 import com.example.schedulelibrary.Action;
 import com.example.schedulelibrary.Schedule;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import static java.security.AccessController.getContext;
 
 /**
  * Created by warrens on 11.05.17.
@@ -44,7 +40,8 @@ public class StoreDateTask extends AsyncTask<Schedule, Integer, String> {
             "Use Computer",
             "Boil Water (Kettle)",
             "Wash Dishes (dishwasher)",
-            "Shower"};
+            "Shower"
+    };
     private String[] actionFileNames  ={
             "Hob",
             "Oven",
@@ -54,6 +51,7 @@ public class StoreDateTask extends AsyncTask<Schedule, Integer, String> {
             "Kettle",
             "Dishwasher",
             "Shower"};
+    private String[][][] parseableData;
     protected void onPreExecute(){
 
     }
@@ -61,7 +59,7 @@ public class StoreDateTask extends AsyncTask<Schedule, Integer, String> {
     protected String doInBackground(Schedule... list){
         Schedule lists = list[0];
         String display = "";
-        String[][][] parseableData = new String[1][1][1];
+        parseableData = new String[1][1][1];
         parseableData[0][0][0] = "0";
         Action[][] fullList;
         if(progressChangedValue>1){
@@ -119,8 +117,6 @@ public class StoreDateTask extends AsyncTask<Schedule, Integer, String> {
                 display+= fullList[i][j].name+"\t"+fullList[i][j].getTimeString(fullList[i][j].windowStart)+"-"+fullList[i][j].getTimeString(fullList[i][j].windowEnd)+"\n";
             }
         }
-
-        storeData(parseableData);
         return display;
     }
     protected void onProgressUpdate(Integer... progress) {
@@ -132,6 +128,8 @@ public class StoreDateTask extends AsyncTask<Schedule, Integer, String> {
         int durationOfToast = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, toastString, durationOfToast);
         toast.show();
+        String[] pass = new String[]{"1"};
+        new createFiles(parseableData, context,activity).execute(pass);
     }
     /* store data in the following way:
          *"Plan/Time,00:00,00:01:,00:02,...,23:59
@@ -150,87 +148,5 @@ public class StoreDateTask extends AsyncTask<Schedule, Integer, String> {
          *
          */
     //a[Schedule][Device][Whether on or off at this index converted to a time+1]
-    public void storeData(String[][][] a) {
-        if(a.length>1){
-            if(a[0].length>1){
-                Action helper = new Action();
-                String[] device = new String[a[0].length];
 
-                String title = "Plan/Time,";
-                for(int i = 0; i<1440;i++){
-                    if(i!=1439){
-                        title += helper.getTimeString(i)+",";
-                    }else{
-                        title += helper.getTimeString(i)+"\n";
-                    }
-                }
-                for(int i = 0; i<device.length;i++){
-                    device[i] = title;
-                }
-                for(int i = 0; i<a.length;i++){
-                    for(int j = 0; j<a[i].length;j++){
-                        int planNumber = i+1;
-                        device[j]+="Plan "+planNumber+",";
-                        for(int q = 0; q<a[i][j].length;q++){
-                            if(q<=a[i][j].length-1){
-                                device[j]+=a[i][j][q]+",";
-                            }else{
-                                device[j]+=a[i][j][q]+"\n";
-                            }
-                        }
-                    }
-                }
-
-
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-hh_mm_ss-a");
-                String date = simpleDateFormat.format(new Date());
-
-
-
-                try {
-                    FileInputStream fisPSched = context.openFileInput("PastSchedules.txt");
-                    int ch;
-                    StringBuilder builder = new StringBuilder();
-                    while ((ch = fisPSched.read()) != -1) {
-                        char s = (char) ch;
-                        String st = ""+s;
-                        if(!st.equals(null)){
-                            builder.append((char) ch);
-                        }
-                    }
-                    String setup = builder.toString();
-                    int setupInt = Integer.parseInt(setup);
-                    setupInt++;
-                    String android_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-                    String fileFirstHalfTitle = android_id+"-";
-                    String fileSecondHalfTitle = "-"+date+"-"+setupInt+".txt" ;
-                    String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-                    FileOutputStream fOut=null;
-                    for(int i = 0; i<device.length;i++){
-                        String submitString = device[i];
-                        String fileName = fileFirstHalfTitle+actionFileNames[i]+"-"+fileSecondHalfTitle;
-                        File file1 = new File(root+ File.separator + fileName);
-                        if(!file1.exists()) {
-                            try {
-                                file1.createNewFile();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        try {
-                            fOut = new FileOutputStream(file1);
-                            fOut.write(submitString.getBytes());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    fOut = context.openFileOutput("PastSchedules.txt", Context.MODE_PRIVATE);
-                    setup = ""+setupInt;
-                    fOut.write(setup.getBytes());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 }
