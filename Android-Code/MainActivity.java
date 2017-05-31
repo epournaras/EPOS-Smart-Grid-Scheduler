@@ -101,7 +101,6 @@ public class MainActivity extends ActionBarActivity{
             date = fullTime.substring(0,10);
             fullTime = simpleDateFormat.format(new Date(((new Date()).getTime() + 86400000)));
             tomorrowsDate = fullTime.substring(0,10);
-            String batteryLevelFile = "batteryLevelFile.txt";
             String fileName = "PastSchedules.txt";
             String todaySchedule = "TodaySchedule.txt";
             String tomorrowSchedule = "TomorrowSchedule.txt";
@@ -109,11 +108,8 @@ public class MainActivity extends ActionBarActivity{
             String boxText = "BoxText.txt";
             String todayDate = "Date.txt";
             String tomorrowDate = "TomorrowsDate.txt";
-            String timings = "Timings.txt";
-            String demographics = "demographics.txt";
             String password = "Password.txt";
             String passwordMain = "PasswordMain.txt";
-            File timingsFile = new File(this.getFilesDir(),timings);
             File todayDateFile = new File(this.getFilesDir(),todayDate);
             File tomorrowDateFile = new File(this.getFilesDir(), tomorrowDate);
             File file = new File(this.getFilesDir(), fileName);
@@ -121,27 +117,55 @@ public class MainActivity extends ActionBarActivity{
             File tomorrowFile = new File(this.getFilesDir(), tomorrowSchedule);
             File listFile = new File(this.getFilesDir(), listAsItWas);
             File boxTextFile = new File(this.getFilesDir(), boxText);
-            File batteryFile = new File(this.getFilesDir(), batteryLevelFile);
-            File demographicsFile = new File(this.getFilesDir(), demographics);
-            File passwordFile = new File(this.getFilesDir(), password);
-            File mainPasswordFile = new File(this.getFilesDir(),passwordMain);
             // first time task
             try{
-                Action helper = new Action();
                 FileOutputStream fosPSched =this.openFileOutput(fileName, MODE_PRIVATE);
                 fosPSched.write("0".getBytes());
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            try{
+                if(!tomorrowFile.exists()){
+                    tomorrowFile.createNewFile();
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            try{
                 FileOutputStream fosPass = this.openFileOutput(password, MODE_PRIVATE);
                 fosPass.write("Password1234".getBytes());
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            try{
                 FileOutputStream fosPassMain = this.openFileOutput(passwordMain, MODE_PRIVATE);
                 fosPassMain.write("Password5678".getBytes());
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            try{
                 FileOutputStream fosMin = this.openFileOutput("tempMin.txt", MODE_PRIVATE);
                 fosMin.write("00:00".getBytes());
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            try{
                 FileOutputStream fosMax = this.openFileOutput("tempMax.txt", MODE_PRIVATE);
                 fosMax.write("23:59".getBytes());
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            try{
                 FileOutputStream fosDate = this.openFileOutput(todayDate, MODE_PRIVATE);
                 fosDate.write(date.getBytes());
                 fosDate = this.openFileOutput(tomorrowDate, MODE_PRIVATE);
                 fosDate.write(tomorrowsDate.getBytes());
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            try{
+                FileOutputStream fosInitialiseList = this.openFileOutput(listAsItWas, MODE_PRIVATE);
+                fosInitialiseList.write("".getBytes());
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -273,7 +297,6 @@ public class MainActivity extends ActionBarActivity{
             case 0:
                 fragment = new Fragment1();
                 title = "Set "+tomorrowsDate+"'s Schedule";
-
                 break;
             case 1:
                 fragment = new Fragment2();
