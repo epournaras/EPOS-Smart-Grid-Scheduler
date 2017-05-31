@@ -10,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-
 import com.example.application.R;
 
 public class Fragment2 extends Fragment {
@@ -44,7 +43,7 @@ public class Fragment2 extends Fragment {
                 String tomorrowsSchedule = "TomorrowSchedule.txt";
                 FileOutputStream fos;
                 try {
-                    fos = new FileOutputStream(tomorrowsSchedule, false);
+                    fos = getActivity().openFileOutput(tomorrowsSchedule, Context.MODE_PRIVATE);
                     fos.write(display.getBytes());
                     fos.close();
                 } catch (Exception e) {
