@@ -1,4 +1,412 @@
+package com.example.application.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.os.Environment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.SeekBar;
+import android.widget.Spinner;
+import android.widget.Toast;
+import com.example.application.R;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import android.provider.Settings.Secure;
+/**
+ * Created by warrens on 13.03.17.
+ */
+
+public class surveyFragment extends android.support.v4.app.DialogFragment {
+    final String PREFS_NAME = "MyPrefsFile";
+
+    private String selectedAnswerOne;
+    private String selectedAnswerTwo;
+    private String selectedAnswerThree;
+    private String selectedAnswerFour;
+    private String selectedAnswerFive;
+    private String selectedAnswerSix;
+    private String selectedAnswerSeven;
+    private String selectedAnswerEight;
+    private String selectedAnswerNine;
+    private String selectedAnswerTen;
+
+    private String[] questionOneAnswers;
+    private String[] questionTwoAnswers;
+    private String[] questionThreeAnswers;
+    private String[] questionFourAnswers;
+    private String[] questionFiveAnswers;
+    private String[] questionSixAnswers;
+    private String[] questionSevenAnswers;
+    private String[] questionEightAnswers;
+    private String[] questionNineAnswers;
+    private String[] questionTenAnswers;
+    private String[] questionElevenAnswers;
+    private CheckBox qElevenOne, qElevenTwo,qElevenThree,qElevenFour,qElevenFive,qElevenSix,qElevenSeven,qElevenEight,qElevenNine,qElevenTen,qElevenEleven,qElevenTwelve,qElevenThirteen,qElevenFourteen;
+    private SeekBar qTwelveSimpleSeekBar,
+                    qThirteenSimpleSeekBar,
+                    qFourteenSimpleSeekBar,
+                    qFifteenOneSimpleSeekBar,qFifteenTwoSimpleSeekBar,qFifteenThreeSimpleSeekBar,qFifteenFourSimpleSeekBar,qFifteenFiveSimpleSeekBar,
+                    qSixteenOneSimpleSeekBar,qSixteenTwoSimpleSeekBar,
+                    qSeventeenOneSimpleSeekBar,qSeventeenTwoSimpleSeekBar,qSeventeenThreeSimpleSeekBar,qSeventeenFourSimpleSeekBar,
+                    qEighteenSimpleSeekBar,
+                    qNineteenSimpleSeekBar,
+                    qTwentySimpleSeekBar,
+                    qTwentyoneSimpleSeekBar,
+                    qTwentytwoSimpleSeekBar,
+                    qTwentythreeSimpleSeekBar,
+                    qTwentyfourSimpleSeekBar,
+                    qTwentyfiveSimpleSeekBar,
+                    qTwentysixOneSimpleSeekBar,qTwentysixTwoSimpleSeekBar,qTwentysixThreeSimpleSeekBar,qTwentysixFourSimpleSeekBar,qTwentysixFiveSimpleSeekBar,qTwentysixSixSimpleSeekBar,qTwentysixSevenSimpleSeekBar,
+                    qTwentysevenSimpleSeekBar,
+                    qTwentyeightOneSimpleSeekBar,qTwentyeightTwoSimpleSeekBar,qTwentyeightThreeSimpleSeekBar,qTwentyeightFourSimpleSeekBar,qTwentyeightFiveSimpleSeekBar,qTwentyeightSixSimpleSeekBar,
+                    qTwentyeightSevenSimpleSeekBar,qTwentyeightEightSimpleSeekBar,qTwentyeightNineSimpleSeekBar,qTwentyeightTenSimpleSeekBar,qTwentyeightElevenSimpleSeekBar,qTwentyeightTwelveSimpleSeekBar,
+                    qTwentyeightThirteenSimpleSeekBar,qTwentyeightFourteenSimpleSeekBar;
+    private int qTwelveProgressChangedValue,
+            qThirteenProgressChangedValue,
+            qFourteenProgressChangedValue,
+            qFifteenOneProgressChangedValue,qFifteenTwoProgressChangedValue,qFifteenThreeProgressChangedValue,qFifteenFourProgressChangedValue,qFifteenFiveProgressChangedValue,
+            qSixteenOneProgressChangedValue,qSixteenTwoProgressChangedValue,
+            qSeventeenOneProgressChangedValue,qSeventeenTwoProgressChangedValue,qSeventeenThreeProgressChangedValue,qSeventeenFourProgressChangedValue,
+            qEighteenProgressChangedValue,
+            qNineteenProgressChangedValue,
+            qTwentyProgressChangedValue,
+            qTwentyoneProgressChangedValue,
+            qTwentytwoProgressChangedValue,
+            qTwentythreeProgressChangedValue,
+            qTwentyfourProgressChangedValue,
+            qTwentyfiveProgressChangedValue,
+            qTwentysixOneProgressChangedValue,qTwentysixTwoProgressChangedValue,qTwentysixThreeProgressChangedValue,qTwentysixFourProgressChangedValue,qTwentysixFiveProgressChangedValue,qTwentysixSixProgressChangedValue,qTwentysixSevenProgressChangedValue,
+            qTwentysevenProgressChangedValue,
+            qTwentyeightOneProgressChangedValue,qTwentyeightTwoProgressChangedValue,qTwentyeightThreeProgressChangedValue,qTwentyeightFourProgressChangedValue,qTwentyeightFiveProgressChangedValue,qTwentyeightSixProgressChangedValue,
+            qTwentyeightSevenProgressChangedValue,qTwentyeightEightProgressChangedValue,qTwentyeightNineProgressChangedValue,qTwentyeightTenProgressChangedValue,qTwentyeightElevenProgressChangedValue,qTwentyeightTwelveProgressChangedValue,
+            qTwentyeightThirteenProgressChangedValue,qTwentyeightFourteenProgressChangedValue;
+    private boolean bElevenOne, bElevenTwo,bElevenThree,bElevenFour,bElevenFive,bElevenSix,bElevenSeven,bElevenEight,bElevenNine,bElevenTen,bElevenEleven,bElevenTwelve,bElevenThirteen,bElevenFourteen= false;
+    private String android_id;
+    @Override
+    public void onCreate(Bundle savedInstaceState){
+        super.onCreate(savedInstaceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        setCancelable(false);
+        final Context context = getActivity();
+        View v = inflater.inflate(R.layout.fragment_survey, container, false);
+        String title = "QID, Answer\n";
+        int numberOfQuestions = 28;
+        String[] QIDs = new String[numberOfQuestions];
+        for(int i = 0; i<QIDs.length;i++){
+            QIDs[i] = ""+i;
+        }
+
+        questionOneAnswers = new String[101];
+        questionOneAnswers[0] = "-";
+        for(int i = 99;i>=0;i--){
+            if(i<10){
+                questionOneAnswers[questionOneAnswers.length-1-i] = "190"+i;
+            }else{
+                questionOneAnswers[questionOneAnswers.length-1-i] = "19"+i;
+            }
+        }
+
+        questionTwoAnswers = new String[]{
+                "-",
+                "Afghanistan",
+                "Albania",
+                "Algeria",
+                "American Samoa",
+                "Andorra",
+                "Angola",
+                "Anguilla",
+                "Antarctica",
+                "Antigua and Barbuda",
+                "Argentina",
+                "Armenia",
+                "Aruba",
+                "Australia",
+                "Austria",
+                "Azerbaijan",
+                "Bahrain",
+                "Bangladesh",
+                "Barbados",
+                "Belarus",
+                "Belgium",
+                "Belize",
+                "Benin",
+                "Bermuda",
+                "Bhutan",
+                "Bolivia",
+                "Bosnia and Herzegovina",
+                "Botswana",
+                "Bouvet Island",
+                "Brazil",
+                "British Indian Ocean Territory",
+                "British Virgin Islands",
+                "Brunei",
+                "Bulgaria",
+                "Burkina Faso",
+                "Burundi",
+                "Cambodia",
+                "Cameroon",
+                "Canada",
+                "Cape Verde",
+                "Cayman Islands",
+                "Central African Republic",
+                "Chad",
+                "Chile",
+                "China",
+                "Christmas Island",
+                "Cocos (Keeling) Islands",
+                "Colombia",
+                "Comoros",
+                "Congo",
+                "Cook Islands",
+                "Costa Rica",
+                "Cote d'Ivoire",
+                "Croatia",
+                "Cuba",
+                "Cyprus",
+                "Czech Republic",
+                "Democratic Republic of the Congo",
+                "Denmark",
+                "Djibouti",
+                "Dominica",
+                "Dominican Republic",
+                "East Timor",
+                "Ecuador",
+                "Egypt",
+                "El Salvador",
+                "Equatorial Guinea",
+                "Eritrea",
+                "Estonia",
+                "Ethiopia",
+                "Faeroe Islands",
+                "Falkland Islands",
+                "Fiji",
+                "Finland",
+                "Former Yugoslav Republic of Macedonia",
+                "France",
+                "French Guiana",
+                "French Polynesia",
+                "French Southern Territories",
+                "Gabon",
+                "Georgia",
+                "Germany",
+                "Ghana",
+                "Gibraltar",
+                "Greece",
+                "Greenland",
+                "Grenada",
+                "Guadeloupe",
+                "Guam",
+                "Guatemala",
+                "Guinea",
+                "Guinea-Bissau",
+                "Guyana",
+                "Haiti",
+                "Heard Island and McDonald Islands",
+                "Honduras",
+                "Hong Kong",
+                "Hungary",
+                "Iceland",
+                "India",
+                "Indonesia",
+                "Iran",
+                "Iraq",
+                "Ireland",
+                "Israel",
+                "Italy",
+                "Jamaica",
+                "Japan",
+                "Jordan",
+                "Kazakhstan",
+                "Kenya",
+                "Kiribati",
+                "Kuwait",
+                "Kyrgyzstan",
+                "Laos",
+                "Latvia",
+                "Lebanon",
+                "Lesotho",
+                "Liberia",
+                "Libya",
+                "Liechtenstein",
+                "Lithuania",
+                "Luxembourg",
+                "Macau",
+                "Madagascar",
+                "Malawi",
+                "Malaysia",
+                "Maldives",
+                "Mali",
+                "Malta",
+                "Marshall Islands",
+                "Martinique",
+                "Mauritania",
+                "Mauritius",
+                "Mayotte",
+                "Mexico",
+                "Micronesia",
+                "Moldova",
+                "Monaco",
+                "Mongolia",
+                "Montenegro",
+                "Montserrat",
+                "Morocco",
+                "Mozambique",
+                "Myanmar",
+                "Namibia",
+                "Nauru",
+                "Nepal",
+                "Netherlands",
+                "Netherlands Antilles",
+                "New Caledonia",
+                "New Zealand",
+                "Nicaragua",
+                "Niger",
+                "Nigeria",
+                "Niue",
+                "Norfolk Island",
+                "North Korea",
+                "Northern Marianas",
+                "Norway",
+                "Oman",
+                "Pakistan",
+                "Palau",
+                "Panama",
+                "Papua New Guinea",
+                "Paraguay",
+                "Peru",
+                "Philippines",
+                "Pitcairn Islands",
+                "Poland",
+                "Portugal",
+                "Puerto Rico",
+                "Qatar",
+                "Reunion",
+                "Romania",
+                "Russia",
+                "Rwanda",
+                "Sqo Tome and Principe",
+                "Saint Helena",
+                "Saint Kitts and Nevis",
+                "Saint Lucia",
+                "Saint Pierre and Miquelon",
+                "Saint Vincent and the Grenadines",
+                "Samoa",
+                "San Marino",
+                "Saudi Arabia",
+                "Senegal",
+                "Serbia",
+                "Seychelles",
+                "Sierra Leone",
+                "Singapore",
+                "Slovakia",
+                "Slovenia",
+                "Solomon Islands",
+                "Somalia",
+                "South Africa",
+                "South Georgia and the South Sandwich Islands",
+                "South Korea",
+                "South Sudan",
+                "Spain",
+                "Sri Lanka",
+                "Sudan",
+                "Suriname",
+                "Svalbard and Jan Mayen",
+                "Swaziland",
+                "Sweden",
+                "Switzerland",
+                "Syria",
+                "Taiwan",
+                "Tajikistan",
+                "Tanzania",
+                "Thailand",
+                "The Bahamas",
+                "The Gambia",
+                "Togo",
+                "Tokelau",
+                "Tonga",
+                "Trinidad and Tobago",
+                "Tunisia",
+                "Turkey",
+                "Turkmenistan",
+                "Turks and Caicos Islands",
+                "Tuvalu",
+                "Virgin Islands",
+                "Uganda",
+                "Ukraine",
+                "United Arab Emirates",
+                "United Kingdom",
+                "United States",
+                "United States Minor Outlying Islands",
+                "Uruguay",
+                "Uzbekistan",
+                "Vanuatu",
+                "Vatican City",
+                "Venezuela",
+                "Vietnam",
+                "Wallis and Futuna",
+                "Western Sahara",
+                "Yemen",
+                "Yugoslavia",
+                "Zambia",
+                "Zimbabwe"
+        };
+
+        questionThreeAnswers = new String[]{
+                "-",
+                "Male",
+                "Female",
+                "Other"
+        };
+
+        questionFourAnswers = new String[]{
+                "-",
+                "Afghanistan",
+                "Albania",
+                "Algeria",
+                "American Samoa",
+                "Andorra",
+                "Angola",
+                "Anguilla",
+                "Antarctica",
+                "Antigua and Barbuda",
+                "Argentina",
+                "Armenia",
+                "Aruba",
+                "Australia",
+                "Austria",
+                "Azerbaijan",
+                "Bahrain",
+                "Bangladesh",
+                "Barbados",
+                "Belarus",
+                "Belgium",
+                "Belize",
+                "Benin",
+                "Bermuda",
+                "Bhutan",
+                "Bolivia",
+                "Bosnia and Herzegovina",
+                "Botswana",
+                "Bouvet Island",
+                "Brazil",
+                "British Indian Ocean Territory",
+                "British Virgin Islands",
+                "Brunei",
+                "Bulgaria",
                 "Burkina Faso",
                 "Burundi",
                 "Cambodia",
@@ -210,7 +618,8 @@
         };
 
         questionFiveAnswers = new String[]{
-            "Level 1 - Primary Education",
+                "-",
+                "Level 1 - Primary Education",
                 "Level 2 - Lower Secondary Education",
                 "Level 3 - Upper Secondary Education",
                 "Level 4 - Post Secondary non-tertiary education",
@@ -221,6 +630,7 @@
         };
 
         questionSixAnswers = new String[]{
+                "-",
                 "Employee",
                 "Student",
                 "Worker (casual work, zero hour contract)",
@@ -234,6 +644,7 @@
         };
 
         questionSevenAnswers = new String[]{
+                "-",
                 "Detached",
                 "Semi-detached",
                 "Mid-terrace",
@@ -242,6 +653,7 @@
         };
 
         questionEightAnswers = new String[]{
+                "-",
                 "1 Bed",
                 "2 Bed",
                 "3 Bed",
@@ -250,6 +662,7 @@
                 "6 Bed +"
         };
         questionNineAnswers = new String[]{
+                "-",
                 "Pre 1900s",
                 "1900 - 1909",
                 "1910 - 1919",
@@ -265,6 +678,7 @@
                 "2010+"
         };
         questionTenAnswers = new String[]{
+                "-",
                 "1",
                 "2",
                 "3",
@@ -1048,6 +1462,16 @@
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View g) {
+                selectedAnswerOne = activeDrp.getSelectedItem().toString();
+                selectedAnswerTwo = activeDrpOne.getSelectedItem().toString();
+                selectedAnswerThree = activeDrpTwo.getSelectedItem().toString();
+                selectedAnswerFour = activeDrpThree.getSelectedItem().toString();
+                selectedAnswerFive = activeDrpFour.getSelectedItem().toString();
+                selectedAnswerSix = activeDrpFive.getSelectedItem().toString();
+                selectedAnswerSeven = activeDrpSix.getSelectedItem().toString();
+                selectedAnswerEight = activeDrpSeven.getSelectedItem().toString();
+                selectedAnswerNine = activeDrpEight.getSelectedItem().toString();
+                selectedAnswerTen = activeDrpNine.getSelectedItem().toString();
                 String passwordCheck = "";
                 EditText textView = (EditText)v.findViewById(R.id.editText);
                 String password = textView.getText().toString();
