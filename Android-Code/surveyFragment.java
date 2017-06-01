@@ -960,6 +960,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         selectedAnswerTen = activeDrpNine.getSelectedItem().toString();
 
         qTwelveSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q12SeekBar);
+        qTwelveProgressChangedValue = qTwelveSimpleSeekBar.getProgress();
         qTwelveSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwelveProgressChangedValue = progress;
@@ -971,6 +972,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qThirteenSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q13SeekBar);
+        qThirteenProgressChangedValue = qThirteenSimpleSeekBar.getProgress();
         qThirteenSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qThirteenProgressChangedValue = progress;
@@ -982,6 +984,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qFourteenSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q14SeekBar);
+        qFourteenProgressChangedValue = qFourteenSimpleSeekBar.getProgress();
         qFourteenSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qFourteenProgressChangedValue = progress;
@@ -993,6 +996,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qFifteenOneSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q151SeekBar);
+        qFifteenOneProgressChangedValue = qFifteenOneSimpleSeekBar.getProgress();
         qFifteenOneSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qFifteenOneProgressChangedValue = progress;
@@ -1004,6 +1008,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qFifteenTwoSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q152SeekBar);
+        qFifteenTwoProgressChangedValue = qFifteenTwoSimpleSeekBar.getProgress();
         qFifteenTwoSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qFifteenTwoProgressChangedValue = progress;
@@ -1015,6 +1020,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qFifteenThreeSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q153SeekBar);
+        qFifteenThreeProgressChangedValue = qFifteenThreeSimpleSeekBar.getProgress();
         qFifteenThreeSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qFifteenThreeProgressChangedValue = progress;
@@ -1026,6 +1032,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qFifteenFourSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q154SeekBar);
+        qFifteenFourProgressChangedValue = qFifteenFourSimpleSeekBar.getProgress();
         qFifteenFourSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qFifteenFourProgressChangedValue = progress;
@@ -1037,6 +1044,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qFifteenFiveSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q155SeekBar);
+        qFifteenFiveProgressChangedValue = qFifteenFiveSimpleSeekBar.getProgress();
         qFifteenFiveSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qFifteenFiveProgressChangedValue = progress;
@@ -1048,6 +1056,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qSixteenOneSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q161SeekBar);
+        qSixteenOneProgressChangedValue = qSixteenOneSimpleSeekBar.getProgress();
         qSixteenOneSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qSixteenOneProgressChangedValue = progress;
@@ -1059,6 +1068,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qSixteenTwoSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q162SeekBar);
+        qSixteenTwoProgressChangedValue = qSixteenTwoSimpleSeekBar.getProgress();
         qSixteenTwoSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qSixteenTwoProgressChangedValue = progress;
@@ -1070,6 +1080,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qSeventeenOneSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q171SeekBar);
+        qSeventeenOneProgressChangedValue = qSeventeenOneSimpleSeekBar.getProgress();
         qSeventeenOneSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qSeventeenOneProgressChangedValue = progress;
@@ -1081,6 +1092,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qSeventeenTwoSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q172SeekBar);
+        qSeventeenTwoProgressChangedValue = qSeventeenTwoSimpleSeekBar.getProgress();
         qSeventeenTwoSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qSeventeenTwoProgressChangedValue = progress;
@@ -1092,6 +1104,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qSeventeenThreeSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q173SeekBar);
+        qSeventeenThreeProgressChangedValue = qSeventeenThreeSimpleSeekBar.getProgress();
         qSeventeenThreeSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qSeventeenThreeProgressChangedValue = progress;
@@ -1103,6 +1116,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qSeventeenFourSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q174SeekBar);
+        qSeventeenFourProgressChangedValue = qSeventeenFourSimpleSeekBar.getProgress();
         qSeventeenFourSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qSeventeenFourProgressChangedValue = progress;
@@ -1114,6 +1128,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qEighteenSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q18SeekBar);
+        qEighteenProgressChangedValue =qEighteenSimpleSeekBar.getProgress();
         qEighteenSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qEighteenProgressChangedValue = progress;
@@ -1125,6 +1140,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qNineteenSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q19SeekBar);
+        qNineteenProgressChangedValue = qNineteenSimpleSeekBar.getProgress();
         qNineteenSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qNineteenProgressChangedValue = progress;
@@ -1136,6 +1152,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentySimpleSeekBar=(SeekBar)v.findViewById(R.id.Q20SeekBar);
+        qTwentyProgressChangedValue = qTwentySimpleSeekBar.getProgress();
         qTwentySimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentyProgressChangedValue = progress;
@@ -1147,6 +1164,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentyoneSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q21SeekBar);
+        qTwentyoneProgressChangedValue = qTwentyoneSimpleSeekBar.getProgress();
         qTwentyoneSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentyoneProgressChangedValue = progress;
@@ -1158,6 +1176,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentytwoSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q22SeekBar);
+        qTwentytwoProgressChangedValue = qTwentytwoSimpleSeekBar.getProgress();
         qTwentytwoSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentytwoProgressChangedValue = progress;
@@ -1169,6 +1188,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentythreeSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q23SeekBar);
+        qTwentythreeProgressChangedValue = qTwentythreeSimpleSeekBar.getProgress();
         qTwentythreeSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentythreeProgressChangedValue = progress;
@@ -1180,6 +1200,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentyfourSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q24SeekBar);
+        qTwentyfourProgressChangedValue = qTwentyfourSimpleSeekBar.getProgress();
         qTwentyfourSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentyfourProgressChangedValue = progress;
@@ -1191,6 +1212,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentyfiveSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q25SeekBar);
+        qTwentyfiveProgressChangedValue = qTwentyfiveSimpleSeekBar.getProgress();
         qTwentyfiveSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentyfiveProgressChangedValue = progress;
@@ -1202,6 +1224,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentysixOneSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q261SeekBar);
+        qTwentysixOneProgressChangedValue = qTwentysixOneSimpleSeekBar.getProgress();
         qTwentysixOneSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentysixOneProgressChangedValue = progress;
@@ -1213,6 +1236,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentysixTwoSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q262SeekBar);
+        qTwentysixTwoProgressChangedValue = qTwentysixTwoSimpleSeekBar.getProgress();
         qTwentysixTwoSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentysixTwoProgressChangedValue = progress;
@@ -1224,6 +1248,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentysixThreeSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q263SeekBar);
+        qTwentysixThreeProgressChangedValue = qTwentysixThreeSimpleSeekBar.getProgress();
         qTwentysixThreeSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentysixThreeProgressChangedValue = progress;
@@ -1235,6 +1260,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentysixFourSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q264SeekBar);
+        qTwentysixFourProgressChangedValue = qTwentysixFourSimpleSeekBar.getProgress();
         qTwentysixFourSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentysixFourProgressChangedValue = progress;
@@ -1246,6 +1272,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentysixFiveSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q265SeekBar);
+        qTwentysixFiveProgressChangedValue = qTwentysixFiveSimpleSeekBar.getProgress();
         qTwentysixFiveSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentysixFiveProgressChangedValue = progress;
@@ -1257,6 +1284,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentysixSixSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q266SeekBar);
+        qTwentysixSixProgressChangedValue = qTwentysixSixSimpleSeekBar.getProgress();
         qTwentysixSixSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentysixSixProgressChangedValue = progress;
@@ -1268,6 +1296,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentysixSevenSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q267SeekBar);
+        qTwentysixSevenProgressChangedValue = qTwentysixSevenSimpleSeekBar.getProgress();
         qTwentysixSevenSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentysixSevenProgressChangedValue = progress;
@@ -1279,6 +1308,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentysevenSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q27SeekBar);
+        qTwentysevenProgressChangedValue = qTwentysevenSimpleSeekBar.getProgress();
         qTwentysevenSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentysevenProgressChangedValue = progress;
@@ -1290,6 +1320,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentyeightOneSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q281SeekBar);
+        qTwentyeightOneProgressChangedValue = qTwentyeightOneSimpleSeekBar.getProgress();
         qTwentyeightOneSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentyeightOneProgressChangedValue = progress;
@@ -1301,6 +1332,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentyeightTwoSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q282SeekBar);
+        qTwentyeightTwoProgressChangedValue = qTwentyeightTwoSimpleSeekBar.getProgress();
         qTwentyeightTwoSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentyeightTwoProgressChangedValue = progress;
@@ -1312,6 +1344,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentyeightThreeSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q283SeekBar);
+        qTwentyeightThreeProgressChangedValue = qTwentyeightThreeSimpleSeekBar.getProgress();
         qTwentyeightThreeSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentyeightThreeProgressChangedValue = progress;
@@ -1323,6 +1356,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentyeightFourSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q284SeekBar);
+        qTwentyeightFourProgressChangedValue = qTwentyeightFourSimpleSeekBar.getProgress();
         qTwentyeightFourSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentyeightFourProgressChangedValue = progress;
@@ -1334,6 +1368,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentyeightFiveSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q285SeekBar);
+        qTwentyeightFiveProgressChangedValue = qTwentyeightFiveSimpleSeekBar.getProgress();
         qTwentyeightFiveSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentyeightFiveProgressChangedValue = progress;
@@ -1345,6 +1380,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentyeightSixSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q286SeekBar);
+        qTwentyeightSixProgressChangedValue = qTwentyeightSixSimpleSeekBar.getProgress();
         qTwentyeightSixSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentyeightSixProgressChangedValue = progress;
@@ -1356,6 +1392,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentyeightSevenSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q287SeekBar);
+        qTwentyeightSevenProgressChangedValue = qTwentyeightSevenSimpleSeekBar.getProgress();
         qTwentyeightSevenSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentyeightSevenProgressChangedValue = progress;
@@ -1367,6 +1404,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentyeightEightSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q288SeekBar);
+        qTwentyeightEightProgressChangedValue = qTwentyeightEightSimpleSeekBar.getProgress();
         qTwentyeightEightSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentyeightEightProgressChangedValue = progress;
@@ -1378,6 +1416,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentyeightNineSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q289SeekBar);
+        qTwentyeightNineProgressChangedValue = qTwentyeightNineSimpleSeekBar.getProgress();
         qTwentyeightNineSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentyeightNineProgressChangedValue = progress;
@@ -1389,6 +1428,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentyeightTenSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q2810SeekBar);
+        qTwentyeightTenProgressChangedValue = qTwentyeightTenSimpleSeekBar.getProgress();
         qTwentyeightTenSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentyeightTenProgressChangedValue = progress;
@@ -1400,6 +1440,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentyeightElevenSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q2811SeekBar);
+        qTwentyeightElevenProgressChangedValue = qTwentyeightElevenSimpleSeekBar.getProgress();
         qTwentyeightElevenSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentyeightElevenProgressChangedValue = progress;
@@ -1411,6 +1452,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentyeightTwelveSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q2812SeekBar);
+        qTwentyeightTwelveProgressChangedValue = qTwentyeightTwelveSimpleSeekBar.getProgress();
         qTwentyeightTwelveSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentyeightTwelveProgressChangedValue = progress;
@@ -1422,6 +1464,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentyeightThirteenSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q2813SeekBar);
+        qTwentyeightThirteenProgressChangedValue = qTwentyeightThirteenSimpleSeekBar.getProgress();
         qTwentyeightThirteenSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentyeightThirteenProgressChangedValue = progress;
@@ -1433,6 +1476,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
         });
 
         qTwentyeightFourteenSimpleSeekBar=(SeekBar)v.findViewById(R.id.Q2814SeekBar);
+        qTwentyeightFourteenProgressChangedValue = qTwentyeightFourteenSimpleSeekBar.getProgress();
         qTwentyeightFourteenSimpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 qTwentyeightFourteenProgressChangedValue = progress;
