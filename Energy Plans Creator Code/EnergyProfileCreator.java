@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class EnergyProfileCreator {
 	public static void main(String[] args){
-		String csvDemographics = "/Users/warrens/data/3e81b6f48778f7d7DEMOGRAPHICS.txt";
+		String csvDemographics = "/Users/warrens/data/3e81b6f48778f7d7DEMOGRAPHICS.txt";//<androidID>DEMOGRAPHICS.txt file produced by application
 		String csvHouseDemographics = "/Users/warrens/data/HousingDetails.txt";
 		String csvHouseApplianceWattage = "/Users/warrens/data/HouseApplianceAverageUsage.txt";
 		BufferedReader br = null;
@@ -136,7 +136,7 @@ public class EnergyProfileCreator {
 	    	toFile+=houseApplianceWattages[i]+",";
 	    	System.out.print(houseApplianceWattages[i]+",");
 	    }
-	    String fileName = "ApplianceWattage.csv";
+	    String fileName = "EnergyProfileApplianceWattage.csv";
 	    FileWriter fileWriter = null;
         try{
         	fileWriter = new FileWriter(fileName);
