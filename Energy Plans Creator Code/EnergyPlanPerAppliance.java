@@ -5,7 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class EnergyProfilePerAppliance {
+public class EnergyPlanPerAppliance {
 	private static String[] actionFileNames  ={
             "Hob",//1
             "Oven",//2
@@ -19,7 +19,7 @@ public class EnergyProfilePerAppliance {
 	public static void main(String[] args){
 		String firstHalf = "";//Phone's android ID
 		String secondHalf ="";//Date and time that the plans were created
-		String csvWU = "/Users/warrens/data/ApplianceWattage.csv";
+		String csvWU = "/Users/warrens/data/EnergyProfileApplianceWattage.csv";//Energy Profile csv created by Energy Profile creator
 		BufferedReader br = null;
 	    String line = "";
 	    String csvSplitBy = ",";
@@ -34,7 +34,6 @@ public class EnergyProfilePerAppliance {
 			e.printStackTrace();
 		}catch (IOException e) {
             e.printStackTrace();
-            System.out.print("Done fcked up");
         } finally {
             if (br != null) {
                 try {
