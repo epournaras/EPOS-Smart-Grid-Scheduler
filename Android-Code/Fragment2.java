@@ -30,6 +30,7 @@ public class Fragment2 extends Fragment {
                     while((ch = fis.read()) != -1){
                         builder.append((char)ch);
                     }
+                    fis.close();
                     display = builder.toString();
                 }catch(Exception e){
                     String toastString = "Couldnt get Tomorrow's schedule.";
