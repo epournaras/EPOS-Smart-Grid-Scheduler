@@ -18,7 +18,6 @@ import java.util.Calendar;
 
 public class timeFragment extends DialogFragment
         implements TimePickerDialog.OnTimeSetListener {
-    Context context = getActivity();
 
     public int[] time = new int[2];
     @Override
@@ -51,16 +50,19 @@ public class timeFragment extends DialogFragment
             int ch;
             while((ch = fisThree.read()) != -1){
                 builder.append((char)ch);
-            };
+            }
+            fisThree.close();
             String test = builder.toString();
 
             if(test.equals("min")){
                 FileOutputStream tempMin = context.openFileOutput("tempMin.txt", Context.MODE_PRIVATE);
                 tempMin.write(time.getBytes());
+                tempMin.close();
             }
             else{
                 FileOutputStream tempMax = context.openFileOutput("tempMax.txt", Context.MODE_PRIVATE);
                 tempMax.write(time.getBytes());
+                tempMax.close();
             }
         }catch(FileNotFoundException ex){
             ex.printStackTrace();
