@@ -18,7 +18,6 @@ import com.example.application.R;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 
 import android.provider.Settings.Secure;
@@ -1526,6 +1525,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
                     while ((ch = fisPass.read()) != -1) {
                         builder.append((char) ch);
                     }
+                    fisPass.close();
                     passwordCheck = builder.toString();
                 }catch(Exception e){
                     e.printStackTrace();
@@ -1687,6 +1687,7 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
                     try {
                         fOut = new FileOutputStream(file1);
                         fOut.write(submitString.getBytes());
+                        fOut.close();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
