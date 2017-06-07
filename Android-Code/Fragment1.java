@@ -92,6 +92,7 @@ public class Fragment1 extends Fragment {
             while ((chr = fisGetFiles.read()) != -1) {
                 builder.append((char) chr);
             }
+            fisGetFiles.close();
             tempMin = builder.toString();
             fisGetFiles = getActivity().openFileInput("tempMax.txt");
             builder = new StringBuilder();
@@ -99,6 +100,7 @@ public class Fragment1 extends Fragment {
             while ((ch = fisGetFiles.read()) != -1) {
                 builder.append((char) ch);
             }
+            fisGetFiles.close();
             tempMax = builder.toString();
         }catch(Exception e) {
             e.printStackTrace();
@@ -246,6 +248,7 @@ public class Fragment1 extends Fragment {
                     settings.edit().putBoolean("putMin",true).commit();
                     FileOutputStream fosThree = getActivity().openFileOutput("minOrMax.txt", Context.MODE_PRIVATE);
                     fosThree.write("min".getBytes());
+                    fosThree.close();
                     DialogFragment newFragment = new timeFragment();
                     FragmentManager fragManager = ((FragmentActivity)myContext).getSupportFragmentManager();
                     newFragment.show(fragManager, "timeFragment");
@@ -264,6 +267,7 @@ public class Fragment1 extends Fragment {
                     settings.edit().putBoolean("putMax",true).commit();
                     FileOutputStream fosThree = getActivity().openFileOutput("minOrMax.txt", Context.MODE_PRIVATE);
                     fosThree.write("max".getBytes());
+                    fosThree.close();
                     DialogFragment newFragment = new timeFragment();
                     FragmentManager fragManager = ((FragmentActivity)myContext).getSupportFragmentManager();
                     newFragment.show(fragManager, "timeFragment");
@@ -298,6 +302,7 @@ public class Fragment1 extends Fragment {
                         while ((chr = fisGetFiles.read()) != -1) {
                             builder.append((char) chr);
                         }
+                        fisGetFiles.close();
                         String tempMin = builder.toString();
                         fisGetFiles = getActivity().openFileInput("tempMax.txt");
                         builder = new StringBuilder();
@@ -305,6 +310,7 @@ public class Fragment1 extends Fragment {
                         while ((ch = fisGetFiles.read()) != -1) {
                             builder.append((char) ch);
                         }
+                        fisGetFiles.close();
                         String tempMax = builder.toString();
                         boolean notFound = true;
                         for (int i = 0; i < actionNames.length && notFound; i++) {
@@ -420,6 +426,7 @@ public class Fragment1 extends Fragment {
                             ca+=currentActions[i]+",";
                         }
                         fos.write(ca.getBytes());
+                        fos.close();
                         DialogFragment newFragment = new removeFragment();
                         FragmentManager fragManager = ((FragmentActivity)myContext).getSupportFragmentManager();
                         newFragment.show(fragManager, "removeFragment");
@@ -525,6 +532,7 @@ public class Fragment1 extends Fragment {
                     while ((chr = fisGetFiles.read()) != -1) {
                         builder.append((char) chr);
                     }
+                    fisGetFiles.close();
                     tempMin = builder.toString();
                     fisGetFiles = getActivity().openFileInput("tempMax.txt");
                     builder = new StringBuilder();
@@ -532,6 +540,7 @@ public class Fragment1 extends Fragment {
                     while ((ch = fisGetFiles.read()) != -1) {
                         builder.append((char) ch);
                     }
+                    fisGetFiles.close();
                     tempMax = builder.toString();
                 }catch(Exception e) {
                     e.printStackTrace();
@@ -596,6 +605,7 @@ public class Fragment1 extends Fragment {
                         while ((chr = fisGetFiles.read()) != -1) {
                             builder.append((char) chr);
                         }
+                        fisGetFiles.close();
                         tempMin = builder.toString();
                         fisGetFiles = getActivity().openFileInput("tempMax.txt");
                         builder = new StringBuilder();
@@ -603,6 +613,7 @@ public class Fragment1 extends Fragment {
                         while ((ch = fisGetFiles.read()) != -1) {
                             builder.append((char) ch);
                         }
+                        fisGetFiles.close();
                         tempMax = builder.toString();
                     }catch(Exception e) {
                         e.printStackTrace();
