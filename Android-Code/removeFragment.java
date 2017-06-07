@@ -1,6 +1,5 @@
 package com.example.application.fragment;
 
-import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,12 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-
 import com.example.application.MainActivity;
 import com.example.application.R;
-
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -50,7 +46,8 @@ public class removeFragment extends android.support.v4.app.DialogFragment {
                 }else{
                     builder.append((char)ch);
                 }
-            };
+            }
+            currentActions.close();
         }catch(IOException e){
 
         }
