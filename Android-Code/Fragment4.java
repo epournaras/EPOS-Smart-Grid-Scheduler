@@ -251,7 +251,7 @@ public class Fragment4 extends Fragment {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View g) {
-                android_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+                android_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
                 int[] answers = new int[]{
                         qOneOneProgressChangedValue,
                         qOneTwoProgressChangedValue,
@@ -288,6 +288,8 @@ public class Fragment4 extends Fragment {
                 try {
                     fOut = new FileOutputStream(file1);
                     fOut.write(submitString.getBytes());
+                    fOut.close();
+
                     String toastString = "Submitted";
                     Context context = getActivity();
                     int durationOfToast = Toast.LENGTH_SHORT;
