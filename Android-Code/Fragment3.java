@@ -6,9 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.example.application.R;
-
 import java.io.FileInputStream;
 
 public class Fragment3 extends Fragment {
@@ -29,6 +27,7 @@ public class Fragment3 extends Fragment {
             while((ch = fis.read()) != -1){
                 builder.append((char)ch);
             }
+            fis.close();
             display = builder.toString();
         }catch(Exception e){
             e.printStackTrace();
