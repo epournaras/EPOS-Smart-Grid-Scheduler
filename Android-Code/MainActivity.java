@@ -110,17 +110,14 @@ public class MainActivity extends ActionBarActivity{
             String tomorrowDate = "TomorrowsDate.txt";
             String password = "Password.txt";
             String passwordMain = "PasswordMain.txt";
-            File todayDateFile = new File(this.getFilesDir(),todayDate);
-            File tomorrowDateFile = new File(this.getFilesDir(), tomorrowDate);
-            File file = new File(this.getFilesDir(), fileName);
-            File todayFile = new File(this.getFilesDir(), todaySchedule);
+
             File tomorrowFile = new File(this.getFilesDir(), tomorrowSchedule);
-            File listFile = new File(this.getFilesDir(), listAsItWas);
-            File boxTextFile = new File(this.getFilesDir(), boxText);
+
             // first time task
             try{
                 FileOutputStream fosPSched =this.openFileOutput(fileName, MODE_PRIVATE);
                 fosPSched.write("0".getBytes());
+                fosPSched.close();
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -134,38 +131,45 @@ public class MainActivity extends ActionBarActivity{
             try{
                 FileOutputStream fosPass = this.openFileOutput(password, MODE_PRIVATE);
                 fosPass.write("Password1234".getBytes());
+                fosPass.close();
             }catch(Exception e){
                 e.printStackTrace();
             }
             try{
                 FileOutputStream fosPassMain = this.openFileOutput(passwordMain, MODE_PRIVATE);
                 fosPassMain.write("Password5678".getBytes());
+                fosPassMain.close();
             }catch(Exception e){
                 e.printStackTrace();
             }
             try{
                 FileOutputStream fosMin = this.openFileOutput("tempMin.txt", MODE_PRIVATE);
                 fosMin.write("00:00".getBytes());
+                fosMin.close();
             }catch(Exception e){
                 e.printStackTrace();
             }
             try{
                 FileOutputStream fosMax = this.openFileOutput("tempMax.txt", MODE_PRIVATE);
                 fosMax.write("23:59".getBytes());
+                fosMax.close();
             }catch(Exception e){
                 e.printStackTrace();
             }
             try{
                 FileOutputStream fosDate = this.openFileOutput(todayDate, MODE_PRIVATE);
                 fosDate.write(date.getBytes());
+                fosDate.close();
                 fosDate = this.openFileOutput(tomorrowDate, MODE_PRIVATE);
                 fosDate.write(tomorrowsDate.getBytes());
+                fosDate.close();
             }catch(Exception e){
                 e.printStackTrace();
             }
             try{
                 FileOutputStream fosInitialiseList = this.openFileOutput(listAsItWas, MODE_PRIVATE);
                 fosInitialiseList.write("".getBytes());
+                fosInitialiseList.close();
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -183,6 +187,7 @@ public class MainActivity extends ActionBarActivity{
                 while ((ch = fisDate.read()) != -1) {
                     builder.append((char) ch);
                 }
+                fisDate.close();
                 date = builder.toString();
             }catch(Exception e){
                 e.printStackTrace();
@@ -193,6 +198,7 @@ public class MainActivity extends ActionBarActivity{
                 while ((ch = fisDate.read()) != -1) {
                     builder.append((char) ch);
                 }
+                fisDate.close();
                 tomorrowsDate = builder.toString();
             }catch(Exception e){
                 e.printStackTrace();
@@ -207,9 +213,12 @@ public class MainActivity extends ActionBarActivity{
                     while((ch = fis.read()) != -1){
                         builder.append((char)ch);
                     }
+                    fis.close();
+
                     String todaySch = builder.toString();
                     FileOutputStream fos = this.openFileOutput("TodaySchedule.txt", this.MODE_PRIVATE);
                     fos.write(todaySch.getBytes());
+                    fos.close();
                 }catch(Exception e){
                     String toastString = "Internal error";
                     int durationOfToast = Toast.LENGTH_SHORT;
@@ -223,8 +232,11 @@ public class MainActivity extends ActionBarActivity{
                 try{
                     FileOutputStream fosDate = this.openFileOutput("Date.txt", MODE_PRIVATE);
                     fosDate.write(date.getBytes());
+                    fosDate.close();
+
                     fosDate= this.openFileOutput("TomorrowsDate.txt", MODE_PRIVATE);
                     fosDate.write(tomorrowsDate.getBytes());
+                    fosDate.close();
                 }catch(Exception e){
                     e.printStackTrace();
                 }
@@ -346,6 +358,7 @@ public class MainActivity extends ActionBarActivity{
             while ((ch = fisDate.read()) != -1) {
                 builder.append((char) ch);
             }
+            fisDate.close();
             dateTest = builder.toString();
         }catch(Exception e){
             e.printStackTrace();
@@ -359,8 +372,11 @@ public class MainActivity extends ActionBarActivity{
             try{
                 fosDate =this.openFileOutput("Date.txt",MODE_PRIVATE);
                 fosDate.write(da.getBytes());
+                fosDate.close();
+
                 fosDate = this.openFileOutput("TomorrowsDate.txt",MODE_PRIVATE);
                 fosDate.write(tda.getBytes());
+                fosDate.close();
             }catch(IOException e){
                 e.printStackTrace();
             }
@@ -370,9 +386,12 @@ public class MainActivity extends ActionBarActivity{
                 while((ch = fis.read()) != -1){
                     builder.append((char)ch);
                 }
+                fis.close();
+
                 String todaySch = builder.toString();
                 FileOutputStream fos = this.openFileOutput("TodaySchedule.txt", this.MODE_PRIVATE);
                 fos.write(todaySch.getBytes());
+                fos.close();
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -416,6 +435,7 @@ public class MainActivity extends ActionBarActivity{
             while ((ch = fis.read()) != -1) {
                 builder.append((char) ch);
             }
+            fis.close();
             this.list = builder.toString();
         } catch (Exception e) {
             e.printStackTrace();
@@ -478,4 +498,5 @@ public class MainActivity extends ActionBarActivity{
             }
         }, 100);
     }
+
 }
