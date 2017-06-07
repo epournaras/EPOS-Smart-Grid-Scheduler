@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.example.application.MainActivity;
 import com.example.application.R;
 
@@ -42,6 +41,7 @@ public class passwordFragment extends android.support.v4.app.DialogFragment {
                     while ((ch = fisPass.read()) != -1) {
                         builder.append((char) ch);
                     }
+                    fisPass.close();
                     passwordCheck = builder.toString();
                 }catch(Exception e){
                     e.printStackTrace();
