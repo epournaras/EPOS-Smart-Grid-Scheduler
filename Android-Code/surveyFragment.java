@@ -91,6 +91,29 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
             qTwentyeightThirteenProgressChangedValue,qTwentyeightFourteenProgressChangedValue;
     private boolean bElevenOne, bElevenTwo,bElevenThree,bElevenFour,bElevenFive,bElevenSix,bElevenSeven,bElevenEight,bElevenNine,bElevenTen,bElevenEleven,bElevenTwelve,bElevenThirteen,bElevenFourteen= false;
     private String android_id;
+    //House Number, Computer, Cooker (Hob),Cooker (Oven),Dishwasher,Kettle,Shower,Tumble Dryer, Washing Machine
+    private String[] houseWattages = {
+            "1,29,1000,3000,1379,1800,9000,472,513",
+            "2,75,1000,3000,770,2257,9000,2500,327",
+            "3,16,1000,3000,1150,1550,9000,1373,492",
+            "4,52,1000,3000,1350,1703,9000,2500,700",
+            "5,66,1000,3000,1350,2352,9000,766,700",
+            "6,66,1000,3000,778,2192,9000,2500,369",
+            "7,75,1000,3000,613,1913,9000,2075,442",
+            "8,19,1000,3000,1350,2340,9000,2500,273",
+            "9,75,1000,3000,700,2359,9000,2500,507",
+            "10,75,1000,3000,1350,1800,9000,2500,349",
+            "11,10,1000,3000,753,1841,9000,2500,700",
+            "12,75,1000,3000,1350,2482,9000,2500,700",
+            "13,39,1000,3000,1250,1542,9000,1510,203",
+            "15,20,1000,3000,1350,2521,9000,1476,495",
+            "16,27,1000,3000,1239,1800,9000,2500,300",
+            "17,20,1000,3000,1350,1689,9000,1594,373",
+            "18,26,1000,3000,1021,1800,9000,2500,377",
+            "19,75,1000,3000,1350,2448,9000,2500,700",
+            "20,75,1000,3000,1350,2350,9000,1097,293",
+            "21,75,1000,3000,1350,1276,9000,1240,434",
+            "Default,75,1000,3000,1350,1800,9000,2500,700"};
     @Override
     public void onCreate(Bundle savedInstaceState){
         super.onCreate(savedInstaceState);
@@ -1673,6 +1696,85 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
                             }
                         }
                     }
+                    String houseData= "";
+                    try{
+                        FileInputStream fisGetFiles = getActivity().openFileInput("tempMin.txt");
+                        int chr;
+                        StringBuilder builder = new StringBuilder();
+
+                        while ((chr = fisGetFiles.read()) != -1) {
+                            builder.append((char) chr);
+                        }
+                        fisGetFiles.close();
+                        houseData = builder.toString();
+                    }catch(Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    String[] houseDataArray = houseData.split("[\\r\\n]+");
+                    String[][] houseDataArrayArray = new String[houseDataArray.length][];
+                    for(int i = 0; i<houseDataArray.length;i++){
+                        houseDataArrayArray[i] = houseDataArray[i].split(",");
+                    }
+                    boolean useDefault = false;
+                    String houseToUse = "";
+                    double[] houseCount = {
+                            0,//House 1
+                            0,//House 2
+                            0,//House 3
+                            0,//House 4
+                            0,//House 5
+                            0,//House 6
+                            0,//House 7
+                            0,//House 8
+                            0,//House 9
+                            0,//House 10
+                            0,//House 11
+                            0,//House 12
+                            0,//House 13
+                            0,//House 15
+                            0,//House 16
+                            0,//House 17
+                            0,//House 18
+                            0,//House 19
+                            0,//House 20
+                            0 //House 21
+                    };
+                    for(int i = 0; i<houseDataArrayArray.length;i++){
+                        //Occupancy
+
+                        if(Answers[9].equals(houseDataArrayArray[i][1])){
+                            houseCount[i]+=0.533;
+                        }
+                        //Year Built
+                        if(Answers[8].equals(houseDataArrayArray[i][6])){
+                            houseCount[i]+=0.067;
+                        }
+                        //Size
+                        if(Answers[7].equals(houseDataArrayArray[i][5])){
+                            houseCount[i]+=0.267;
+                        }
+                        //House Type
+                        if(Answers[6].equals(houseDataArrayArray[i][4])){
+                            houseCount[i]+=0.133;
+                        }
+                    }
+                    int closestHouseIndex = 0;
+                    for(int i = 1; i<houseCount.length;i++){
+                        double newNumber = houseCount[i];
+                        if(newNumber>houseCount[closestHouseIndex]){
+                            closestHouseIndex = i;
+                        }
+                    }
+                    String wattages = "";
+                    if(houseCount[closestHouseIndex]<0.5){
+                        wattages = houseWattages[houseWattages.length-1];
+                    }else{
+                        wattages = houseWattages[closestHouseIndex];
+                    }
+
+                    String wattageFile = "wattagesFile.txt";
+
                     String fileName = android_id+"DEMOGRAPHICS.txt";
                     String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
                     FileOutputStream fOut=null;
@@ -1689,6 +1791,13 @@ public class surveyFragment extends android.support.v4.app.DialogFragment {
                         fOut.write(submitString.getBytes());
                         fOut.close();
                     } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    try{
+                        fOut = getActivity().openFileOutput(wattageFile, Context.MODE_PRIVATE);
+                        fOut.write(wattages.getBytes());
+                        fOut.close();
+                    }catch(Exception e){
                         e.printStackTrace();
                     }
                     String toastString = "Submitted";
