@@ -36,14 +36,15 @@ public class createFiles extends AsyncTask<String, Integer, String> {
             "Shower"
     };
     private String[] actionFileNames  ={
-            "Hob",
-            "Oven",
-            "Tumble_Dryer",
-            "Washing_Machine",
-            "Computer",
-            "Kettle",
-            "Dishwasher",
-            "Shower"};
+            "Hob", //2
+            "Oven", //3
+            "Tumble_Dryer", //7
+            "Washing_Machine", //8
+            "Computer", //1
+            "Kettle", //5
+            "Dishwasher",//4
+            "Shower" //6
+            };
 
     public createFiles(String[][][] d, Context c, MainActivity m){
         this.data = d;
@@ -65,6 +66,24 @@ public class createFiles extends AsyncTask<String, Integer, String> {
     public void storeData(String[][][] a) {
         if(a.length>0){
             if(a[0].length>1){
+                String wattages = "";
+                String[] wattagesArray = new String[1];
+                try{
+                    FileInputStream fis = activity.openFileInput("wattages.txt");
+                    int chr;
+                    StringBuilder builder = new StringBuilder();
+                    while ((chr = fis.read()) != -1) {
+                        builder.append((char) chr);
+                    }
+                    wattages = builder.toString();
+                    //  0,              1,          2,          3,              4,    5,      6,        7,              8
+                    //House Number, Computer, Cooker (Hob),Cooker (Oven),Dishwasher,Kettle,Shower,Tumble Dryer, Washing Machine
+                    wattagesArray = wattages.split(",");
+                    fis.close();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+
                 Action helper = new Action();
                 String[] device = new String[a[0].length];
 
@@ -80,16 +99,72 @@ public class createFiles extends AsyncTask<String, Integer, String> {
                 for(int i = 0; i<device.length;i++){
                     device[i] = title;
                 }
-
+                int index = 0;
                 for(int i = 0; i<a.length;i++){
                     for(int j = 0; j<a[i].length;j++){
                         int planNumber = i+1;
                         device[j]+="Plan "+planNumber+",";
                         for(int q = 0; q<a[i][j].length;q++){
                             if(q<a[i][j].length-1){
-                                device[j]+=a[i][j][q]+",";
+                                if(a[i][j][q].equals("1")){
+                                    switch(j){
+                                        case 0:
+                                            index = 2;
+                                            break;
+                                        case 1:
+                                            index = 3;
+                                            break;
+                                        case 2:
+                                            index = 7;
+                                            break;
+                                        case 3:
+                                            index = 8;
+                                            break;
+                                        case 4:
+                                            index = 1;
+                                            break;
+                                        case 5:
+                                            index = 5;
+                                            break;
+                                        case 6:
+                                            index = 4;
+                                            break;
+                                        case 7:
+                                            index = 6;
+                                            break;
+                                    }
+                                }
+                                device[j]+=wattagesArray[index]+",";
                             }else{
-                                device[j]+=a[i][j][q]+"\n";
+                                if(a[i][j][q].equals("1")){
+                                    switch(j){
+                                        case 0:
+                                            index = 2;
+                                            break;
+                                        case 1:
+                                            index = 3;
+                                            break;
+                                        case 2:
+                                            index = 7;
+                                            break;
+                                        case 3:
+                                            index = 8;
+                                            break;
+                                        case 4:
+                                            index = 1;
+                                            break;
+                                        case 5:
+                                            index = 5;
+                                            break;
+                                        case 6:
+                                            index = 4;
+                                            break;
+                                        case 7:
+                                            index = 6;
+                                            break;
+                                    }
+                                }
+                                device[j]+=wattagesArray[index]+"\n";
                             }
                         }
                     }
