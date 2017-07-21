@@ -69,7 +69,7 @@ public class createFiles extends AsyncTask<String, Integer, String> {
                 String wattages = "";
                 String[] wattagesArray = new String[1];
                 try{
-                    FileInputStream fis = activity.openFileInput("wattages.txt");
+                    FileInputStream fis = activity.openFileInput("wattagesFile.txt");
                     int chr;
                     StringBuilder builder = new StringBuilder();
                     while ((chr = fis.read()) != -1) {
@@ -170,7 +170,7 @@ public class createFiles extends AsyncTask<String, Integer, String> {
                     }
                 }
 
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-hh_mm_ss-a");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-HH_mm_ss");
                 String date = simpleDateFormat.format(new Date());
 
                 String android_id;
