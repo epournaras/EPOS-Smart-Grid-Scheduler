@@ -34,6 +34,7 @@ public class NotificationService extends Service {
      */
     @Override
     public IBinder onBind(Intent intent) {
+        System.out.print("called\n");
         return null;
     }
     /**
@@ -51,6 +52,7 @@ public class NotificationService extends Service {
         ConnectivityManager cm = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
 
         if(!cm.getBackgroundDataSetting()) {
+            System.out.print("here\n");
             stopSelf();
             return;
         }
@@ -83,13 +85,17 @@ public class NotificationService extends Service {
             }catch(Exception e){
                 e.printStackTrace();
             }
-            Intent intent = new Intent(context, Fragment3.class);
+
+
+            Intent intent = new Intent(context, MainActivity.class);
+            intent.putExtra("fragment","3");
             PendingIntent pIntent = PendingIntent.getActivity(context, (int) System.currentTimeMillis(), intent, 0);
             String[] timesA = times.split(",");
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String fullTime = simpleDateFormat.format(new Date());
-            String currentTime = fullTime.substring(12,16);
+            String currentTime = fullTime.substring(11,16);
             for(int i = 0; i<timesA.length;i++){
+                System.out.print("\nNotification Service:"+i+" "+currentTime+" "+timesA[i]+"\n");
                 if(currentTime.equals(timesA[i])){
                     Notification noti = new Notification.Builder(context)
                             .setContentTitle("Your Plan is starting!")
