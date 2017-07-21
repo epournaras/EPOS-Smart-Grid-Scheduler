@@ -1,12 +1,7 @@
 package com.example.application.fragment;
 
-import android.app.Activity;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.view.View;
-
 import com.example.application.MainActivity;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -55,3 +50,5 @@ public class changeDateTask extends AsyncTask<String, Integer, String>{
             mainActivity.setDate(todayDate,tomorrowDate);
         }
     }
+
+}
