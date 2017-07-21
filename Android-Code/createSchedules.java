@@ -2,11 +2,12 @@ package com.example.application.fragment;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.TimingLogger;
 import android.widget.Toast;
-
 import com.example.application.MainActivity;
-import com.example.schedulelibrary.Action;
 import com.example.schedulelibrary.Schedule;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by warrens on 11.05.17.
@@ -29,8 +30,16 @@ public class createSchedules extends AsyncTask<Schedule, Integer, Schedule> {
 
     protected Schedule doInBackground(Schedule... lists){
         Schedule list = lists[0];
+        long startTime = System.currentTimeMillis();
         list.makeScheduleList();
+        long stopTime = System.currentTimeMillis();
+        long elapsedTime = stopTime - startTime;
+        System.out.print("\n"+"Make Schedules: "+elapsedTime+"\n");
+        startTime = System.currentTimeMillis();
         list.sortSchedulesByRating();
+        stopTime = System.currentTimeMillis();
+        elapsedTime = stopTime - startTime;
+        System.out.print("\n"+"Sort Schedules: "+elapsedTime+"\n");
         return list;
     }
     protected void onProgressUpdate(Integer... progress) {
