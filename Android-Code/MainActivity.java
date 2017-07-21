@@ -90,6 +90,7 @@ public class MainActivity extends ActionBarActivity{
         listSliding.add(new itemSlideMenu(R.mipmap.ic_launcher, "Today's Schedule"));
         listSliding.add(new itemSlideMenu(R.mipmap.ic_launcher,"Output Survey"));
         final String PREFS_NAME = "MyPrefsFile";
+        String frag = getIntent().getStringExtra("fragment");
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         settings.edit().putBoolean("putMin", false).commit();
@@ -319,8 +320,15 @@ public class MainActivity extends ActionBarActivity{
         listViewSliding.setItemChecked(0, true);
 
         drawerLayout.closeDrawer(listViewSliding);
-
-        replaceFragment(0);
+        if(frag!=null){
+            if(frag.equals("3")){
+                replaceFragment(2);
+            }else{
+                replaceFragment(0);
+            }
+        }else{
+            replaceFragment(0);
+        }
 
         listViewSliding.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -350,24 +358,24 @@ public class MainActivity extends ActionBarActivity{
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
     }
 
-//    public void onResume() {
-//        super.onResume();
-//
-//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-//
-//        int minutes = prefs.getInt("interval",1); //user defined how often they want to be notified.
-//
-//        AlarmManager am =(AlarmManager) getSystemService(ALARM_SERVICE);
-//
-//        Intent i = new Intent(this, NotificationService.class);
-//        PendingIntent pi =PendingIntent.getService(this, 0, i, 0);
-//        am.cancel(pi);
-//
-//        // by my own convention, minutes <= 0 means notifications are disabled
-//        if(minutes > 0){
-//            am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + minutes*60*1000,minutes*60*1000, pi);
-//        }
-//    }
+    public void onResume() {
+        super.onResume();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        int minutes = prefs.getInt("interval",1); //user defined how often they want to be notified.
+
+        AlarmManager am =(AlarmManager) getSystemService(ALARM_SERVICE);
+
+        Intent i = new Intent(this, NotificationService.class);
+        PendingIntent pi =PendingIntent.getService(this, 0, i, 0);
+        am.cancel(pi);
+
+        // by my own convention, minutes <= 0 means notifications are disabled
+        if(minutes > 0){
+            am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + minutes*60*1000,minutes*60*1000, pi);
+        }
+    }
 
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.main_menu,menu);
@@ -465,6 +473,7 @@ public class MainActivity extends ActionBarActivity{
             }catch(IOException e){
                 e.printStackTrace();
             }
+            String todaySch = "";
             try {
                 FileInputStream fis = this.openFileInput("chosenPlan.txt");
                 builder = new StringBuilder();
@@ -473,12 +482,70 @@ public class MainActivity extends ActionBarActivity{
                 }
                 fis.close();
 
-                String todaySch = builder.toString();
+                todaySch = builder.toString();
                 FileOutputStream fos = this.openFileOutput("TodaySchedule.txt", this.MODE_PRIVATE);
                 fos.write(todaySch.getBytes());
                 fos.close();
             }catch(Exception e){
                 e.printStackTrace();
+            }
+            String[] planParts = todaySch.split("\n");
+            char[][] planPartsCharArray = new char[planParts.length][];
+            for(int i = 0; i<planParts.length;i++){
+                planPartsCharArray[i]=planParts[i].toCharArray();
+            }
+            char[][] times = new char[planParts.length][11];
+            for(int i=0; i<planPartsCharArray.length;i++){
+                boolean time = false;
+                int index = 0;
+                for(int j=0; j<planPartsCharArray[i].length;j++){
+                    if((planPartsCharArray[i][j] == '0')||(planPartsCharArray[i][j] == '1')||(planPartsCharArray[i][j] == '2')){
+                        time = true;
+                    }
+                    if(time ==true){
+                        if(index<5){
+                            times[i][index] = planPartsCharArray[i][j];
+                            index++;
+                        }
+                    }
+                }
+            }
+            String[] timeStrings = new String[times.length];
+            for(int i = 0; i<timeStrings.length;i++){
+                timeStrings[i] = new String(""+times[i][0]+times[i][1]+times[i][2]+times[i][3]+times[i][4]);
+                if(i==0){
+                    try{
+                        FileOutputStream fos = openFileOutput("timesToNotify.txt", Context.MODE_PRIVATE);
+                        String submit = timeStrings[i]+",";
+                        fos.write(submit.getBytes());
+                        fos.close();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }else{
+                    if(i!=timeStrings.length-1){
+                        try{
+                            FileOutputStream fos = openFileOutput("timesToNotify.txt", Context.MODE_APPEND);
+                            String submit = timeStrings[i]+",";
+                            System.out.print("\n"+submit+"\n");
+                            fos.write(submit.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    }else{
+                        try{
+                            FileOutputStream fos = openFileOutput("timesToNotify.txt", Context.MODE_APPEND);
+                            String submit = timeStrings[i]+",";
+                            fos.write(submit.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+
             }
             final String PREFS_NAME = "MyPrefsFile";
             SharedPreferences settings = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -605,9 +672,11 @@ public class MainActivity extends ActionBarActivity{
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run(){
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+
                 Intent intent = new Intent(m, MainActivity.class);
                 PendingIntent pIntent = PendingIntent.getActivity(m, (int) System.currentTimeMillis(), intent, 0);
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                 String time = simpleDateFormat.format(new Date());
                 char[] timeChars = time.toCharArray();
                 String numeralS =""+timeChars[12];
@@ -630,7 +699,6 @@ public class MainActivity extends ActionBarActivity{
                     e.printStackTrace();
                 }
                 String date = ""+timeChars[0]+timeChars[1]+timeChars[2]+timeChars[3]+timeChars[4]+timeChars[5]+timeChars[6]+timeChars[7]+timeChars[8]+timeChars[9];
-                char[] dayDateChars = dayDate.toCharArray();
                 if(!dayDate.equals(date)){
                     if(hour >= 21){
                         Notification noti = new Notification.Builder(m)
