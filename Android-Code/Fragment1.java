@@ -323,7 +323,6 @@ public class Fragment1 extends Fragment {
                         int min = opt.getIntTime(tempMin);
                         int max = opt.getIntTime(tempMax);
                         int dur = opt.getIntTime(selectedDuration);
-                        System.out.print(selectedDuration+"\n");
                         if(min+dur<=max){
                             selectedActiv = activDrp.getSelectedItem().toString();
                             selectedOptItemOne = spinnerOptHr.getSelectedItem().toString();
@@ -379,7 +378,7 @@ public class Fragment1 extends Fragment {
         bFour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                settings.edit().putBoolean("defaultBool", true).commit();
                 getList(layoutView);
                 String display = "";
                 try {
@@ -398,6 +397,17 @@ public class Fragment1 extends Fragment {
                         toast.show();
                     }
                     ((MainActivity)getActivity()).setDisplay(display);
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                    String time = simpleDateFormat.format(new Date());
+                    char[] timeChars = time.toCharArray();
+                    String date = ""+timeChars[0]+timeChars[1]+timeChars[2]+timeChars[3]+timeChars[4]+timeChars[5]+timeChars[6]+timeChars[7]+timeChars[8]+timeChars[9];
+                    try{
+                        FileOutputStream fos = getActivity().openFileOutput("lastSendPressDayDate.txt", Context.MODE_PRIVATE);
+                        fos.write(date.getBytes());
+                        fos.close();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
                 } catch (NullPointerException ex) {
                     String toastString = "Error Send.";
                     Context context = getActivity();
@@ -568,7 +578,7 @@ public class Fragment1 extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                 String fullTime= simpleDateFormat.format(new Date());
                 String date = fullTime.substring(0,10);
                 String title = date+"'s Schedule";
