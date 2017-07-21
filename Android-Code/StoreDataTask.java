@@ -2,19 +2,13 @@ package com.example.application.fragment;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Environment;
-import android.provider.Settings.Secure;
+import android.util.TimingLogger;
 import android.widget.Toast;
 import com.example.application.MainActivity;
 import com.example.schedulelibrary.Action;
 import com.example.schedulelibrary.Schedule;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by warrens on 11.05.17.
@@ -42,21 +36,13 @@ public class StoreDateTask extends AsyncTask<Schedule, Integer, String> {
             "Wash Dishes (dishwasher)",
             "Shower"
     };
-    private String[] actionFileNames  ={
-            "Hob",
-            "Oven",
-            "Tumble_Dryer",
-            "Washing_Machine",
-            "Computer",
-            "Kettle",
-            "Dishwasher",
-            "Shower"};
     private String[][][] parseableData;
     protected void onPreExecute(){
 
     }
 
     protected String doInBackground(Schedule... list){
+        long startTime = System.currentTimeMillis();
         Schedule lists = list[0];
         String display = "";
         parseableData = new String[1][1][1];
@@ -111,12 +97,15 @@ public class StoreDateTask extends AsyncTask<Schedule, Integer, String> {
             }
         }
         for(int i = 0; i<fullList.length;i++){
-            int index = i+1;
-            display+="\n"+"Schedule "+index+"\n";
             for(int j = 0; j<fullList[i].length;j++){
-                display+= fullList[i][j].name+"\t"+fullList[i][j].getTimeString(fullList[i][j].windowStart)+"-"+fullList[i][j].getTimeString(fullList[i][j].windowEnd)+"\n";
+                if(j<fullList[i].length-1)display+= fullList[i][j].name+"\t"+fullList[i][j].getTimeString(fullList[i][j].windowStart)+"-"+fullList[i][j].getTimeString(fullList[i][j].windowEnd)+",";
+                else display+= fullList[i][j].name+"\t"+fullList[i][j].getTimeString(fullList[i][j].windowStart)+"-"+fullList[i][j].getTimeString(fullList[i][j].windowEnd);
             }
+            display+="\n";
         }
+        long stopTime = System.currentTimeMillis();
+        long elapsedTime = stopTime - startTime;
+        System.out.print("\n"+"Display Schedules: "+elapsedTime+"\n");
         return display;
     }
     protected void onProgressUpdate(Integer... progress) {
