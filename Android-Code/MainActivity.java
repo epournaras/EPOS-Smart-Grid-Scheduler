@@ -1,6 +1,10 @@
 package com.example.application;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +16,8 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Handler;
+import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -26,6 +32,7 @@ import com.example.application.fragment.Fragment1;
 import com.example.application.fragment.Fragment2;
 import com.example.application.fragment.Fragment3;
 import com.example.application.fragment.Fragment4;
+import com.example.application.fragment.NotificationService;
 import com.example.application.fragment.changeDateTask;
 import com.example.application.fragment.createSchedules;
 import com.example.application.model.itemSlideMenu;
@@ -85,8 +92,8 @@ public class MainActivity extends ActionBarActivity{
         final String PREFS_NAME = "MyPrefsFile";
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        settings.edit().putBoolean("putMin", false);
-        settings.edit().putBoolean("putMax", false);
+        settings.edit().putBoolean("putMin", false).commit();
+        settings.edit().putBoolean("putMax", false).commit();
         if(settings.getBoolean("my_first_time", true)){
             String[] perms = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"};
             int version = Build.VERSION.SDK_INT;
@@ -94,9 +101,30 @@ public class MainActivity extends ActionBarActivity{
                 int permsRequestCode = MY_PERMISSIONS_REQUEST_STORAGE;
                 requestPermissions(perms, permsRequestCode);
             }
-
+            String houseData = "House,Occupancy,Construction Year,Appliances Owned,Type,Size,Approximate Construction Year\n" +
+                    "1,2,1975-1980,35,Detached,4 bed,1970 - 1979\n" +
+                    "2,4,-,15,Semi-detached,3 bed,-\n" +
+                    "3,2,1988,27,Detached,3 bed,1980 - 1989\n" +
+                    "4,2,1850-1899,33,Detached,4 bed,Pre 1900s\n" +
+                    "5,4,1878,44,Mid-terrace,4 bed,Pre 1900s\n" +
+                    "6,2,2005,49,Detached,4 bed,2000 - 2009\n" +
+                    "7,4,1965-1974,25,Detached,3 bed,1960 - 1969\n" +
+                    "8,2,1966,35,Detached,2 bed,1960 - 1969\n" +
+                    "9,2,1919-1944,24,Detached,3 bed,1920 - 1929\n" +
+                    "10,4,1919-1944,31,Detached,3 bed,1920 - 1929\n" +
+                    "11,1,1945-1964,25,Detached,3 bed,1950 - 1959\n" +
+                    "12,3,1991-1995,26,Detached,3 bed,1990 - 1999\n" +
+                    "13,4,post 2002,28,Detached,4 bed,2000 - 2010\n" +
+                    "15,1,1965-1974,19,Semi-detached,3 bed,1960 - 1969\n" +
+                    "16,6,1981-1990,48,Detached,5 bed,1980 - 1989\n" +
+                    "17,3,mid 60s,22,Detached,3 bed,1960 - 1969\n" +
+                    "18,2,1965-1974,34,Detached,3 bed,1960 - 1969\n" +
+                    "19,4,1945-1964,26,Semi-detached,3 bed,1950 - 1959\n" +
+                    "20,2,1965-1974,39,Detached,3 bed,1960 - 1969\n" +
+                    "21,4,1981-1990,23,Detached,3 bed,1980 - 1989";
             //the app is being launched for first time, do something
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            String lastSendPressDayDateFile = "lastSendPressDayDate.txt";
             fullTime= simpleDateFormat.format(new Date());
             date = fullTime.substring(0,10);
             fullTime = simpleDateFormat.format(new Date(((new Date()).getTime() + 86400000)));
@@ -110,13 +138,51 @@ public class MainActivity extends ActionBarActivity{
             String tomorrowDate = "TomorrowsDate.txt";
             String password = "Password.txt";
             String passwordMain = "PasswordMain.txt";
-
+            String houseDataName = "houseData.txt";
+            String chosenPlanFile = "chosenPlan.txt";
+            String wattageFile = "wattagesFile.txt";
+            String timesToNotifyFile = "timesToNotify.txt";
             File tomorrowFile = new File(this.getFilesDir(), tomorrowSchedule);
 
             // first time task
             try{
+                FileOutputStream fos = this.openFileOutput(timesToNotifyFile,MODE_PRIVATE);
+                fos.write("--:--".getBytes());
+                fos.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            try{
+                FileOutputStream fos = this.openFileOutput(wattageFile,MODE_PRIVATE);
+                fos.write("Default,75,1000,3000,1350,1800,9000,2500,700".getBytes());
+                fos.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            try{
+                FileOutputStream fos = this.openFileOutput(chosenPlanFile,MODE_PRIVATE);
+                fos.write(" ".getBytes());
+                fos.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            try{
+                FileOutputStream fos = this.openFileOutput(lastSendPressDayDateFile,MODE_PRIVATE);
+                fos.write("0".getBytes());
+                fos.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            try{
                 FileOutputStream fosPSched =this.openFileOutput(fileName, MODE_PRIVATE);
                 fosPSched.write("0".getBytes());
+                fosPSched.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            try{
+                FileOutputStream fosPSched =this.openFileOutput(houseDataName, MODE_PRIVATE);
+                fosPSched.write(houseData.getBytes());
                 fosPSched.close();
             }catch(Exception e){
                 e.printStackTrace();
@@ -203,12 +269,12 @@ public class MainActivity extends ActionBarActivity{
             }catch(Exception e){
                 e.printStackTrace();
             }
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String dateTest = simpleDateFormat.format(new Date());
             dateTest = dateTest.substring(0,10);
             if(!(date.equals(dateTest))){// change so it only examines the day and nothing else
                 try {
-                    FileInputStream fis = this.openFileInput("TomorrowSchedule.txt");
+                    FileInputStream fis = this.openFileInput("chosenPlan.txt");
                     builder = new StringBuilder();
                     while((ch = fis.read()) != -1){
                         builder.append((char)ch);
@@ -280,9 +346,28 @@ public class MainActivity extends ActionBarActivity{
                 invalidateOptionsMenu();
             }
         };
-
+        checkForTodaysScheduleTask(this);
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
     }
+
+//    public void onResume() {
+//        super.onResume();
+//
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+//
+//        int minutes = prefs.getInt("interval",1); //user defined how often they want to be notified.
+//
+//        AlarmManager am =(AlarmManager) getSystemService(ALARM_SERVICE);
+//
+//        Intent i = new Intent(this, NotificationService.class);
+//        PendingIntent pi =PendingIntent.getService(this, 0, i, 0);
+//        am.cancel(pi);
+//
+//        // by my own convention, minutes <= 0 means notifications are disabled
+//        if(minutes > 0){
+//            am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + minutes*60*1000,minutes*60*1000, pi);
+//        }
+//    }
 
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.main_menu,menu);
@@ -381,7 +466,7 @@ public class MainActivity extends ActionBarActivity{
                 e.printStackTrace();
             }
             try {
-                FileInputStream fis = this.openFileInput("TomorrowSchedule.txt");
+                FileInputStream fis = this.openFileInput("chosenPlan.txt");
                 builder = new StringBuilder();
                 while((ch = fis.read()) != -1){
                     builder.append((char)ch);
@@ -393,6 +478,23 @@ public class MainActivity extends ActionBarActivity{
                 fos.write(todaySch.getBytes());
                 fos.close();
             }catch(Exception e){
+                e.printStackTrace();
+            }
+            final String PREFS_NAME = "MyPrefsFile";
+            SharedPreferences settings = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            settings.edit().putBoolean("defaultBool",true).commit();
+            String tomorrowsSchedule = "TomorrowSchedule.txt";
+            FileOutputStream fos;
+            try {
+                setDisplay(" ");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                fos = openFileOutput("chosenPlan.txt", Context.MODE_PRIVATE);
+                fos.write(" ".getBytes());
+                fos.close();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -497,6 +599,59 @@ public class MainActivity extends ActionBarActivity{
                 handler.postDelayed(this, 100);
             }
         }, 100);
+    }
+
+    public void checkForTodaysScheduleTask(MainActivity m){
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run(){
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                Intent intent = new Intent(m, MainActivity.class);
+                PendingIntent pIntent = PendingIntent.getActivity(m, (int) System.currentTimeMillis(), intent, 0);
+                String time = simpleDateFormat.format(new Date());
+                char[] timeChars = time.toCharArray();
+                String numeralS =""+timeChars[12];
+                String decimalS=""+timeChars[11];
+                int numeral = Integer.parseInt(numeralS);
+                int decimal = Integer.parseInt(decimalS);
+                int hour = (decimal*10)+numeral;
+
+                String dayDate="";
+                try{
+                    FileInputStream fis = m.openFileInput("lastSendPressDayDate.txt");
+                    StringBuilder builder = new StringBuilder();
+                    int chr;
+                    while ((chr = fis.read()) != -1) {
+                        builder.append((char) chr);
+                    }
+                    fis.close();
+                    dayDate = builder.toString();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                String date = ""+timeChars[0]+timeChars[1]+timeChars[2]+timeChars[3]+timeChars[4]+timeChars[5]+timeChars[6]+timeChars[7]+timeChars[8]+timeChars[9];
+                char[] dayDateChars = dayDate.toCharArray();
+                if(!dayDate.equals(date)){
+                    if(hour >= 21){
+                        Notification noti = new Notification.Builder(m)
+                                .setContentTitle("No new plans created for tomorrow!")
+                                .setContentText("Open Scheduler now to create tomorrow's plans")
+                                .setContentIntent(pIntent)
+                                .setSmallIcon(R.mipmap.ic_launcher)
+                                .build();
+                        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                        // hide the notification after its selected
+                        noti.flags |= Notification.FLAG_AUTO_CANCEL;
+
+                        notificationManager.notify(0, noti);
+                        if(dayDate.equals(date)){
+                            notificationManager.cancelAll();
+                        }
+                    }
+                }
+                handler.postDelayed(this, 100);
+            }
+        },100);
     }
 
 }
