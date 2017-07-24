@@ -46,24 +46,8 @@ public class Fragment1 extends Fragment {
     public String[] durHours = new String[]{"00","01","02","03"};
     public ArrayList<String> durMins = new ArrayList<String>();
     public boolean outOfBounds = false;
-    private String[] actionNames = {
-            "cooking (Hob)",
-            "cooking(Oven)",
-            "Dry clothes (Tumble Dryer)",
-            "Wash clothes (Washing Machine)",
-            "Use Computer",
-            "Boil Water (Kettle)",
-            "Wash Dishes (dishwasher)",
-            "Shower"};
-    private String[] actionFileNames  ={
-            "Hob",
-            "Oven",
-            "Tumble_Dryer",
-            "Washing_Machine",
-            "Computer",
-            "Kettle",
-            "Dishwasher",
-            "Shower"};
+    private String[] actionNames;
+    private ArrayList<String> actionNamesAL= new ArrayList<>();
     boolean optimalTimePicked = false;
     private ArrayList<Action> list = new ArrayList<Action>();
     private ArrayList<String> actions = new ArrayList<String>();
@@ -86,8 +70,52 @@ public class Fragment1 extends Fragment {
         String[] optimalTimes = new String[1];
         getList(layoutView);
         setTimes(layoutView);
+        String[] applianceNamesArray;
+        String applianceNamesFile = "applianceNames.txt";
+        String applianceNames = "";
+        try{
+            FileInputStream fis = getActivity().openFileInput(applianceNamesFile);
+            int ch;
+            while((ch = fis.read())!=-1){
+                builder.append((char) ch);
+            }
+            fis.close();
+            applianceNames = builder.toString();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        applianceNamesArray = applianceNames.split(",");
+
+        String appliancesEnabledDataFile = "appliancesEnabledDataFile.txt";
+        String appliancesEnabled="";
+        try{
+            FileInputStream fis = getActivity().openFileInput(appliancesEnabledDataFile);
+            builder = new StringBuilder();
+            int chr;
+            while ((chr = fis.read()) != -1) {
+                builder.append((char) chr);
+            }
+            fis.close();
+            appliancesEnabled = builder.toString();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        System.out.print(appliancesEnabled+"\n");
+        String[] appliancesEnabledArray = appliancesEnabled.split("\n");
+        String[][] enableTable = new String[appliancesEnabledArray.length][2];
+        for(int i = 0 ; i<enableTable.length;i++){
+            enableTable[i] = appliancesEnabledArray[i].split(",");
+            if(enableTable[i][1].equals("true")){
+                actionNamesAL.add(enableTable[i][0]);
+            }
+        }
+        actionNames = new String[actionNamesAL.size()];
+        actionNamesAL.toArray(actionNames);
+
         try{
             FileInputStream fisGetFiles = getActivity().openFileInput("tempMin.txt");
+            builder = new StringBuilder();
             int chr;
             while ((chr = fisGetFiles.read()) != -1) {
                 builder.append((char) chr);
@@ -141,7 +169,6 @@ public class Fragment1 extends Fragment {
         adapterActiv = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, actionNames);
         adapterActiv.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         activDrp.setAdapter(adapterActiv);
-        selectedActiv = activDrp.getSelectedItem().toString();
 
         ArrayAdapter<CharSequence> adapterActive;
         final Spinner activeDrp = (Spinner)layoutView.findViewById(R.id.spinnerDurHr);
@@ -387,7 +414,7 @@ public class Fragment1 extends Fragment {
                     Context context = getActivity();
                     list.removeAll(Collections.singleton(null));
                     list.trimToSize();
-                    
+
                     Action[] array = new Action[list.size()];
                     list.toArray(array);
                     if(array.length>0){
