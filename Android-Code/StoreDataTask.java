@@ -8,6 +8,8 @@ import com.example.application.MainActivity;
 import com.example.schedulelibrary.Action;
 import com.example.schedulelibrary.Schedule;
 
+import java.io.FileOutputStream;
+
 import static android.content.ContentValues.TAG;
 
 /**
@@ -55,12 +57,24 @@ public class StoreDateTask extends AsyncTask<Schedule, Integer, String> {
         }
         parseableData = new String[fullList.length][actionNames.length][1440];
         for(int i = 0; i<parseableData.length;i++){
+            if(checkCancelled()){
+                break;
+            }
             for(int j = 0; j<parseableData[i].length;j++){
+                if(checkCancelled()){
+                    break;
+                }
                 for(int q = 0; q<parseableData[i][j].length;q++){
+                    if(checkCancelled()){
+                        break;
+                    }
                     parseableData[i][j][q] = "0";
                 }
             }
             for(int j = 0; j<fullList[i].length;j++){
+                if(checkCancelled()){
+                    break;
+                }
                 int index = 0;
                 switch(fullList[i][j].name){
                     case "cooking (Hob)":
@@ -92,50 +106,60 @@ public class StoreDateTask extends AsyncTask<Schedule, Integer, String> {
                         break;
                 }
                 for(int q = fullList[i][j].windowStart;q<fullList[i][j].windowEnd+1;q++){
+                    if(checkCancelled()){
+                        break;
+                    }
                     parseableData[i][index][q] = "1";
                 }
             }
         }
         for(int i = 0; i<fullList.length;i++){
+            if(checkCancelled()){
+                break;
+            }
             for(int j = 0; j<fullList[i].length;j++){
-                if(j<fullList[i].length-1)display+= fullList[i][j].name+"\t"+fullList[i][j].getTimeString(fullList[i][j].windowStart)+"-"+fullList[i][j].getTimeString(fullList[i][j].windowEnd)+",";
-                else display+= fullList[i][j].name+"\t"+fullList[i][j].getTimeString(fullList[i][j].windowStart)+"-"+fullList[i][j].getTimeString(fullList[i][j].windowEnd);
+                if(checkCancelled()){
+                    break;
+                }
+                if(j<fullList[i].length-1){
+                    display+= fullList[i][j].name+"\t"+fullList[i][j].getTimeString(fullList[i][j].windowStart)+"-"+fullList[i][j].getTimeString(fullList[i][j].windowEnd)+",";
+                }
+                else {
+                    display+= fullList[i][j].name+"\t"+fullList[i][j].getTimeString(fullList[i][j].windowStart)+"-"+fullList[i][j].getTimeString(fullList[i][j].windowEnd);
+                }
             }
             display+="\n";
         }
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
-        System.out.print("\n"+"Display Schedules: "+elapsedTime+"\n");
+
+        String TimingsFile = "timings.txt";
+        try{
+            FileOutputStream fos = activity.openFileOutput(TimingsFile,context.MODE_APPEND);
+            String submit = elapsedTime+",";
+            fos.write(submit.getBytes());
+            fos.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         return display;
     }
     protected void onProgressUpdate(Integer... progress) {
 
     }
     protected void onPostExecute(String result) {
-        activity.setDisplay(result);
-        String toastString = "Tomorrow's Schedule Set";
-        int durationOfToast = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, toastString, durationOfToast);
-        toast.show();
-        String[] pass = new String[]{"1"};
-        new createFiles(parseableData, context,activity).execute(pass);
+        if(!checkCancelled()){
+            activity.setDisplay(result);
+            String toastString = "Tomorrow's Schedule Set";
+            int durationOfToast = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, toastString, durationOfToast);
+            toast.show();
+            String[] pass = new String[]{"1"};
+            new createFiles(parseableData, context,activity).execute(pass);
+        }
     }
-    /* store data in the following way:
-         *"Plan/Time,00:00,00:01:,00:02,...,23:59
-         * Plan 1,[0 or 1],[0 or 1],[0 or 1],...,[0 or 1]
-         * Plan 2,[0 or 1],[0 or 1],[0 or 1],...,[0 or 1]
-         * Plan 3,[0 or 1],[0 or 1],[0 or 1],...,[0 or 1]
-         *                      .
-         *                      .
-         *                      .
-         * Plan X,[0 or 1],[0 or 1],[0 or 1],...,[0 or 1]"
-         *
-         * A file of this type should be made for every appliance
-         * The title should be USER_ID-APPLIANCE_NAME-DATE-SETUP.txt
-         * where SETUP is a count of how many other schedules were created that day prior to this one.
-         *
-         *
-         */
-    //a[Schedule][Device][Whether on or off at this index converted to a time+1]
 
+    public boolean checkCancelled(){
+        return activity.checkTasksStop();
+    }
 }
