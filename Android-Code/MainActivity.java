@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -67,6 +68,8 @@ public class MainActivity extends ActionBarActivity{
     private Fragment fragment = null;
     private String batteryLevels = "";
     private int numberOfActions = 8;
+    public AsyncTask motherTask;
+    public boolean tasksStop = false;
     private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver(){
         @Override
         public void onReceive(Context ctxt, Intent intent) {
@@ -131,10 +134,8 @@ public class MainActivity extends ActionBarActivity{
             fullTime = simpleDateFormat.format(new Date(((new Date()).getTime() + 86400000)));
             tomorrowsDate = fullTime.substring(0,10);
             String fileName = "PastSchedules.txt";
-            String todaySchedule = "TodaySchedule.txt";
             String tomorrowSchedule = "TomorrowSchedule.txt";
             String listAsItWas = "ActionInputList.txt";
-            String boxText = "BoxText.txt";
             String todayDate = "Date.txt";
             String tomorrowDate = "TomorrowsDate.txt";
             String password = "Password.txt";
@@ -143,6 +144,24 @@ public class MainActivity extends ActionBarActivity{
             String chosenPlanFile = "chosenPlan.txt";
             String wattageFile = "wattagesFile.txt";
             String timesToNotifyFile = "timesToNotify.txt";
+
+            String countFile = "count.txt";
+            try{
+                FileOutputStream fos = this.openFileOutput(countFile,MODE_PRIVATE);
+                fos.write("0".getBytes());
+                fos.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            String TimingsFile = "timings.txt";
+            try{
+                FileOutputStream fos = this.openFileOutput(TimingsFile,MODE_PRIVATE);
+                fos.write("Make,Sort,Display,Store\n".getBytes());
+                fos.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
             File tomorrowFile = new File(this.getFilesDir(), tomorrowSchedule);
 
             // first time task
@@ -577,9 +596,19 @@ public class MainActivity extends ActionBarActivity{
         this.display = s;
     }
     public void callBackgroundTasks(Action[] array, int progressChangedValue){
+        tasksStop = false;
         Schedule lists = new Schedule(array);
         Schedule[] pass = new Schedule[]{lists};
-        new createSchedules(MainActivity.this,progressChangedValue, this).execute(pass);
+        motherTask = new createSchedules(MainActivity.this,progressChangedValue, this).execute(pass);
+    }
+
+    public void cancelBackgroundTasks(){
+        tasksStop = true;
+        motherTask.cancel(true);
+    }
+
+    public boolean checkTasksStop(){
+        return tasksStop;
     }
     public String getDisplay(){
         return this.display;
@@ -721,5 +750,4 @@ public class MainActivity extends ActionBarActivity{
             }
         },100);
     }
-
 }
