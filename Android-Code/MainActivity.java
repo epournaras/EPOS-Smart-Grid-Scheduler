@@ -70,6 +70,16 @@ public class MainActivity extends ActionBarActivity{
     private int numberOfActions = 8;
     public AsyncTask motherTask;
     public boolean tasksStop = false;
+    private String[] applianceNames = {
+            "Hob",
+            "Oven",
+            "TumbleDryer",
+            "WashingMachine",
+            "Computer",
+            "Kettle",
+            "DishWasher",
+            "Shower"
+    };
     private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver(){
         @Override
         public void onReceive(Context ctxt, Intent intent) {
@@ -105,6 +115,8 @@ public class MainActivity extends ActionBarActivity{
                 int permsRequestCode = MY_PERMISSIONS_REQUEST_STORAGE;
                 requestPermissions(perms, permsRequestCode);
             }
+
+            String appliancesEnabledData = "";
             String houseData = "House,Occupancy,Construction Year,Appliances Owned,Type,Size,Approximate Construction Year\n" +
                     "1,2,1975-1980,35,Detached,4 bed,1970 - 1979\n" +
                     "2,4,-,15,Semi-detached,3 bed,-\n" +
@@ -144,8 +156,27 @@ public class MainActivity extends ActionBarActivity{
             String chosenPlanFile = "chosenPlan.txt";
             String wattageFile = "wattagesFile.txt";
             String timesToNotifyFile = "timesToNotify.txt";
-
+            String appliancesEnabledDataFile = "appliancesEnabledDataFile.txt";
             String countFile = "count.txt";
+            String applianceNamesFile = "applianceNames.txt";
+
+            try{
+                FileOutputStream fos = this.openFileOutput(applianceNamesFile,MODE_APPEND);
+                for(int i = 0; i<applianceNames.length;i++){
+                    String submit;
+                    if(i<applianceNames.length-1){
+                        submit = applianceNames[i]+",";
+                        appliancesEnabledData+=applianceNames[i]+","+"true"+"\n";
+                    }else{
+                        submit = applianceNames[i];
+                        appliancesEnabledData+=applianceNames[i]+","+"true";
+                    }
+                    fos.write(submit.getBytes());
+                }
+                fos.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
             try{
                 FileOutputStream fos = this.openFileOutput(countFile,MODE_PRIVATE);
                 fos.write("0".getBytes());
@@ -157,6 +188,13 @@ public class MainActivity extends ActionBarActivity{
             try{
                 FileOutputStream fos = this.openFileOutput(TimingsFile,MODE_PRIVATE);
                 fos.write("Make,Sort,Display,Store\n".getBytes());
+                fos.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            try{
+                FileOutputStream fos = this.openFileOutput(appliancesEnabledDataFile,MODE_PRIVATE);
+                fos.write(appliancesEnabledData.getBytes());
                 fos.close();
             }catch(Exception e){
                 e.printStackTrace();
@@ -603,8 +641,10 @@ public class MainActivity extends ActionBarActivity{
     }
 
     public void cancelBackgroundTasks(){
-        tasksStop = true;
-        motherTask.cancel(true);
+        if(motherTask!=null){
+            tasksStop = true;
+            motherTask.cancel(true);
+        }
     }
 
     public boolean checkTasksStop(){
@@ -750,4 +790,6 @@ public class MainActivity extends ActionBarActivity{
             }
         },100);
     }
+
 }
+
