@@ -378,6 +378,8 @@ public class Fragment1 extends Fragment {
         bFour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MainActivity passMain = ((MainActivity)getActivity());
+                passMain.cancelBackgroundTasks();
                 settings.edit().putBoolean("defaultBool", true).commit();
                 getList(layoutView);
                 String display = "";
@@ -385,7 +387,7 @@ public class Fragment1 extends Fragment {
                     Context context = getActivity();
                     list.removeAll(Collections.singleton(null));
                     list.trimToSize();
-                    MainActivity passMain = ((MainActivity)getActivity());
+                    
                     Action[] array = new Action[list.size()];
                     list.toArray(array);
                     if(array.length>0){
