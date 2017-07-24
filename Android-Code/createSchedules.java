@@ -7,6 +7,8 @@ import android.widget.Toast;
 import com.example.application.MainActivity;
 import com.example.schedulelibrary.Schedule;
 
+import java.io.FileOutputStream;
+
 import static android.content.ContentValues.TAG;
 
 /**
@@ -34,19 +36,42 @@ public class createSchedules extends AsyncTask<Schedule, Integer, Schedule> {
         list.makeScheduleList();
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
-        System.out.print("\n"+"Make Schedules: "+elapsedTime+"\n");
+        String TimingsFile = "timings.txt";
+        try{
+            FileOutputStream fos = main.openFileOutput(TimingsFile,context.MODE_APPEND);
+            String submit = elapsedTime+",";
+            fos.write(submit.getBytes());
+            fos.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         startTime = System.currentTimeMillis();
         list.sortSchedulesByRating();
         stopTime = System.currentTimeMillis();
         elapsedTime = stopTime - startTime;
-        System.out.print("\n"+"Sort Schedules: "+elapsedTime+"\n");
+        try{
+            FileOutputStream fos = main.openFileOutput(TimingsFile,context.MODE_APPEND);
+            String submit = elapsedTime+",";
+            fos.write(submit.getBytes());
+            fos.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         return list;
     }
     protected void onProgressUpdate(Integer... progress) {
 
     }
+
+    protected void onCancelled(Schedule result){
+
+    }
+
     protected void onPostExecute(Schedule result) {
-        Schedule[] pass = new Schedule[]{result};
-        new StoreDateTask(context,progressChangedValue, main).execute(pass);
+        if(!isCancelled()){
+            Schedule[] pass = new Schedule[]{result};
+            new StoreDateTask(context,progressChangedValue, main).execute(pass);
+        }
+
     }
 }
