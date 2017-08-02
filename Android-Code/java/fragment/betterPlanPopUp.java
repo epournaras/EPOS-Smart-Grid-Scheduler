@@ -1,0 +1,75 @@
+package com.example.application.fragment;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+
+import com.example.application.R;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+
+/**
+ * Created by warrens on 02.08.17.
+ */
+
+public class betterPlanPopUp extends android.support.v4.app.DialogFragment {
+
+    public String plan;
+
+    @Override
+    public void onCreate(Bundle savedInstaceState){
+        super.onCreate(savedInstaceState);
+
+    }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        final Context context = getActivity();
+        final View v = inflater.inflate(R.layout.better_plan_pop_up, container, false);
+        String display = "";
+        try{
+            FileInputStream fis = context.openFileInput("suggestedPlan.txt");
+            StringBuilder builder = new StringBuilder();
+            int chr;
+            while ((chr = fis.read()) != -1) {
+                builder.append((char) chr);
+            }
+            display = builder.toString();
+            fis.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        CheckBox cb = (CheckBox) v.findViewById(R.id.checkBox);
+        cb.setText(display);
+        cb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View vi) {
+
+            }
+        });
+        Button b = (Button)v.findViewById(R.id.button3);
+        b.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View vi){
+                if(cb.isChecked()){
+                    String newChosenPlan = cb.getText().toString();
+                    String chosenPlanFile = "chosenPlan.txt";
+                    try{
+                        FileOutputStream fos = getActivity().openFileOutput(chosenPlanFile,Context.MODE_PRIVATE);
+                        fos.write(newChosenPlan.getBytes());
+                        fos.close();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                dismiss();
+            }
+        });
+        return v;
+    }
+}
