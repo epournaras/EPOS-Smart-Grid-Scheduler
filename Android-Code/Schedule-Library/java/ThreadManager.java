@@ -78,33 +78,41 @@ public class ThreadManager implements Runnable{
     }
 
     public boolean checkConflict(Action a, Action b, boolean reverse){
-        if(a.windowStart<=b.windowStart&&a.windowEnd<=b.windowEnd&&a.windowEnd>=b.windowStart){
-            //System.out.print("Conflict between "+a.name+" and "+b.name+"\n");
-            return false;
-        }
-        if(a.windowStart>=b.windowStart&&a.windowEnd<=b.windowEnd){
-            //System.out.print("Conflict between "+a.name+" and "+b.name+"\n");
-            return false;
-        }
-        if(!reverse){
-            if(a.windowStart == b.windowStart){
-                return false;
-            }
-            if(a.windowEnd == b.windowEnd){
-                return false;
-            }
-            return checkConflict(b,a, true);
-        }
-        else{
+        if(a.isParallel()||b.isParallel()){
             return true;
+        }else{
+            if(a.windowStart<=b.windowStart&&a.windowEnd<=b.windowEnd&&a.windowEnd>=b.windowStart){
+                //System.out.print("Conflict between "+a.name+" and "+b.name+"\n");
+                return false;
+            }
+            if(a.windowStart>=b.windowStart&&a.windowEnd<=b.windowEnd){
+                //System.out.print("Conflict between "+a.name+" and "+b.name+"\n");
+                return false;
+            }
+            if(!reverse){
+                if(a.windowStart == b.windowStart){
+                    return false;
+                }
+                if(a.windowEnd == b.windowEnd){
+                    return false;
+                }
+                return checkConflict(b,a, true);
+            }
+            else{
+                return true;
+            }
         }
     }
 
     public boolean checkPosition(int indexOfItem, Action a, Action[] currentSchedule){
         boolean noConflict = true;
-        for(int i = 0; i<currentSchedule.length&&noConflict; i++){
-            if(currentSchedule[i]!=null&&i!=indexOfItem){
-                noConflict = checkConflict(a,currentSchedule[i], false);
+        if(a.isParallel()){
+            return true;
+        }else{
+            for(int i = 0; i<currentSchedule.length&&noConflict; i++){
+                if(currentSchedule[i]!=null&&i!=indexOfItem){
+                    noConflict = checkConflict(a,currentSchedule[i], false);
+                }
             }
         }
         return noConflict;
