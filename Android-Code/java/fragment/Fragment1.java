@@ -16,6 +16,7 @@ import android.support.v4.app.DialogFragment;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -46,8 +47,8 @@ public class Fragment1 extends Fragment {
     public String[] durHours = new String[]{"00","01","02","03"};
     public ArrayList<String> durMins = new ArrayList<String>();
     public boolean outOfBounds = false;
-    private String[] actionNames;
-    private ArrayList<String> actionNamesAL= new ArrayList<>();
+    public String[] actionNames;
+    private ArrayList<String> actionNamesAL= new ArrayList<String>();
     boolean optimalTimePicked = false;
     private ArrayList<Action> list = new ArrayList<Action>();
     private ArrayList<String> actions = new ArrayList<String>();
@@ -57,6 +58,7 @@ public class Fragment1 extends Fragment {
     private String currentText;
     private int progressChangedValue = 0;
     private String timings;
+    public ProgressBar pg;
 
     public Fragment1() {
         // Required empty public constructor
@@ -64,6 +66,7 @@ public class Fragment1 extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         final View layoutView = inflater.inflate(R.layout.fragment1, container, false);
+        pg = (ProgressBar)layoutView.findViewById(R.id.progressBar);
         StringBuilder builder = new StringBuilder();
         String tempMin = "";
         String tempMax = "";
@@ -101,7 +104,6 @@ public class Fragment1 extends Fragment {
         }catch(Exception e){
             e.printStackTrace();
         }
-        System.out.print(appliancesEnabled+"\n");
         String[] appliancesEnabledArray = appliancesEnabled.split("\n");
         String[][] enableTable = new String[appliancesEnabledArray.length][2];
         for(int i = 0 ; i<enableTable.length;i++){
@@ -112,7 +114,6 @@ public class Fragment1 extends Fragment {
         }
         actionNames = new String[actionNamesAL.size()];
         actionNamesAL.toArray(actionNames);
-
         try{
             FileInputStream fisGetFiles = getActivity().openFileInput("tempMin.txt");
             builder = new StringBuilder();
@@ -164,9 +165,9 @@ public class Fragment1 extends Fragment {
         Button b = (Button) layoutView.findViewById(R.id.minTime);
 
         getList(layoutView);
-        ArrayAdapter<CharSequence> adapterActiv;
+        ArrayAdapter<String> adapterActiv;
         final Spinner activDrp = (Spinner)layoutView.findViewById(R.id.spActiv);
-        adapterActiv = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, actionNames);
+        adapterActiv = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, actionNamesAL);
         adapterActiv.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         activDrp.setAdapter(adapterActiv);
 
@@ -310,95 +311,134 @@ public class Fragment1 extends Fragment {
         bThree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(settings.getBoolean("putMin", false)&&settings.getBoolean("putMax",false)){
-                    try {
-                        //Log.d("LENGTH",""+list.size()+"\n")
-                        String selectedOptimalTime = "00:00";
-                        try{
-
-                            selectedDurHr = activeDrp.getSelectedItem().toString();
-                            selectedDurMin = activeDrpDurMin.getSelectedItem().toString();
-                            selectedDuration = selectedDurHr+":"+selectedDurMin;
-                        }catch(NullPointerException e){
-                            e.printStackTrace();
-                        }
-                        //Get the last entered time window.
-                        StringBuilder builder = new StringBuilder();
-                        FileInputStream fisGetFiles = getActivity().openFileInput("tempMin.txt");
-                        int chr;
-                        while ((chr = fisGetFiles.read()) != -1) {
-                            builder.append((char) chr);
-                        }
-                        fisGetFiles.close();
-                        String tempMin = builder.toString();
-                        fisGetFiles = getActivity().openFileInput("tempMax.txt");
-                        builder = new StringBuilder();
-                        int ch;
-                        while ((ch = fisGetFiles.read()) != -1) {
-                            builder.append((char) ch);
-                        }
-                        fisGetFiles.close();
-                        String tempMax = builder.toString();
-                        boolean notFound = true;
-                        for (int i = 0; i < actionNames.length && notFound; i++) {
-                            if (selectedActiv.equals(actionNames[i])) {
-                                notFound = false;
-                            }
-                        }
-
-                        Action opt = new Action();
-                        int min = opt.getIntTime(tempMin);
-                        int max = opt.getIntTime(tempMax);
-                        int dur = opt.getIntTime(selectedDuration);
-                        if(min+dur<=max){
-                            selectedActiv = activDrp.getSelectedItem().toString();
-                            selectedOptItemOne = spinnerOptHr.getSelectedItem().toString();
-                            selectedOptItemTwo = spinnerOptMin.getSelectedItem().toString();
-                            selectedOptimalTime = selectedOptItemOne+":"+selectedOptItemTwo;
-                            list.add(count, new Action(selectedActiv, tempMin, tempMax, selectedDuration, selectedOptimalTime, false));
-                            TextView addedActions = (TextView)layoutView.findViewById(R.id.addedActions);
-
-                            currentText = addedActions.getText().toString();
-                            currentText+=selectedActiv+"\t"+tempMin+"-"+tempMax+"\t"+selectedOptimalTime+"\n";
-
-                            String text = selectedActiv+"\t"+tempMin+"-"+tempMax+"\t"+selectedOptimalTime;
-                            actions.add(count, text);
-                            count++;
-
-                            addedActions.setText(currentText);
-                            setList();
-                        }else{
-                            String toastString = "Window not large enough.";
-                            if(max<min){
-                                toastString = "Bad Input: Window End before Window Start.";
-                            }
-                            Context context = getActivity();
-                            int durationOfToast = Toast.LENGTH_SHORT;
-                            Toast toast = Toast.makeText(context, toastString, durationOfToast);
-                            toast.show();
-                            setList();
-                        }
-                    } catch (IOException ex) {
-                        //Log.d("EXCEPTION", "We never stood a chance \n");
-                        ex.printStackTrace();
-                    }
+                if(activDrp.getSelectedItem()==null){
+                    String toastString = "Add an Appliance.";
+                    Context context = getActivity();
+                    int durationOfToast = Toast.LENGTH_SHORT;
+                    Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                    toast.show();
                 }else{
-                    if(!settings.getBoolean("putMin", false)){
-                        String toastString = "Enter both a window end and start.";
-                        Context context = getActivity();
-                        int durationOfToast = Toast.LENGTH_SHORT;
-                        Toast toast = Toast.makeText(context, toastString, durationOfToast);
-                        toast.show();
+                    if(settings.getBoolean("putMin", false)&&settings.getBoolean("putMax",false)){
+                        try {
+                            //Log.d("LENGTH",""+list.size()+"\n")
+                            String selectedOptimalTime = "00:00";
+                            try{
+
+                                selectedDurHr = activeDrp.getSelectedItem().toString();
+                                selectedDurMin = activeDrpDurMin.getSelectedItem().toString();
+                                selectedDuration = selectedDurHr+":"+selectedDurMin;
+                            }catch(NullPointerException e){
+                                e.printStackTrace();
+                            }
+                            //Get the last entered time window.
+                            StringBuilder builder = new StringBuilder();
+                            FileInputStream fisGetFiles = getActivity().openFileInput("tempMin.txt");
+                            int chr;
+                            while ((chr = fisGetFiles.read()) != -1) {
+                                builder.append((char) chr);
+                            }
+                            fisGetFiles.close();
+                            String tempMin = builder.toString();
+                            fisGetFiles = getActivity().openFileInput("tempMax.txt");
+                            builder = new StringBuilder();
+                            int ch;
+                            while ((ch = fisGetFiles.read()) != -1) {
+                                builder.append((char) ch);
+                            }
+                            fisGetFiles.close();
+                            String tempMax = builder.toString();
+                            boolean notFound = true;
+                            for (int i = 0; i < actionNames.length && notFound; i++) {
+                                if (selectedActiv.equals(actionNames[i])) {
+                                    notFound = false;
+                                }
+                            }
+
+                            Action opt = new Action();
+                            int min = opt.getIntTime(tempMin);
+                            int max = opt.getIntTime(tempMax);
+                            int dur = opt.getIntTime(selectedDuration);
+                            if(min+dur<=max){
+                                selectedActiv = activDrp.getSelectedItem().toString();
+                                selectedOptItemOne = spinnerOptHr.getSelectedItem().toString();
+                                selectedOptItemTwo = spinnerOptMin.getSelectedItem().toString();
+                                selectedOptimalTime = selectedOptItemOne+":"+selectedOptItemTwo;
+                                boolean parallel;
+                                switch(selectedActiv){
+                                    case "Hob":
+                                        parallel = false;
+                                        break;
+                                    case "Oven":
+                                        parallel = true;
+                                        break;
+                                    case "TumbleDryer":
+                                        parallel = true;
+                                        break;
+                                    case "WashingMachine":
+                                        parallel = true;
+                                        break;
+                                    case "Computer":
+                                        parallel = false;
+                                        break;
+                                    case "Kettle":
+                                        parallel = true;
+                                        break;
+                                    case "DishWasher":
+                                        parallel = true;
+                                        break;
+                                    case "Shower":
+                                        parallel = false;
+                                        break;
+                                    default:
+                                        parallel = false;
+                                        break;
+                                }
+                                list.add(count, new Action(selectedActiv, tempMin, tempMax, selectedDuration, selectedOptimalTime, parallel));
+                                TextView addedActions = (TextView)layoutView.findViewById(R.id.addedActions);
+
+                                currentText = addedActions.getText().toString();
+                                currentText+=selectedActiv+"\t"+tempMin+"-"+tempMax+"\t"+selectedOptimalTime+"\n";
+
+                                String text = selectedActiv+"\t"+tempMin+"-"+tempMax+"\t"+selectedOptimalTime;
+                                actions.add(count, text);
+                                count++;
+
+                                addedActions.setText(currentText);
+                                setList();
+                            }else{
+                                String toastString = "Window not large enough.";
+                                if(max<min){
+                                    toastString = "Bad Input: Window End before Window Start.";
+                                }
+                                Context context = getActivity();
+                                int durationOfToast = Toast.LENGTH_SHORT;
+                                Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                                toast.show();
+                                setList();
+                            }
+                        } catch (IOException ex) {
+                            //Log.d("EXCEPTION", "We never stood a chance \n");
+                            ex.printStackTrace();
+                        }
                     }else{
-                        if(!settings.getBoolean("putMax", false)){
-                            String toastString = "Enter both a window start and end.";
+                        if(!settings.getBoolean("putMin", false)){
+                            String toastString = "Enter both a window end and start.";
                             Context context = getActivity();
                             int durationOfToast = Toast.LENGTH_SHORT;
                             Toast toast = Toast.makeText(context, toastString, durationOfToast);
                             toast.show();
+                        }else{
+                            if(!settings.getBoolean("putMax", false)){
+                                String toastString = "Enter both a window start and end.";
+                                Context context = getActivity();
+                                int durationOfToast = Toast.LENGTH_SHORT;
+                                Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                                toast.show();
+                            }
                         }
                     }
                 }
+
             }
         });
         Button bFour = (Button) layoutView.findViewById(R.id.sendButton);
@@ -508,6 +548,7 @@ public class Fragment1 extends Fragment {
                 toast.show();
             }
         });
+        this.setAppliances(layoutView, adapterActiv);
         this.setHourChoices(layoutView,spinnerOptHrAdapter);
         this.setMinuteChoices(layoutView,spinnerOptMinAdapter,spinnerOptHr,adapterActiveDurMin,activeDrp);
         this.setListView(layoutView);
@@ -526,7 +567,37 @@ public class Fragment1 extends Fragment {
             if(testEmpty.length>4) {
                 for (int i = 0; i < testArray.length; i++) {
                     String[] temp = testArray[i].split(",");
-                    list.add(new Action(temp[0], temp[1], temp[2], temp[3], temp[4],false));
+                    boolean parallel;
+                    switch(temp[0]){
+                        case "Hob":
+                            parallel = false;
+                            break;
+                        case "Oven":
+                            parallel = true;
+                            break;
+                        case "TumbleDryer":
+                            parallel = true;
+                            break;
+                        case "WashingMachine":
+                            parallel = true;
+                            break;
+                        case "Computer":
+                            parallel = false;
+                            break;
+                        case "Kettle":
+                            parallel = true;
+                            break;
+                        case "DishWasher":
+                            parallel = true;
+                            break;
+                        case "Shower":
+                            parallel = false;
+                            break;
+                        default:
+                            parallel = false;
+                            break;
+                    }
+                    list.add(new Action(temp[0], temp[1], temp[2], temp[3], temp[4],parallel));
                     actions.add(count, temp[0] + "\t" + temp[1] + "-" + temp[2] + "\t" + temp[4]);
                     currentText += temp[0] + "\t" + temp[1] + "-" + temp[2] + "\t" + temp[4] + "\n";
                     count++;
@@ -596,6 +667,109 @@ public class Fragment1 extends Fragment {
                 endMinMax = Integer.parseInt(endMinMaxS);
                 min.setText(tempMin);
                 max.setText(tempMax);
+                handler.postDelayed(this, 100);
+            }
+        }, 100);
+    }
+
+    public void setAppliances(View lv, ArrayAdapter<String> s){
+        final Handler handler = new Handler();
+        final ArrayAdapter<String> applianceList = s;
+
+        handler.postDelayed(new Runnable(){
+            @Override
+            public void run(){
+                String appliancesEnabledDataFile = "appliancesEnabledDataFile.txt";
+                String appliancesEnabled="";
+                try{
+                    FileInputStream fis = getActivity().openFileInput(appliancesEnabledDataFile);
+                    StringBuilder builder = new StringBuilder();
+                    int chr;
+                    while ((chr = fis.read()) != -1) {
+                        builder.append((char) chr);
+                    }
+                    fis.close();
+                    appliancesEnabled = builder.toString();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                applianceList.clear();
+                String[] appliancesEnabledArray = appliancesEnabled.split("\n");
+                String[][] enableTable = new String[appliancesEnabledArray.length][2];
+                for(int i = 0 ; i<enableTable.length;i++){
+                    enableTable[i] = appliancesEnabledArray[i].split(",");
+                    if(enableTable[i][1].equals("true")){
+                        applianceList.add(enableTable[i][0]);
+                    }
+                }
+                double countOfCurrentlyAddedAppliances = applianceList.getCount();
+                Boolean[] gatekeeper = {false,false,false,false,false,false,false,false};
+                getList(lv);
+                TextView actionsList = (TextView) lv.findViewById(R.id.addedActions);
+                String currentActions = actionsList.getText().toString();
+                String[] array = currentActions.split("\n");
+                String[][] detailsOfActions = new String[array.length][];
+                double appliancesAddedToTomorrowsSchedule = 0;
+                for(int i = 0; i<array.length;i++){
+                    detailsOfActions[i] = array[i].split("\t");
+                    switch(detailsOfActions[i][0]){
+                        case "Hob":
+                            if(!gatekeeper[0]){
+                                appliancesAddedToTomorrowsSchedule++;
+                                gatekeeper[0] = true;
+                            }
+                            break;
+                        case "Oven":
+                            if(!gatekeeper[1]){
+                                appliancesAddedToTomorrowsSchedule++;
+                                gatekeeper[1] = true;
+                            }
+                            break;
+                        case "TumbleDryer":
+                            if(!gatekeeper[2]){
+                                appliancesAddedToTomorrowsSchedule++;
+                                gatekeeper[2] = true;
+                            }
+                            break;
+                        case "WashingMachine":
+                            if(!gatekeeper[3]){
+                                appliancesAddedToTomorrowsSchedule++;
+                                gatekeeper[3] = true;
+                            }
+                            break;
+                        case "Computer":
+                            if(!gatekeeper[4]){
+                                appliancesAddedToTomorrowsSchedule++;
+                                gatekeeper[4] = true;
+                            }
+                            break;
+                        case "Kettle":
+                            if(!gatekeeper[5]){
+                                appliancesAddedToTomorrowsSchedule++;
+                                gatekeeper[5] = true;
+                            }
+                            break;
+                        case "DishWasher":
+                            if(!gatekeeper[6]){
+                                appliancesAddedToTomorrowsSchedule++;
+                                gatekeeper[6] = true;
+                            }
+                            break;
+                        case "Shower":
+                            if(!gatekeeper[7]){
+                                appliancesAddedToTomorrowsSchedule++;
+                                gatekeeper[7] = true;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                double progressDouble = (appliancesAddedToTomorrowsSchedule)/(countOfCurrentlyAddedAppliances);
+                int progress =  (int) (progressDouble*100);
+                if(progress<=100){
+                    pg.setProgress(progress);
+                }
                 handler.postDelayed(this, 100);
             }
         }, 100);
