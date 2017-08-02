@@ -19,6 +19,8 @@ import android.app.FragmentTransaction;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -29,13 +31,17 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.example.application.adapter.SlidingMenuAdapter;
+import com.example.application.fragment.AddRemoveApplianceFragment;
+import com.example.application.fragment.ApplianceWattagesEditFragment;
 import com.example.application.fragment.Fragment1;
 import com.example.application.fragment.Fragment2;
 import com.example.application.fragment.Fragment3;
 import com.example.application.fragment.Fragment4;
 import com.example.application.fragment.NotificationService;
+import com.example.application.fragment.betterPlanPopUp;
 import com.example.application.fragment.changeDateTask;
 import com.example.application.fragment.createSchedules;
+import com.example.application.fragment.removeFragment;
 import com.example.application.model.itemSlideMenu;
 import java.io.File;
 import java.io.FileInputStream;
@@ -159,20 +165,27 @@ public class MainActivity extends ActionBarActivity{
             String appliancesEnabledDataFile = "appliancesEnabledDataFile.txt";
             String countFile = "count.txt";
             String applianceNamesFile = "applianceNames.txt";
-
+            String suggestedPlanFile = "suggestedPlan.txt";
             try{
                 FileOutputStream fos = this.openFileOutput(applianceNamesFile,MODE_APPEND);
                 for(int i = 0; i<applianceNames.length;i++){
                     String submit;
                     if(i<applianceNames.length-1){
                         submit = applianceNames[i]+",";
-                        appliancesEnabledData+=applianceNames[i]+","+"true"+"\n";
+                        appliancesEnabledData+=applianceNames[i]+","+"false"+"\n";
                     }else{
                         submit = applianceNames[i];
-                        appliancesEnabledData+=applianceNames[i]+","+"true";
+                        appliancesEnabledData+=applianceNames[i]+","+"false";
                     }
                     fos.write(submit.getBytes());
                 }
+                fos.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            try{
+                FileOutputStream fos = this.openFileOutput(suggestedPlanFile,MODE_PRIVATE);
+                fos.write(" ".getBytes());
                 fos.close();
             }catch(Exception e){
                 e.printStackTrace();
@@ -440,7 +453,18 @@ public class MainActivity extends ActionBarActivity{
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
-
+        int id = item.getItemId();
+        if(id == R.id.addRemoveButton){
+            DialogFragment newFragment = new AddRemoveApplianceFragment();
+            android.support.v4.app.FragmentManager fragManager = ((FragmentActivity)this).getSupportFragmentManager();
+            newFragment.show(fragManager, "AddRemoveApplianceFragment");
+        }else{
+            if(id==R.id.addApplianceWattage) {
+                DialogFragment newFragment = new ApplianceWattagesEditFragment();
+                android.support.v4.app.FragmentManager fragManager = ((FragmentActivity)this).getSupportFragmentManager();
+                newFragment.show(fragManager, "ApplianceWattagesEditFragment");
+            }
+        }
         if(actionBarDrawerToggle.onOptionsItemSelected(item)){
             return true;
         }
@@ -584,7 +608,6 @@ public class MainActivity extends ActionBarActivity{
                         try{
                             FileOutputStream fos = openFileOutput("timesToNotify.txt", Context.MODE_APPEND);
                             String submit = timeStrings[i]+",";
-                            System.out.print("\n"+submit+"\n");
                             fos.write(submit.getBytes());
                             fos.close();
                         }catch(Exception e){
@@ -687,7 +710,37 @@ public class MainActivity extends ActionBarActivity{
         String[] testArray = list.split("[\\r\\n]+");
         for(int i = 0; i<testArray.length;i++){
             String[] temp = testArray[i].split(",");
-            actionList.add(new Action(temp[0],temp[1],temp[2],temp[3],temp[4], false));
+            boolean parallel;
+            switch(temp[0]){
+                case "Hob":
+                    parallel = false;
+                    break;
+                case "Oven":
+                    parallel = true;
+                    break;
+                case "TumbleDryer":
+                    parallel = true;
+                    break;
+                case "WashingMachine":
+                    parallel = true;
+                    break;
+                case "Computer":
+                    parallel = false;
+                    break;
+                case "Kettle":
+                    parallel = true;
+                    break;
+                case "DishWasher":
+                    parallel = true;
+                    break;
+                case "Shower":
+                    parallel = false;
+                    break;
+                default:
+                    parallel = false;
+                    break;
+            }
+            actionList.add(new Action(temp[0],temp[1],temp[2],temp[3],temp[4], parallel));
             actionStrings.add(temp[0]+"\t"+temp[1]+"-"+temp[2]+"\t"+temp[4]);
         }
         String[] currentActions = new String[actionStrings.size()];
@@ -708,6 +761,63 @@ public class MainActivity extends ActionBarActivity{
             actionList.remove(indexOfRemoval);
         }
 
+        actionList.removeAll(Collections.singleton(null));
+        actionList.trimToSize();
+        String listCSV = "";
+        for(Action a: actionList){
+            listCSV+=a.name+","+a.getTimeString(a.windowStart)+","+a.getTimeString(a.windowEnd)+","+a.getTimeString(a.duration)+","+a.getTimeString(a.optimalTime)+"\n";
+        }
+        setList(listCSV);
+    }
+
+    public void removeItemWithName(String name){
+        ArrayList<Action> actionList = new ArrayList<Action>();
+        ArrayList<String> actionStrings = new ArrayList<String>();
+        String[] testArray = list.split("[\\r\\n]+");
+        for(int i = 0; i<testArray.length;i++){
+            String[] temp = testArray[i].split(",");
+            if(temp.length==5){
+                if(temp[0].equals(name)){
+
+                }else{
+                    boolean parallel;
+                    switch(temp[0]){
+                        case "Hob":
+                            parallel = false;
+                            break;
+                        case "Oven":
+                            parallel = true;
+                            break;
+                        case "TumbleDryer":
+                            parallel = true;
+                            break;
+                        case "WashingMachine":
+                            parallel = true;
+                            break;
+                        case "Computer":
+                            parallel = false;
+                            break;
+                        case "Kettle":
+                            parallel = true;
+                            break;
+                        case "DishWasher":
+                            parallel = true;
+                            break;
+                        case "Shower":
+                            parallel = false;
+                            break;
+                        default:
+                            parallel = false;
+                            break;
+                    }
+                    actionList.add(new Action(temp[0],temp[1],temp[2],temp[3],temp[4], parallel));
+                    actionStrings.add(temp[0]+"\t"+temp[1]+"-"+temp[2]+"\t"+temp[4]);
+                }
+            }else{
+                break;
+            }
+
+        }
         actionList.removeAll(Collections.singleton(null));
         actionList.trimToSize();
         String listCSV = "";
@@ -789,6 +899,47 @@ public class MainActivity extends ActionBarActivity{
                 handler.postDelayed(this, 100);
             }
         },100);
+    }
+
+    public void receiveBetterPlan(String a){
+        String plans = "";
+        try {
+            FileInputStream fis = this.openFileInput("TomorrowSchedule.txt");
+            StringBuilder builder = new StringBuilder();
+            int ch;
+            while((ch = fis.read()) != -1){
+                builder.append((char)ch);
+            }
+            fis.close();
+            plans = builder.toString();
+        }catch(Exception e){
+            String toastString = "Couldnt get Tomorrow's schedule.";
+            int durationOfToast = Toast.LENGTH_SHORT;
+            Context context = this;
+            Toast toast = Toast.makeText(context, toastString, durationOfToast);
+            toast.show();
+            e.printStackTrace();
+        }
+        String[] list = plans.split("[\\r\\n]+");
+        for(int i  = 0; i<list.length;i++){
+            if(list[i].equals(a)){
+                try{
+                    FileOutputStream fos = this.openFileOutput("suggestedPlan.txt",this.MODE_PRIVATE);
+                    fos.write(a.getBytes());
+                    fos.close();
+                    DialogFragment newFragment = new betterPlanPopUp();
+                    android.support.v4.app.FragmentManager fragManager = ((FragmentActivity)this).getSupportFragmentManager();
+                    newFragment.show(fragManager, "betterPlanPopUp");
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+
+            }else{
+
+            }
+        }
+
+
     }
 
 }
