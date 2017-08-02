@@ -25,7 +25,7 @@ public class ThreadManager implements Runnable{
      */
     public void run(){
         long count = 0;
-        long maxCount = 250000L;
+        long maxCount = 500000L;
         long step = endingIndex/maxCount;
         if(step<1){
             step = 1;
@@ -54,7 +54,13 @@ public class ThreadManager implements Runnable{
                 indeces = getCombination(i+1,list,0,indeces);
                 Action[] check = new Action[list.length];
                 for(int j = 0; j< list.length; j++){
-                    check[j] = list[j].getVersion((int)indeces[j]);
+                    if((int)indeces[j]>0){
+                        check[j] = list[j].getVersion((int)indeces[j]);
+                    }else{
+                        indeces[j]*=-1;
+                        check[j] = list[j].getVersion((int)indeces[j]);
+                    }
+
                 }
                 if(checkList(check)){
                     caller.returnActionList(check);
@@ -119,36 +125,5 @@ public class ThreadManager implements Runnable{
             indeces = getCombination(passOn, lists, index+1, indeces);
         }
         return indeces;
-    }
-}
-
-                                this.caller.returnActionList(this.caller.cloneActionArray(this.list));
-                                i--;
-                                count++;
-                                if(!done){
-                                    if(i!=startingIndex){
-                                        this.list[i].windowStart++;
-                                    }
-                                }
-                            }else{
-                                i++;
-                            }
-                        }
-                    }else{
-                        done = true;
-                    }
-
-                }
-            }
-            this.list = this.caller.getNextList();
-        }
-        //System.out.println("\n" + this.threadName + " exiting.");
-    }
-    public void start(){
-        //System.out.print("\n"+"Starting "+this.threadName+"\n");
-        if(t==null){
-            t = new Thread(this, this.threadName);
-        }
-        t.start();
     }
 }
