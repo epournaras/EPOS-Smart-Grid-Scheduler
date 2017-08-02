@@ -160,15 +160,19 @@ public class Schedule {
     }
 
 
-    //    /*
-//     * given an action placed in a given array of actions.
-//     * Check that none of the previous actions conflict with the given action.
-//     */
+    /*
+     * given an action placed in a given array of actions.
+     * Check that none of the previous actions conflict with the given action.
+     */
     public boolean checkPosition(int indexOfItem, Action a, Action[] currentSchedule){
         boolean noConflict = true;
-        for(int i = 0; i<currentSchedule.length&&noConflict; i++){
-            if(currentSchedule[i]!=null&&i!=indexOfItem){
-                noConflict = checkConflict(a,currentSchedule[i], false);
+        if(a.isParallel()){
+            return true;
+        }else{
+            for(int i = 0; i<currentSchedule.length&&noConflict; i++){
+                if(currentSchedule[i]!=null&&i!=indexOfItem){
+                    noConflict = checkConflict(a,currentSchedule[i], false);
+                }
             }
         }
         return noConflict;
