@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.example.application.R;
 
+import org.w3c.dom.Text;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -71,6 +73,7 @@ public class ApplianceWattagesEditFragment extends android.support.v4.app.Dialog
         }catch(Exception e){
             e.printStackTrace();
         }
+        System.out.print(wattages+"\n");
         wattagesArray = wattages.split(",");
         LinearLayout lin = (LinearLayout)v.findViewById(R.id.editTextLayout);
         RelativeLayout tempLayoutView;
@@ -116,6 +119,7 @@ public class ApplianceWattagesEditFragment extends android.support.v4.app.Dialog
 
                 TextView textTemp = new TextView(context);
                 textTemp.setText(currentText);
+                textTemp.setId(v.generateViewId());
 
                 tempLayoutView = new RelativeLayout(getActivity());
                 tempLayoutView.setId(v.generateViewId());
@@ -132,6 +136,7 @@ public class ApplianceWattagesEditFragment extends android.support.v4.app.Dialog
                     tempLayoutView.addView(etTemp);
                     lin.addView(tempLayoutView);
                     editTextIds.add(etTemp.getId());
+                    textViewIds.add(textTemp.getId());
                 }catch(Exception e){
                     e.printStackTrace();
                 }
@@ -141,16 +146,55 @@ public class ApplianceWattagesEditFragment extends android.support.v4.app.Dialog
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View g) {
-                String wattFile = "houseNumber,";
-                for(int i = 0; i<editTextIds.size();i++){
-                    EditText temp = (EditText)v.findViewById((int)editTextIds.get(i));
-                    String t = temp.getText().toString();
-                    if(i<editTextIds.size()-1){
-                        wattFile+=t+",";
-                    }else{
-                        wattFile+=t;
+                String wattFile = "";
+                int ind = 0;
+                int index = 0;
+                for(int i = 1; i<wattagesArray.length;i++){
+                    if(enableTable[i-1][1].equals("true")){
+                        TextView textTemp = (TextView)v.findViewById((int)textViewIds.get(ind));
+                        EditText temp = (EditText)v.findViewById((int)editTextIds.get(ind));
+                        String title = textTemp.getText().toString();
+                        String t = temp.getText().toString();
+                        ind++;
+                        String[] parts = title.split(":");
+                        String name = parts[0];
+                        switch(name){
+                            case "Computer":
+                                index = 1;
+                                break;
+                            case "Hob":
+                                index = 2;
+                                break;
+                            case "Oven":
+                                index = 3;
+                                break;
+                            case "DishWasher":
+                                index = 4;
+                                break;
+                            case "Kettle":
+                                index = 5;
+                                break;
+                            case "Shower":
+                                index = 6;
+                                break;
+                            case "TumbleDryer":
+                                index = 7;
+                                break;
+                            case "WashingMachine":
+                                index = 8;
+                                break;
+                        }
+                        wattagesArray[index] = t;
                     }
                 }
+                for(int i = 0; i<wattagesArray.length;i++) {
+                    if(i<wattagesArray.length-1){
+                        wattFile += wattagesArray[i] + ",";
+                    }else{
+                        wattFile+=wattagesArray[i];
+                    }
+                }
+                System.out.print(wattFile+"\n");
                 try{
                     FileOutputStream fos = getActivity().openFileOutput("wattagesFile.txt", Context.MODE_PRIVATE);
                     fos.write(wattFile.getBytes());
