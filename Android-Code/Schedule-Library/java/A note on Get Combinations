@@ -1,1 +1,18 @@
-ToDO
+The combinations are made from treating the inputs as a numeral system converting that numeral system to decimal,
+then when a combination is needed, retranslating it back into the original numeral system. 
+Get combinations requires:
+  the input number
+  how many numbers were used to create that number
+  The sizes of the ranges of values that each of those numbers could be
+
+For example:
+Take the input A, B, C, D which create the input X.
+A has a range of size i, B has a range of size j, C has a range of size k and D has a range of size l
+
+A = X%i
+B = ((X-A)/i)%j
+C = (((((X-A)/i)%j)-B)/j)%k
+D = (((((((X-A)/i)%j)-B)/j)-C)/k)%l
+
+Through this method we can translate decimal into any numeral system of which we know the length and size of the ranges of each
+column, even if each column has varying ranges.
