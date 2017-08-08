@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Scheduler</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="button_send">Send</string>
+    <string name="button_add">Add</string>
+    <string name="pick_time">Time Range Start</string>
+    <string name="pick_time_2">Time Range End</string>
+    <string name = "action_settings">Settings</string>
+    <string name = "checkBox">CheckBox</string>
+    <string name = "space"> </string>
+</resources>
