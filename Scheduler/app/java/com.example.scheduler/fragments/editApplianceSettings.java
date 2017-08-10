@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import android.app.DialogFragment;
 
 import com.example.scheduler.R;
 
@@ -24,7 +24,7 @@ import java.util.ArrayList;
  * Created by warrens on 07.08.17.
  */
 
-public class editApplianceSettings extends android.support.v4.app.DialogFragment {
+public class editApplianceSettings extends DialogFragment {
     public ArrayList textViewIds = new ArrayList();
     public ArrayList editTextIds = new ArrayList();
     @Override
