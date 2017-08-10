@@ -17,10 +17,13 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -36,7 +39,7 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.app.DialogFragment;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -48,7 +51,9 @@ import java.util.Date;
 
 import com.example.schedulecreationlibrary.Action;
 import com.example.schedulecreationlibrary.Schedule;
+import com.example.scheduler.Adapter.MyAdapter;
 import com.example.scheduler.BackgroundTasks.createSchedulesTask;
+import com.example.scheduler.Divider.DividerItemDecoration;
 import com.example.scheduler.Notifications.NotificationService;
 import com.example.scheduler.fragment.addRemoveAppliance;
 import com.example.scheduler.fragment.betterPlanPopUpFragment;
@@ -170,6 +175,7 @@ public class MainActivity extends AppCompatActivity
             String countFile = "count.txt";
             String applianceNamesFile = "applianceNames.txt";
             String suggestedPlanFile = "suggestedPlan.txt";
+            String todayScheduleFile = "TodaySchedule.txt";
             try{
                 FileOutputStream fos = this.openFileOutput(applianceNamesFile,MODE_APPEND);
                 for(int i = 0; i<applianceNames.length;i++){
@@ -227,6 +233,14 @@ public class MainActivity extends AppCompatActivity
 
             try{
                 FileOutputStream fos = this.openFileOutput(tomorrowSchedule,MODE_PRIVATE);
+                fos.write(" ".getBytes());
+                fos.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
+            try{
+                FileOutputStream fos = this.openFileOutput(todayScheduleFile,MODE_PRIVATE);
                 fos.write(" ".getBytes());
                 fos.close();
             }catch(Exception e){
@@ -330,9 +344,10 @@ public class MainActivity extends AppCompatActivity
         fabEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                FragmentManager fragManager = getFragmentManager();
+                android.app.FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                 DialogFragment newFragment = new editApplianceSettings();
-                android.support.v4.app.FragmentManager fragManager = getSupportFragmentManager();
-                newFragment.show(fragManager, "editApplianceSettings");
+                newFragment.show(fragmentTransaction,"editApplianceSettings");
             }
         });
 
@@ -340,9 +355,10 @@ public class MainActivity extends AppCompatActivity
         fabAddRemoveAppliances.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                FragmentManager fragManager = getFragmentManager();
+                android.app.FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                 DialogFragment newFragment = new addRemoveAppliance();
-                android.support.v4.app.FragmentManager fragManager = getSupportFragmentManager();
-                newFragment.show(fragManager, "addRemoveAppliance");
+                newFragment.show(fragmentTransaction, "addRemoveAppliance");
             }
         });
 
@@ -350,9 +366,10 @@ public class MainActivity extends AppCompatActivity
         fabCreateTomorrowsPlan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                FragmentManager fragManager = getFragmentManager();
+                android.app.FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                 DialogFragment newFragment = new createTomorrowsPlans();
-                android.support.v4.app.FragmentManager fragManager = getSupportFragmentManager();
-                newFragment.show(fragManager, "createTomorrowsPlans");
+                newFragment.show(fragmentTransaction, "createTomorrowsPlans");
             }
         });
         fabEdit.setClickable(false);
@@ -402,7 +419,7 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         nav = (NavigationView)findViewById(R.id.nav_view);
-        setUpNavigationDrawer(nav);
+        setUpNavigationDrawer();
         ensureDisplay(this, layoutView);
 
     }
@@ -418,7 +435,7 @@ public class MainActivity extends AppCompatActivity
         final View layoutView = (View) findViewById(android.R.id.content);
         ensureDisplay(this, layoutView);
         nav = (NavigationView)findViewById(R.id.nav_view);
-        setUpNavigationDrawer(nav);
+        setUpNavigationDrawer();
         checkForTodaysScheduleTask(this);
         Intent i = new Intent(this, NotificationService.class);
         PendingIntent pi =PendingIntent.getService(this, 0, i, 0);
@@ -487,9 +504,11 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void setUpNavigationDrawer(NavigationView nv){
-        final NavigationView nav = nv;
-        nav.getMenu().clear();
+    public void setUpNavigationDrawer(){
+        final RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.rv);
+        final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, R.drawable.divider));
         if(display==null){
             try {
                 FileInputStream fis = this.openFileInput("TomorrowSchedule.txt");
@@ -510,86 +529,35 @@ public class MainActivity extends AppCompatActivity
             }
         }
         if(display!=null){
+            boolean doNotDisplay = false;
             String[] list = display.split("[\\r\\n]+");
             String[][] plans = new String [list.length][];
-            final int max = list.length;
-            int textId =max+1;
-            int numberOfActions =3;
-            for(int i =0; i<max;i++){
-                if(max == 1&&display.equals(" ")){
-
+            String[] myDataSet = new String[list.length];
+            for(int i =0; i<list.length;i++){
+                if(list.length== 1&&display.equals(" ")){
+                    doNotDisplay = true;
                 }else{
-                    final int index = i;
-                    nav.getMenu().add(Menu.NONE, i, Menu.NONE,R.string.checkBox);
-                    String text = "";
+                    myDataSet[i] = "";
                     plans[i] = list[i].split(",");
-
-                    MenuItem checkItem = nav.getMenu().findItem(i);
-                    checkItem.setActionView(R.layout.widget_check);
-                    checkItem.setTitle(" ");
-
                     for(int j = 0; j<plans[i].length;j++){
-                        nav.getMenu().add(Menu.NONE, textId, Menu.NONE,R.string.space);
-                        MenuItem textItem = nav.getMenu().findItem(textId);
-                        textItem.setActionView(R.layout.widget_text);
-
-                        TextView tx = (TextView)MenuItemCompat.getActionView(textItem);
-                        String setTxt = plans[i][j];
-                        tx.setText(setTxt);
-
-                        text+=plans[i][j]+"\n";
-
-                        textId++;
-                    }
-                    final String associatedText = text;
-
-                    CheckBox cb = (CheckBox) MenuItemCompat.getActionView(checkItem);
-                    cb.setText("Plan " +i+"                                                                                                         ");
-                    if(i!=0){
-                        if(cb.isChecked()){
-                            cb.toggle();
-                        }
-                    }else{
-                        try{
-                            FileOutputStream fos = openFileOutput("chosenPlan.txt",MODE_PRIVATE);
-                            fos.write(associatedText.getBytes());
-                            fos.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
+                        if(j==plans[i].length-1){
+                            myDataSet[i]+=plans[i][j];
+                        }else{
+                            myDataSet[i]+=plans[i][j]+"\n";
                         }
                     }
-                    checkItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-                    cb.setOnClickListener(new View.OnClickListener() {
-
-                        @Override
-                        public void onClick(View v) {
-
-                            if(((CheckBox)v).isChecked()){
-                                try{
-                                    FileOutputStream fos = openFileOutput("chosenPlan.txt",MODE_PRIVATE);
-                                    fos.write(associatedText.getBytes());
-                                    fos.close();
-                                }catch(Exception e){
-                                    e.printStackTrace();
-                                }
-                                for(int i =0; i<max;i++){
-                                    if(i!=index){
-                                        MenuItem checkItem = nav.getMenu().findItem(i);
-                                        CheckBox cb = (CheckBox) MenuItemCompat.getActionView(checkItem);
-                                        if(cb.isChecked()){
-                                            cb.toggle();
-                                        }
-                                    }
-                                }
-                            }else{
-                                System.out.println("Un-Checked "+index);
-                            }
-                        }
-                    });
                 }
             }
-        }
+            if(!doNotDisplay){
+                final RecyclerView.Adapter mAdapter = new MyAdapter(myDataSet, this);
+                mRecyclerView.setAdapter(mAdapter);
+                mRecyclerView.setHasFixedSize(true);
+            }else{
 
+            }
+        }else{
+
+        }
     }
 
 
@@ -738,7 +706,7 @@ public class MainActivity extends AppCompatActivity
             ensureDisplay(this, layoutView);
             nav = (NavigationView)findViewById(R.id.nav_view);
             display = null;
-            setUpNavigationDrawer(nav);
+            setUpNavigationDrawer();
         }
     }
     public void setDisplay(String s){
@@ -1045,9 +1013,10 @@ public class MainActivity extends AppCompatActivity
                     FileOutputStream fos = this.openFileOutput("suggestedPlan.txt",this.MODE_PRIVATE);
                     fos.write(a.getBytes());
                     fos.close();
+                    FragmentManager fragManager = getFragmentManager();
+                    android.app.FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                     DialogFragment newFragment = new betterPlanPopUpFragment();
-                    android.support.v4.app.FragmentManager fragManager = ((FragmentActivity)this).getSupportFragmentManager();
-                    newFragment.show(fragManager, "betterPlanPopUp");
+                    newFragment.show(fragmentTransaction, "betterPlanPopUp");
                 }catch(Exception e){
                     e.printStackTrace();
                 }
