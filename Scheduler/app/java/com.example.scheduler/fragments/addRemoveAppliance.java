@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
+import android.app.DialogFragment;
 import com.example.scheduler.MainActivity;
 import com.example.scheduler.R;
 
@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * Created by warrens on 07.08.17.
  */
 
-public class addRemoveAppliance extends android.support.v4.app.DialogFragment {
+public class addRemoveAppliance extends DialogFragment {
     private CheckBox[] applianceCheckBoxs;
     private String[] applianceEnableBooleans;
     private ArrayList checkBoxIdArrayList = new ArrayList();
