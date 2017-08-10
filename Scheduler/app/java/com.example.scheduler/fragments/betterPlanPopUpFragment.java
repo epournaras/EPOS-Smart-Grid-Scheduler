@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import com.example.scheduler.R;
-
+import android.app.DialogFragment;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
@@ -20,7 +20,7 @@ import java.io.FileOutputStream;
  * Created by warrens on 02.08.17.
  */
 
-public class betterPlanPopUpFragment extends android.support.v4.app.DialogFragment {
+public class betterPlanPopUpFragment extends DialogFragment {
 
     public String plan;
 
