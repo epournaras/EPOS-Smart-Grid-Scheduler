@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-
+import android.app.DialogFragment;
 import com.example.scheduler.MainActivity;
 import com.example.scheduler.R;
 
@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-public class removeFragment extends android.support.v4.app.DialogFragment {
+public class removeFragment extends DialogFragment {
     private String selectedAction;
     private String[] currentActionList;
 
