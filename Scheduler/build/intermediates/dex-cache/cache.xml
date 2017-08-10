@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="/Users/warrens/AndroidStudioProjects/Scheduler/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="62d368e8e6c82daa34b5f75b6d6c48567ae276cb">
+        <dex dex="/Users/warrens/AndroidStudioProjects/Scheduler/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_7006f3c2c31e9ad293de24076eb62bbd6d41c545/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/warrens/.android/build-cache/0fb8bc6a0787e6fa41a658d8d497312dc2679bd1/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="7521486d9bfd2cd9e756e0cf75ed7d97f2ce2d3b">
+        <dex dex="/Users/warrens/AndroidStudioProjects/Scheduler/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_c7405ac3d2b0d4f1da136b227b4ed29a28fb3d57/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/warrens/.android/build-cache/8bc7c9504f06e084ed9df75360f5b6801fa6bc00/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="e03f47f3d1017a093bb3239d4ec47c3447f40744">
+        <dex dex="/Users/warrens/AndroidStudioProjects/Scheduler/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_80f78bd8af30e231ff5b786af05422a973ed5c6e/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/warrens/AndroidStudioProjects/Scheduler/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="caff8e51a24901cfc9cd7e1cf83d84f4cb0c103b">
+        <dex dex="/Users/warrens/AndroidStudioProjects/Scheduler/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_197c544b615241470be4d73e35260beaf5e8e9c3/classes.dex" />
+    </item>
+
+</items>
