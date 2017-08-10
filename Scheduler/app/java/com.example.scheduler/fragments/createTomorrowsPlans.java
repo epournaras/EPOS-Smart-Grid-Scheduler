@@ -4,9 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.DialogFragment;
+
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
+import android.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,7 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.app.DialogFragment;
 import com.example.schedulecreationlibrary.Action;
 import com.example.schedulecreationlibrary.Schedule;
 import com.example.scheduler.MainActivity;
@@ -36,7 +37,7 @@ import java.util.Date;
  * Created by warrens on 07.08.17.
  */
 
-public class createTomorrowsPlans extends android.support.v4.app.DialogFragment {
+public class createTomorrowsPlans extends DialogFragment {
     public String selectedActiv;
     public String selectedDuration;
     public String selectedDurHr  ="00",selectedDurMin = "00";
@@ -61,6 +62,10 @@ public class createTomorrowsPlans extends android.support.v4.app.DialogFragment 
     private int progressChangedValue = 0;
     private String timings;
     public ProgressBar pg;
+
+    public createTomorrowsPlans(){
+
+    }
     @Override
     public void onCreate(Bundle savedInstaceState){
         super.onCreate(savedInstaceState);
@@ -68,7 +73,7 @@ public class createTomorrowsPlans extends android.support.v4.app.DialogFragment 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
-        final Context context=getActivity();
+        final Context context = getActivity();
         final View layoutView=inflater.inflate(R.layout.fragment_create_tomorrows_plans,container,false);
         pg = (ProgressBar)layoutView.findViewById(R.id.progressBar);
         getDialog().setCanceledOnTouchOutside(true);
@@ -282,9 +287,10 @@ public class createTomorrowsPlans extends android.support.v4.app.DialogFragment 
                     FileOutputStream fosThree = getActivity().openFileOutput("minOrMax.txt", Context.MODE_PRIVATE);
                     fosThree.write("min".getBytes());
                     fosThree.close();
-                    DialogFragment newFragment = new timeFragment();
-                    FragmentManager fragManager = ((FragmentActivity)myContext).getSupportFragmentManager();
-                    newFragment.show(fragManager, "timeFragment");
+                    android.support.v4.app.FragmentManager fragManager = ((FragmentActivity)myContext).getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                    android.support.v4.app.DialogFragment newFragment = new timeFragment();
+                    newFragment.show(fragmentTransaction, "timeFragment");
                     optimalTimePicked = false;
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -301,9 +307,10 @@ public class createTomorrowsPlans extends android.support.v4.app.DialogFragment 
                     FileOutputStream fosThree = getActivity().openFileOutput("minOrMax.txt", Context.MODE_PRIVATE);
                     fosThree.write("max".getBytes());
                     fosThree.close();
-                    DialogFragment newFragment = new timeFragment();
-                    FragmentManager fragManager = ((FragmentActivity)myContext).getSupportFragmentManager();
-                    newFragment.show(fragManager, "timeFragment");
+                    android.support.v4.app.FragmentManager fragManager = ((FragmentActivity)myContext).getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                    android.support.v4.app.DialogFragment newFragment = new timeFragment();
+                    newFragment.show(fragmentTransaction, "timeFragment");
                     optimalTimePicked = false;
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -470,7 +477,6 @@ public class createTomorrowsPlans extends android.support.v4.app.DialogFragment 
                         Toast toast = Toast.makeText(context, toastString, durationOfToast);
                         toast.show();
                     }
-                    ((MainActivity)getActivity()).setDisplay(display);
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                     String time = simpleDateFormat.format(new Date());
                     char[] timeChars = time.toCharArray();
@@ -512,9 +518,10 @@ public class createTomorrowsPlans extends android.support.v4.app.DialogFragment 
                         }
                         fos.write(ca.getBytes());
                         fos.close();
+                        FragmentManager fragManager = getFragmentManager();
+                        android.app.FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                         DialogFragment newFragment = new removeFragment();
-                        FragmentManager fragManager = ((FragmentActivity)myContext).getSupportFragmentManager();
-                        newFragment.show(fragManager, "removeFragment");
+                        newFragment.show(fragmentTransaction, "removeFragment");
                     }catch(Exception e){
                         String toastString = "Remove error";
                         Context context = getActivity();
