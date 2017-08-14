@@ -10,13 +10,13 @@
         android:text="TextView" />
 
     <CheckBox
-        android:id="@+id/reason1"
+        android:id="@+id/means1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
 
     <CheckBox
-        android:id="@+id/reason2"
+        android:id="@+id/means2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="CheckBox" />

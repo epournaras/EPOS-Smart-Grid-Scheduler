@@ -3,12 +3,16 @@ package com.example.scheduler.fragment;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -16,9 +20,13 @@ import com.example.scheduler.R;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by warrens on 10.08.17.
@@ -34,6 +42,7 @@ public class surveyFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         View v;
         Context context = getActivity();
+        this.setCancelable(false);
         int nextScreen;
         String surveyProgress = "0";
         try{
@@ -49,7 +58,948 @@ public class surveyFragment extends DialogFragment {
         }
         nextScreen = Integer.parseInt(surveyProgress);
         switch(nextScreen){
-            case 1:
+            case 2:
+                v = inflater.inflate(R.layout.survey_fragment_part_two, container, false);
+                final String[] QID = {"5","6","7","8"};
+                TextView txEducationQ = (TextView) v.findViewById(R.id.educationLevelQ);
+                txEducationQ.setText("What is the highest level of education you have completed?");
+                TextView txEmploymentStatusQ = (TextView) v.findViewById(R.id.employmentStatusQ);
+                txEmploymentStatusQ.setText("Which of the following best describes your employment status?");
+                TextView txHouseTypeQ = (TextView) v.findViewById(R.id.houseTypeQ);
+                txHouseTypeQ.setText("What type of house do you live in?");
+                TextView txHouseSizeQ = (TextView) v.findViewById(R.id.houseSizeQ);
+                txHouseSizeQ.setText("What size is your house?");
+
+                final Spinner spEducationA = (Spinner) v.findViewById(R.id.educationLevelA);
+                final Spinner spHouseTypeA = (Spinner)v.findViewById(R.id.houseTypeA);
+                final Spinner spHouseSizeA = (Spinner) v.findViewById(R.id.houseSizeA);
+
+                final String selectedEducationLevel;
+                final String selectedHouseType;
+                final String selectedHouseSize;
+
+                ArrayAdapter<String> educationLevelQ;
+                ArrayAdapter<String> houseTypeQ;
+                ArrayAdapter<String> houseSizeQ;
+
+                String[] educationLevels = {
+                        "-",
+                        "Level 1 - Primary Education",
+                        "Level 2 - Lower Secondary Education",
+                        "Level 3 - Upper Secondary Education",
+                        "Level 4 - Post-Secondary Non-Tertiary Education",
+                        "Level 5 - Short Cycle Tertiary Education",
+                        "Level 6 - Bachelor's or equivalent level",
+                        "Level 7 - Master's or equivalent level",
+                        "Level 8 - Doctoral or equivalent level"
+                };
+
+                educationLevelQ = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,educationLevels);
+                educationLevelQ.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spEducationA.setAdapter(educationLevelQ);
+                selectedEducationLevel = spEducationA.getSelectedItem().toString();
+
+                String[] houseTypes = {
+                        "-",
+                        "Detached",
+                        "Semi-detached",
+                        "Mid-terrace",
+                        "Apartment/Flat",
+                        "Other"
+                };
+
+                houseTypeQ = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,houseTypes);
+                houseTypeQ.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spHouseTypeA.setAdapter(houseTypeQ);
+                selectedHouseType = spHouseTypeA.getSelectedItem().toString();
+
+                String[] houseSizes = {
+                        "-",
+                        "1 Bed",
+                        "2 Bed",
+                        "3 Bed",
+                        "4 Bed",
+                        "5 Bed",
+                        "6 Bed +"
+                };
+
+                houseSizeQ = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,houseSizes);
+                houseSizeQ.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spHouseSizeA.setAdapter(houseSizeQ);
+                selectedHouseSize = spHouseSizeA.getSelectedItem().toString();
+
+
+                final Button[] bEmploymentStatusA = new Button[5];
+                bEmploymentStatusA[0] = (Button)v.findViewById(R.id.employmentStatusA1);
+                bEmploymentStatusA[0].setText("Full-time Employee");
+                bEmploymentStatusA[1] = (Button)v.findViewById(R.id.employmentStatusA2);
+                bEmploymentStatusA[1].setText("Part-Time Employee");
+                bEmploymentStatusA[2] = (Button)v.findViewById(R.id.employmentStatusA3);
+                bEmploymentStatusA[2].setText("Self-Employed");
+                bEmploymentStatusA[3] = (Button)v.findViewById(R.id.employmentStatusA4);
+                bEmploymentStatusA[3].setText("In Education");
+                bEmploymentStatusA[4] = (Button)v.findViewById(R.id.employmentStatusA5);
+                bEmploymentStatusA[4].setText("Unemployed");
+                for(int i = 0; i<bEmploymentStatusA.length;i++){
+                    final int index = i;
+                    bEmploymentStatusA[i].setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(bEmploymentStatusA[index].isPressed()){
+                                bEmploymentStatusA[index].setPressed(false);
+                            }else{
+                                bEmploymentStatusA[index].setPressed(true);
+                                for(int j = 0;j<bEmploymentStatusA.length;j++){
+                                    if(j!=index){
+                                        bEmploymentStatusA[j].setPressed(false);
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+                nextScreen = 3;
+                final int passTwo= nextScreen;
+                Button next = (Button) v.findViewById(R.id.toPartThree);
+                next.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String selectedEmploymentStatus = "-";
+                        for(int i = 0; i<bEmploymentStatusA.length;i++){
+                            if(bEmploymentStatusA[i].isPressed()){
+                                selectedEmploymentStatus = bEmploymentStatusA[i].getText().toString();
+                                break;
+                            }
+                        }
+                        String submitAnswers = QID[0]+","+selectedEducationLevel+"\n"+
+                                                QID[1]+","+selectedEmploymentStatus+"\n"+
+                                                QID[2]+","+selectedHouseType+"\n"+
+                                                QID[3]+","+selectedHouseSize+"\n";
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
+                            String nextScreen = passTwo+"";
+                            fos.write(nextScreen.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("surveyResults.txt",Context.MODE_APPEND);
+                            fos.write(submitAnswers.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    }//ToDo move to next screen.
+                });
+                break;
+            case 3:
+                v = inflater.inflate(R.layout.survey_fragment_part_three, container, false);
+                final String[] QIDS = {
+                        "5",
+                        "6"
+                };
+                String[] houseAges = new String[]{
+                        "-",
+                        "Pre 1900s",
+                        "1900 - 1909",
+                        "1910 - 1919",
+                        "1920 - 1929",
+                        "1930 - 1939",
+                        "1940 - 1949",
+                        "1950 - 1959",
+                        "1960 - 1969",
+                        "1970 - 1979",
+                        "1980 - 1989",
+                        "1990 - 1999",
+                        "2000 - 2009",
+                        "2010+"
+                };
+                String[] numberOfOccupants = new String[]{
+                        "-",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "5",
+                        "6+"
+                };
+                TextView txHouseAgeQ = (TextView) v.findViewById(R.id.houseAgeQ);
+                txHouseAgeQ.setText("Approximately when was your house built?");
+                TextView txHouseOccupantNumberQ = (TextView) v.findViewById(R.id.houseOccupantNumberQ);
+                txHouseOccupantNumberQ.setText("How many people live in your house?");
+
+                final Spinner spHouseAgeA = (Spinner) v.findViewById(R.id.houseAgeA);
+                final Spinner spHouseOccupantNumberA = (Spinner) v.findViewById(R.id.houseOccupantNumberA);
+
+                ArrayAdapter<String> houseAgeQ;
+                ArrayAdapter<String> houseOccupantNumberQ;
+
+                final String selectedHouseAge;
+                final String selectedOccupantNumber;
+
+                houseAgeQ = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,houseAges);
+                houseAgeQ.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spHouseAgeA.setAdapter(houseAgeQ);
+                selectedHouseAge = spHouseAgeA.getSelectedItem().toString();
+
+                houseOccupantNumberQ = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,numberOfOccupants);
+                houseOccupantNumberQ.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spHouseOccupantNumberA.setAdapter(houseOccupantNumberQ);
+                selectedOccupantNumber = spHouseOccupantNumberA.getSelectedItem().toString();
+
+                nextScreen = 4;
+                final int passThree = nextScreen;
+                Button bFour = (Button) v.findViewById(R.id.toPartFour);
+                bFour.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String submit = QIDS[0]+","+selectedHouseAge+"\n"+
+                                        QIDS[1]+","+selectedOccupantNumber+"\n";
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
+                            String nextScreen = passThree+"";
+                            fos.write(nextScreen.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("surveyResults.txt",Context.MODE_APPEND);
+                            fos.write(submit.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    }//ToDo move to next screen.
+                });
+                break;
+            case 4:
+                v = inflater.inflate(R.layout.survey_fragment_part_four, container, false);
+                final String[] Q = {
+                        "11-1",
+                        "11-2",
+                        "11-3",
+                        "11-4",
+                        "11-5",
+                        "11-6",
+                        "11-7",
+                        "11-8",
+                        "11-9",
+                        "11-10",
+                        "11-11",
+                        "11-12",
+                        "11-13",
+                        "11-14"
+                };
+
+                TextView txWhichAppliancesQ = (TextView)v.findViewById(R.id.appliancesOwnedQ);
+                txWhichAppliancesQ.setText("Which appliances do you have at home?");
+
+                final CheckBox cbWashingMachine = (CheckBox)v.findViewById(R.id.washingMachine);
+                cbWashingMachine.setText("Washing Machine");
+                final CheckBox cbTumbleDryer = (CheckBox)v.findViewById(R.id.tumbleDryer);
+                cbTumbleDryer.setText("Tumble Dryer");
+                final CheckBox cbComputerLaptop = (CheckBox)v.findViewById(R.id.laptop);
+                cbComputerLaptop.setText("Computer(Laptop)");
+                final CheckBox cbComputerDesktop = (CheckBox)v.findViewById(R.id.desktop);
+                cbComputerDesktop.setText("Computer(Desktop)");
+                final CheckBox cbOven = (CheckBox)v.findViewById(R.id.oven);
+                cbOven.setText("Oven");
+                final CheckBox cbHob = (CheckBox)v.findViewById(R.id.hob);
+                cbHob.setText("Hob");
+                final CheckBox cbElectricShower = (CheckBox)v.findViewById(R.id.electricShower);
+                cbElectricShower.setText("Electric Shower");
+                final CheckBox cbDishwasher = (CheckBox)v.findViewById(R.id.dishwasher);
+                cbDishwasher.setText("Dishwasher");
+                final CheckBox cbElectricHeater = (CheckBox)v.findViewById(R.id.electricHeater);
+                cbElectricHeater.setText("Electric Heater");
+                final CheckBox cbAirConditioner = (CheckBox)v.findViewById(R.id.airConditioner);
+                cbAirConditioner.setText("Air Conditioner");
+                final CheckBox cbKettle = (CheckBox)v.findViewById(R.id.kettle);
+                cbKettle.setText("Kettle");
+                final CheckBox cbMicrowave = (CheckBox)v.findViewById(R.id.microwave);
+                cbMicrowave.setText("Microwave");
+                final CheckBox cbFreezer = (CheckBox)v.findViewById(R.id.freezer);
+                cbFreezer.setText("Freezer");
+                final CheckBox cbFridge = (CheckBox)v.findViewById(R.id.fridge);
+                cbFridge.setText("Fridge");
+
+                nextScreen = 5;
+                final int passFour = nextScreen;
+                Button bFive = (Button) v.findViewById(R.id.toPartFive);
+                bFive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        /**
+                         * "Hob",0
+                         * "Oven",1
+                         * "TumbleDryer",2
+                         * "WashingMachine",3
+                         * "Computer",4
+                         * "Kettle",5
+                         * "DishWasher",6
+                         * "Shower"7
+                         */
+                        String[] enableTable = new String[8];
+                        String washingMachine,tumbleDryer,computerLaptop,computerDesktop,oven,hob,electricShower,dishWasher,electricHeater,airConditioner,kettle,microwave,freezer,fridge;
+                        if(cbWashingMachine.isChecked()){
+                            washingMachine = "true";
+                            enableTable[3] = "WashingMachine,true";
+                        }else{
+                            washingMachine = "false";
+                            enableTable[3] = "WashingMachine,false";
+                        }
+                        if(cbTumbleDryer.isChecked()){
+                            tumbleDryer = "true";
+                            enableTable[2] = "TumbleDryer,true";
+                        }else{
+                            tumbleDryer = "false";
+                            enableTable[2] = "TumbleDryer,false";
+                        }
+                        if(cbComputerLaptop.isChecked()){
+                            computerLaptop = "true";
+                            enableTable[4] = "Computer,true";
+                        }else{
+                            computerLaptop = "false";
+                            enableTable[4] = "Computer,false";
+                        }
+                        if(cbComputerDesktop.isChecked()){
+                            computerDesktop = "true";
+                            enableTable[4] = "Computer,true";
+                        }else{
+                            computerDesktop = "false";
+                            enableTable[4] = "Computer,false";
+                        }
+                        if(cbOven.isChecked()){
+                            oven = "true";
+                            enableTable[1] = "Oven,true";
+                        }else{
+                            oven = "false";
+                            enableTable[1] = "Oven,false";
+                        }
+                        if(cbHob.isChecked()){
+                            hob = "true";
+                            enableTable[0] = "Hob,true";
+                        }else{
+                            hob = "false";
+                            enableTable[0] = "Hob,false";
+                        }
+                        if(cbElectricShower.isChecked()){
+                            electricShower = "true";
+                            enableTable[7] = "Shower,true";
+                        }else{
+                            electricShower = "false";
+                            enableTable[7] = "Shower,false";
+                        }
+                        if(cbDishwasher.isChecked()){
+                            dishWasher = "true";
+                            enableTable[6] = "Dishwasher,true";
+                        }else{
+                            dishWasher = "false";
+                            enableTable[6] = "Dishwasher,true";
+                        }
+                        if(cbElectricHeater.isChecked()){
+                            electricHeater = "true";
+                        }else{
+                            electricHeater = "false";
+                        }
+                        if(cbAirConditioner.isChecked()){
+                            airConditioner = "true";
+                        }else{
+                            airConditioner = "false";
+                        }
+                        if(cbKettle.isChecked()){
+                            kettle = "true";
+                            enableTable[5] = "Kettle,true";
+                        }else{
+                            kettle = "false";
+                            enableTable[5] = "Kettle,false";
+                        }
+                        if(cbMicrowave.isChecked()){
+                            microwave = "true";
+                        }else{
+                            microwave = "false";
+                        }
+                        if(cbFreezer.isChecked()){
+                            freezer = "true";
+                        }else{
+                            freezer = "false";
+                        }
+                        if(cbFridge.isChecked()){
+                            fridge = "true";
+                        }else{
+                            fridge = "false";
+                        }
+                        String submit =
+                                Q[0]+","+washingMachine+"\n"+
+                                Q[1]+","+tumbleDryer+"\n"+
+                                Q[2]+","+computerLaptop+"\n"+
+                                Q[3]+","+computerDesktop+"\n"+
+                                Q[4]+","+oven+"\n"+
+                                Q[5]+","+hob+"\n"+
+                                Q[6]+","+electricShower+"\n"+
+                                Q[7]+","+dishWasher+"\n"+
+                                Q[8]+","+electricHeater+"\n"+
+                                Q[9]+","+airConditioner+"\n"+
+                                Q[10]+","+kettle+"\n"+
+                                Q[11]+","+microwave+"\n"+
+                                Q[12]+","+freezer+"\n"+
+                                Q[13]+","+fridge+"\n";
+                        String enableTableData=enableTable[0];
+                        for(int q = 1; q<enableTable.length;q++){
+                            enableTableData+="\n"+enableTable[q];
+                        }
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("appliancesEnabledDataFile.txt",Context.MODE_PRIVATE);
+                            fos.write(enableTableData.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
+                            String nextScreen = passFour+"";
+                            fos.write(nextScreen.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("surveyResults.txt",Context.MODE_APPEND);
+                            fos.write(submit.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        //ToDo move to next screen.
+                    }
+                });
+                break;
+            case 5:
+                v = inflater.inflate(R.layout.survey_fragment_part_five, container, false);
+                final String[] QuestionIDs = {"12","13","14","15-1","15-2","15-3","15-4","15-5"};
+                TextView txResidentialEnergyConcernQ = (TextView)v.findViewById(R.id.residentialEnergyConcernQ);
+                txResidentialEnergyConcernQ.setText("I am concerned about the amount of my residential energy consumption.");
+                TextView txDesireToReduceResidentialEnergyQ =(TextView)v.findViewById(R.id.desireToReduceResidentialEnergyQ);
+                txDesireToReduceResidentialEnergyQ.setText("I would like to consume lower energy at home.");
+                TextView txDesireToBeMoreEfficientWithResidentialEnergyQ = (TextView)v.findViewById(R.id.desireToBeMoreEfficientWithResidentialEnergyQ);
+                txDesireToBeMoreEfficientWithResidentialEnergyQ.setText("I would like to consume energy at home more efficiently.");
+                TextView txReasonsForEfficiencyAndReductionQ = (TextView)v.findViewById(R.id.reasonsForEfficiencyAndReductionQ);
+                txReasonsForEfficiencyAndReductionQ.setText("I would like to make a more efficient energy usage for the following reasons:");
+
+                final SeekBar sbResidentialEnergyConcernA = (SeekBar)v.findViewById(R.id.residentialEnergyConcernA);
+                final SeekBar sbDesireToReduceResidentialEnergyA = (SeekBar)v.findViewById(R.id.desireToReduceResidentialEnergyA);
+                final SeekBar sbDesireToBeMoreEfficientWithResidentialEnergyA = (SeekBar)v.findViewById(R.id.desireToBeMoreEfficientWithResidentialEnergyA);
+
+                final CheckBox cbReasonOne = (CheckBox)v.findViewById(R.id.reason1);
+                cbReasonOne.setText("Reduce my energy bill");
+                final CheckBox cbReasonTwo= (CheckBox)v.findViewById(R.id.reason2);
+                cbReasonOne.setText("Contribute to the grid reliability, e.g. prevent a blackout");
+                final CheckBox cbReasonThree= (CheckBox)v.findViewById(R.id.reason3);
+                cbReasonOne.setText("Protect the environment");
+                final CheckBox cbReasonFour= (CheckBox)v.findViewById(R.id.reason4);
+                cbReasonOne.setText("Others do, so I do.");
+                final CheckBox cbReasonFive= (CheckBox)v.findViewById(R.id.reason5);
+                cbReasonOne.setText("Others do not, so I do");
+
+                nextScreen = 6;
+                final int passFive = nextScreen;
+                Button bSix = (Button) v.findViewById(R.id.toPartSix);
+                bSix.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String questionFifteenAnswers ="";
+                        if(cbReasonOne.isChecked()){
+                            questionFifteenAnswers = QuestionIDs[3]+","+"true"+"\n";
+                        }else{
+                            questionFifteenAnswers = QuestionIDs[3]+","+"false"+"\n";
+                        }
+                        if(cbReasonTwo.isChecked()){
+                            questionFifteenAnswers += QuestionIDs[4]+","+"true"+"\n";
+                        }else{
+                            questionFifteenAnswers += QuestionIDs[4]+","+"false"+"\n";
+                        }
+                        if(cbReasonThree.isChecked()){
+                            questionFifteenAnswers += QuestionIDs[5]+","+"true"+"\n";
+                        }else{
+                            questionFifteenAnswers += QuestionIDs[5]+","+"false"+"\n";
+                        }
+                        if(cbReasonFour.isChecked()){
+                            questionFifteenAnswers += QuestionIDs[6]+","+"true"+"\n";
+                        }else{
+                            questionFifteenAnswers += QuestionIDs[6]+","+"false"+"\n";
+                        }
+                        if(cbReasonFive.isChecked()){
+                            questionFifteenAnswers += QuestionIDs[7]+","+"true"+"\n";
+                        }else{
+                            questionFifteenAnswers += QuestionIDs[7]+","+"false"+"\n";
+                        }
+                        int progressResidentialEnergyConcernA = sbResidentialEnergyConcernA.getProgress();
+                        int progressDesireToReduceResidentialEnergyA = sbDesireToReduceResidentialEnergyA.getProgress();
+                        int progressDesireToBeMoreEfficientWithResidentialEnergyA = sbDesireToBeMoreEfficientWithResidentialEnergyA.getProgress();
+                        String submit = QuestionIDs[0]+","+progressResidentialEnergyConcernA+"\n"+
+                                QuestionIDs[1]+","+progressDesireToReduceResidentialEnergyA+"\n"+
+                                QuestionIDs[2]+","+progressDesireToBeMoreEfficientWithResidentialEnergyA+"\n"+
+                                questionFifteenAnswers;
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
+                            String nextScreen = passFive+"";
+                            fos.write(nextScreen.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("surveyResults.txt",Context.MODE_APPEND);
+                            fos.write(submit.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        //ToDo Move to next screen
+                    }
+                });
+                break;
+            case 6:
+                v = inflater.inflate(R.layout.survey_fragment_part_six, container, false);
+                nextScreen = 7;
+                final String[] QuestionIDS = {"16-1","16-2","17-1","17-2","17-3","17-4"};
+
+                TextView txDesiredMeansToBeEfficientQ = (TextView) v.findViewById(R.id.desiredMeansToBeEfficientQ);
+                txDesiredMeansToBeEfficientQ.setText("I would like to use the following means to make a more efficient residential usage of energy:");
+                TextView txDiscomfortQ = (TextView) v.findViewById(R.id.discomfortQ);
+                txDiscomfortQ.setText("Which of the following would you, as a result of the automated control of residential appliances for a more efficient energy usage, find creates discomfort:");
+
+                final CheckBox cbMeansOne = (CheckBox)v.findViewById(R.id.means1);
+                cbMeansOne.setText("Lowering the consumption of appliances.");
+                final CheckBox cbMeansTwo = (CheckBox)v.findViewById(R.id.means2);
+                cbMeansTwo.setText("Shifting the consumption of appliances at different times, e.g. during off-peak night times.");
+
+                final CheckBox cbResultOne = (CheckBox)v.findViewById(R.id.result1);
+                cbResultOne.setText("Feeling cold in cold winters or feeling warm in warm summers.");
+                final CheckBox cbResultTwo = (CheckBox)v.findViewById(R.id.result2);
+                cbResultTwo.setText("Extra costs for special equipment and appliances.");
+                final CheckBox cbResultThree = (CheckBox)v.findViewById(R.id.result3);
+                cbResultThree.setText("Changing my overall lifestyle at home.");
+                final CheckBox cbResultFour = (CheckBox)v.findViewById(R.id.result4);
+                cbResultFour.setText("Doing my daily residential activities at different and maybe undesirable times.");
+
+                final int passSix = nextScreen;
+                Button bSeven = (Button) v.findViewById(R.id.toPartSeven);
+                bSeven.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String questionSixteenAnswers = "";
+                        String questionSevenTeenAnswers = "";
+                        if(cbMeansOne.isChecked()){
+                            questionSixteenAnswers += QuestionIDS[0]+",true"+"\n";
+                        }else{
+                            questionSixteenAnswers += QuestionIDS[0]+",false"+"\n";
+                        }
+                        if(cbMeansTwo.isChecked()){
+                            questionSixteenAnswers += QuestionIDS[1]+",true"+"\n";
+                        }else{
+                            questionSixteenAnswers += QuestionIDS[1]+",false"+"\n";
+                        }
+                        if(cbResultOne.isChecked()){
+                            questionSevenTeenAnswers+= QuestionIDS[2]+",true"+"\n";
+                        }else{
+                            questionSevenTeenAnswers+= QuestionIDS[2]+",false"+"\n";
+                        }
+                        if(cbResultTwo.isChecked()){
+                            questionSevenTeenAnswers+= QuestionIDS[3]+",true"+"\n";
+                        }else{
+                            questionSevenTeenAnswers+= QuestionIDS[3]+",false"+"\n";
+                        }
+                        if(cbResultThree.isChecked()){
+                            questionSevenTeenAnswers+= QuestionIDS[4]+",true"+"\n";
+                        }else{
+                            questionSevenTeenAnswers+= QuestionIDS[4]+",false"+"\n";
+                        }
+                        if(cbResultFour.isChecked()){
+                            questionSevenTeenAnswers+= QuestionIDS[5]+",true"+"\n";
+                        }else{
+                            questionSevenTeenAnswers+= QuestionIDS[5]+",false"+"\n";
+                        }
+                        String submit = questionSixteenAnswers+questionSevenTeenAnswers;
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
+                            String nextScreen = passSix+"";
+                            fos.write(nextScreen.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("surveyResults.txt",Context.MODE_APPEND);
+                            fos.write(submit.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    }//ToDo move to next screen.
+                });
+                break;
+            case 7:
+                v = inflater.inflate(R.layout.survey_fragment_part_seven, container, false);
+                nextScreen = 8;
+                final int passSeven = nextScreen;
+                final String[] Questionids = {"18","19","20","21"};
+                TextView txAcceptanceOfDiscomfortQ = (TextView) v.findViewById(R.id.acceptanceOfDiscomfortQ);
+                txAcceptanceOfDiscomfortQ.setText("I would like to accept discomfort to make more efficient energy usage.");
+                TextView txSacrificeOfEfficiencyQ = (TextView) v.findViewById(R.id.sacrificeOfEfficiencyQ);
+                txSacrificeOfEfficiencyQ.setText("I would like to sacrifice energy efficiency to experience a low discomfort.");
+                TextView txSoloEnergyEfficientQ = (TextView) v.findViewById(R.id.soloEnergyEfficientQ);
+                txSoloEnergyEfficientQ.setText("I would like to be more energy efficient if I know that others are more energy efficient as well.");
+                TextView txGroupAcceptanceOfDiscomfortQ = (TextView) v.findViewById(R.id.groupAcceptanceOfDiscomfortQ);
+                txGroupAcceptanceOfDiscomfortQ.setText("I can accept a discomfort caused by energy efficiency if others can accept it as well.");
+
+                final SeekBar sbAcceptanceOfDiscomfortA = (SeekBar)v.findViewById(R.id.acceptanceOfDiscomfortA);
+                final SeekBar sbSacrificeOfEfficiencyA = (SeekBar)v.findViewById(R.id.sacrificeOfEfficiencyA);
+                final SeekBar sbSoloEnergyEfficientA = (SeekBar)v.findViewById(R.id.soloEnergyEfficientA);
+                final SeekBar sbGroupAcceptanceOfDiscomfortA = (SeekBar)v.findViewById(R.id.groupAcceptanceOfDiscomfortA);
+
+
+                Button bEight = (Button) v.findViewById(R.id.toPartEight);
+                bEight.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int progressAcceptanceOfDiscomfortA= sbAcceptanceOfDiscomfortA.getProgress();
+                        int progressSacrificeOfEfficiencyA = sbSacrificeOfEfficiencyA.getProgress();
+                        int progressSoloEnergyEfficientA = sbSoloEnergyEfficientA.getProgress();
+                        int progressGroupAcceptanceOfDiscomfortA = sbGroupAcceptanceOfDiscomfortA.getProgress();
+                        String submit = Questionids[0]+","+progressAcceptanceOfDiscomfortA+"\n"+
+                                Questionids[1]+","+progressSacrificeOfEfficiencyA+"\n"+
+                                Questionids[2]+","+progressSoloEnergyEfficientA+"\n"+
+                                Questionids[3]+","+progressGroupAcceptanceOfDiscomfortA+"\n";
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
+                            String nextScreen = passSeven+"";
+                            fos.write(nextScreen.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("surveyResults.txt",Context.MODE_APPEND);
+                            fos.write(submit.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    }//ToDo move to next screen.
+                });
+                break;
+            case 8:
+                v = inflater.inflate(R.layout.survey_fragment_part_eight, container, false);
+                nextScreen = 9;
+                final String[] questionIDS = {"22","23","24","25"};
+                final int passEight = nextScreen;
+                TextView txNonSoloEnergyEfficientQ = (TextView)v.findViewById(R.id.nonSoloEnergyEfficientQ);
+                txNonSoloEnergyEfficientQ.setText("I would not like to be energy efficient if others are not energy efficient as well.");
+                TextView txNonSoloDiscomfortEscalationQ = (TextView)v.findViewById(R.id.nonSoloDiscomfortEscalationQ);
+                txNonSoloDiscomfortEscalationQ.setText("I would not like to experience higher discomfort by energy efficiency if others do not experience higher as well.");
+                TextView txTechnologyToScheduleForEfficiencyQ = (TextView)v.findViewById(R.id.technologyToScheduleForEfficiencyQ);
+                txTechnologyToScheduleForEfficiencyQ.setText("I would like to allow technology to schedule a more efficient energy usage of my appliances.");
+                TextView txSelfScheduleForEfficiencyQ = (TextView)v.findViewById(R.id.selfScheduleForEfficiencyQ);
+                txSelfScheduleForEfficiencyQ.setText("I am willing to schedule the use of appliances to make more efficient energy usage.");
+
+                final SeekBar sbNonSoloEnergyEfficientA = (SeekBar)v.findViewById(R.id.nonSoloEnergyEfficientA);
+                final SeekBar sbNonSoloDiscomfortEscalationA = (SeekBar)v.findViewById(R.id.nonSoloDiscomfortEscalationA);
+                final SeekBar sbTechnologyToScheduleForEfficiencyA = (SeekBar)v.findViewById(R.id.technologyToScheduleForEfficiencyA);
+                final SeekBar sbSelfScheduleForEfficiencyA = (SeekBar)v.findViewById(R.id.selfScheduleForEfficiencyA);
+
+
+                Button bNine = (Button) v.findViewById(R.id.toPartNine);
+                bNine.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int progressNonSoloEnergyEfficientA = sbNonSoloEnergyEfficientA.getProgress();
+                        int progressNonSoloDiscomfortEscalationA = sbNonSoloDiscomfortEscalationA.getProgress();
+                        int progressTechnologyToScheduleForEfficiencyA = sbTechnologyToScheduleForEfficiencyA.getProgress();
+                        int progressSelfScheduleForEfficiencyA = sbSelfScheduleForEfficiencyA.getProgress();
+                        String submit = questionIDS[0]+","+progressNonSoloEnergyEfficientA+"\n"+
+                                questionIDS[1]+","+progressNonSoloDiscomfortEscalationA+"\n"+
+                                questionIDS[2]+","+progressTechnologyToScheduleForEfficiencyA+"\n"+
+                                questionIDS[3]+","+progressSelfScheduleForEfficiencyA+"\n";
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
+                            String nextScreen = passEight+"";
+                            fos.write(nextScreen.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("surveyResults.txt",Context.MODE_APPEND);
+                            fos.write(submit.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    }//ToDo move to next screen.
+                });
+
+                break;
+            case 9:
+                v = inflater.inflate(R.layout.survey_fragment_part_nine, container, false);
+                nextScreen = 10;
+                final int passNine = nextScreen;
+                final String[] questionID = {"26-1","26-2","26-3","26-4","26-5","26-6","26-7","27"};
+                TextView txWhenToScheduleQ = (TextView) v.findViewById(R.id.whenToScheduleQ);
+                txWhenToScheduleQ.setText("Scheduling of appliances to make a more efficient energy usage best works for me:");
+                TextView txTakeBackControlAtWhatLevelOfDiscomfortQ = (TextView) v.findViewById(R.id.takeBackControlAtWhatLevelOfDiscomfortQ);
+                txTakeBackControlAtWhatLevelOfDiscomfortQ.setText("For which discomfort level would you like to overtake control back over an appliance scheduled for an efficient energy usage?");
+
+                final SeekBar spTakeBackControlAtWhatLevelOfDiscomfortA = (SeekBar)v.findViewById(R.id.takeBackControlAtWhatLevelOfDiscomfortA);
+                final CheckBox cbOptionOne = (CheckBox)v.findViewById(R.id.option1);
+                cbOptionOne.setText("30 minutes ahead");
+                final CheckBox cbOptionTwo = (CheckBox)v.findViewById(R.id.option2);
+                cbOptionOne.setText("1 hour ahead");
+                final CheckBox cbOptionThree = (CheckBox)v.findViewById(R.id.option3);
+                cbOptionOne.setText("3 hours ahead");
+                final CheckBox cbOptionFour = (CheckBox)v.findViewById(R.id.option4);
+                cbOptionOne.setText("6 hours ahead");
+                final CheckBox cbOptionFive = (CheckBox)v.findViewById(R.id.option5);
+                cbOptionOne.setText("12 hours ahead");
+                final CheckBox cbOptionSix = (CheckBox)v.findViewById(R.id.option6);
+                cbOptionOne.setText(" 24 hours ahead");
+                final CheckBox cbOptionSeven = (CheckBox)v.findViewById(R.id.option7);
+                cbOptionSeven.setText("1 week ahead");
+                Button bTen = (Button) v.findViewById(R.id.toPartTen);
+                bTen.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int progressTakeBackControlAtWhatLevelOfDiscomfortA = spTakeBackControlAtWhatLevelOfDiscomfortA.getProgress();
+                        String submit = "";
+                        if(cbOptionOne.isChecked()){
+                            submit += questionID[0]+","+"true"+"\n";
+                        }else{
+                            submit += questionID[0]+","+"false"+"\n";
+                        }
+                        if(cbOptionTwo.isChecked()){
+                            submit += questionID[1]+","+"true"+"\n";
+                        }else{
+                            submit += questionID[1]+","+"false"+"\n";
+                        }
+                        if(cbOptionThree.isChecked()){
+                            submit += questionID[2]+","+"true"+"\n";
+                        }else{
+                            submit += questionID[2]+","+"false"+"\n";
+                        }
+                        if(cbOptionFour.isChecked()){
+                            submit += questionID[3]+","+"true"+"\n";
+                        }else{
+                            submit += questionID[3]+","+"false"+"\n";
+                        }
+                        if(cbOptionFive.isChecked()){
+                            submit += questionID[4]+","+"true"+"\n";
+                        }else{
+                            submit += questionID[4]+","+"false"+"\n";
+                        }
+                        if(cbOptionSix.isChecked()){
+                            submit += questionID[5]+","+"true"+"\n";
+                        }else{
+                            submit += questionID[5]+","+"false"+"\n";
+                        }
+                        if(cbOptionSeven.isChecked()){
+                            submit += questionID[6]+","+"true"+"\n";
+                        }else{
+                            submit += questionID[6]+","+"false"+"\n";
+                        }
+                        submit+=questionID[7]+","+progressTakeBackControlAtWhatLevelOfDiscomfortA+"\n";
+
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
+                            String nextScreen = passNine+"";
+                            fos.write(nextScreen.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("surveyResults.txt",Context.MODE_APPEND);
+                            fos.write(submit.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                    //ToDo move to next screen.
+                });
+                break;
+            case 10:
+                v = inflater.inflate(R.layout.survey_fragment_part_ten, container, false);
+                Button bDismiss= (Button) v.findViewById(R.id.finished);
+                final String[] questionIds = {"28-1","28-2","28-3","28-4","28-5","28-6","28-7","28-8","28-9","28-10","28-11","28-12","28-13","28-14"};
+
+                TextView txAppliancesToAllowAutomatedControlQ = (TextView)v.findViewById(R.id.appliancesToAllowAutomatedControlQ);
+                txAppliancesToAllowAutomatedControlQ.setText("To which devices you would allow automated control for a more efficient energy usage?");
+
+                final CheckBox CBWashingMachine = (CheckBox)v.findViewById(R.id.washingMachine);
+                CBWashingMachine.setText("Washing Machine");
+                final CheckBox CBTumbleDryer = (CheckBox)v.findViewById(R.id.tumbleDryer);
+                CBTumbleDryer.setText("Tumble Dryer");
+                final CheckBox CBComputerLaptop = (CheckBox)v.findViewById(R.id.laptop);
+                CBComputerLaptop.setText("Computer(Laptop)");
+                final CheckBox CBComputerDesktop = (CheckBox)v.findViewById(R.id.desktop);
+                CBComputerDesktop.setText("Computer(Desktop)");
+                final CheckBox CBOven = (CheckBox)v.findViewById(R.id.oven);
+                CBOven.setText("Oven");
+                final CheckBox CBHob = (CheckBox)v.findViewById(R.id.hob);
+                CBHob.setText("Hob");
+                final CheckBox CBElectricShower = (CheckBox)v.findViewById(R.id.electricShower);
+                CBElectricShower.setText("Electric Shower");
+                final CheckBox CBDishwasher = (CheckBox)v.findViewById(R.id.dishwasher);
+                CBDishwasher.setText("Dishwasher");
+                final CheckBox CBElectricHeater = (CheckBox)v.findViewById(R.id.electricHeater);
+                CBElectricHeater.setText("Electric Heater");
+                final CheckBox CBAirConditioner = (CheckBox)v.findViewById(R.id.airConditioner);
+                CBAirConditioner.setText("Air Conditioner");
+                final CheckBox CBKettle = (CheckBox)v.findViewById(R.id.kettle);
+                CBKettle.setText("Kettle");
+                final CheckBox CBMicrowave = (CheckBox)v.findViewById(R.id.microwave);
+                CBMicrowave.setText("Microwave");
+                final CheckBox CBFreezer = (CheckBox)v.findViewById(R.id.freezer);
+                CBFreezer.setText("Freezer");
+                final CheckBox CBFridge = (CheckBox)v.findViewById(R.id.fridge);
+                CBFridge.setText("Fridge");
+                bDismiss.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String washingMachine,tumbleDryer,computerLaptop,computerDesktop,oven,hob,electricShower,dishWasher,electricHeater,airConditioner,kettle,microwave,freezer,fridge;
+                        if(CBWashingMachine.isChecked()){
+                            washingMachine = "true";
+                        }else{
+                            washingMachine = "false";
+                        }
+                        if(CBTumbleDryer.isChecked()){
+                            tumbleDryer = "true";
+                        }else{
+                            tumbleDryer = "false";
+                        }
+                        if(CBComputerLaptop.isChecked()){
+                            computerLaptop = "true";
+                        }else{
+                            computerLaptop = "false";
+                        }
+                        if(CBComputerDesktop.isChecked()){
+                            computerDesktop = "true";
+                        }else{
+                            computerDesktop = "false";
+                        }
+                        if(CBOven.isChecked()){
+                            oven = "true";
+                        }else{
+                            oven = "false";
+                        }
+                        if(CBHob.isChecked()){
+                            hob = "true";
+                        }else{
+                            hob = "false";
+                        }
+                        if(CBElectricShower.isChecked()){
+                            electricShower = "true";
+                        }else{
+                            electricShower = "false";
+                        }
+                        if(CBDishwasher.isChecked()){
+                            dishWasher = "true";
+                        }else{
+                            dishWasher = "false";
+                        }
+                        if(CBElectricHeater.isChecked()){
+                            electricHeater = "true";
+                        }else{
+                            electricHeater = "false";
+                        }
+                        if(CBAirConditioner.isChecked()){
+                            airConditioner = "true";
+                        }else{
+                            airConditioner = "false";
+                        }
+                        if(CBKettle.isChecked()){
+                            kettle = "true";
+                        }else{
+                            kettle = "false";
+                        }
+                        if(CBMicrowave.isChecked()){
+                            microwave = "true";
+                        }else{
+                            microwave = "false";
+                        }
+                        if(CBFreezer.isChecked()){
+                            freezer = "true";
+                        }else{
+                            freezer = "false";
+                        }
+                        if(CBFridge.isChecked()){
+                            fridge = "true";
+                        }else{
+                            fridge = "false";
+                        }
+                        String submit =
+                                        questionIds[0]+","+washingMachine+"\n"+
+                                        questionIds[1]+","+tumbleDryer+"\n"+
+                                        questionIds[2]+","+computerLaptop+"\n"+
+                                        questionIds[3]+","+computerDesktop+"\n"+
+                                        questionIds[4]+","+oven+"\n"+
+                                        questionIds[5]+","+hob+"\n"+
+                                        questionIds[6]+","+electricShower+"\n"+
+                                        questionIds[7]+","+dishWasher+"\n"+
+                                        questionIds[8]+","+electricHeater+"\n"+
+                                        questionIds[9]+","+airConditioner+"\n"+
+                                        questionIds[10]+","+kettle+"\n"+
+                                        questionIds[11]+","+microwave+"\n"+
+                                        questionIds[12]+","+freezer+"\n"+
+                                        questionIds[13]+","+fridge;
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("surveyResults.txt",Context.MODE_APPEND);
+                            fos.write(submit.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        String results = "";
+                        try{
+                            FileInputStream fis = getActivity().openFileInput("surveyResults.txt");
+                            int chr;
+                            StringBuilder builder = new StringBuilder();
+                            while ((chr = fis.read()) != -1) {
+                                builder.append((char) chr);
+                            }
+                            results = builder.toString();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-HH_mm_ss");
+                        String date = simpleDateFormat.format(new Date());
+                        String android_id;
+                        android_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+                        String fileName = android_id+"-initial-Survey-results-on-"+date+".txt";
+                        String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+                        FileOutputStream fOut=null;
+                        File file1 = new File(root+ File.separator + fileName);
+                        if(!file1.exists()) {
+                            try {
+                                file1.createNewFile();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        try {
+                            fOut = new FileOutputStream(file1);
+                            fOut.write(results.getBytes());
+                            fOut.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        dismiss();
+                    }
+                });
+                break;
+            default:
                 v = inflater.inflate(R.layout.survey_fragment_part_one, container, false);
                 nextScreen = 2;
                 final String[] QIDs = {"1","2","3","4"};
@@ -361,7 +1311,6 @@ public class surveyFragment extends DialogFragment {
                                 +QIDs[1]+","+selectedCountryOfOrigin+"\n"
                                 +QIDs[2]+","+selectedGender+"\n"
                                 +QIDs[3]+","+selectedCountryOfResidence+"\n";
-                        //ToDo submit answers
                         try{
                             FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
                             String nextScreen = pass+"";
@@ -370,554 +1319,9 @@ public class surveyFragment extends DialogFragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
-                    }
-                });
-                //ToDo move to next screen.
-                break;
-            case 2:
-                v = inflater.inflate(R.layout.survey_fragment_part_two, container, false);
-                final String[] QID = {"5","6","7","8"};
-                TextView txEducationQ = (TextView) v.findViewById(R.id.educationLevelQ);
-                txEducationQ.setText("What is the highest level of education you have completed?");
-                TextView txEmploymentStatusQ = (TextView) v.findViewById(R.id.employmentStatusQ);
-                txEmploymentStatusQ.setText("Which of the following best describes your employment status?");
-                TextView txHouseTypeQ = (TextView) v.findViewById(R.id.houseTypeQ);
-                txHouseTypeQ.setText("What type of house do you live in?");
-                TextView txHouseSizeQ = (TextView) v.findViewById(R.id.houseSizeQ);
-                txHouseSizeQ.setText("What size is your house?");
-
-                final Spinner spEducationA = (Spinner) v.findViewById(R.id.educationLevelA);
-                final Spinner spHouseTypeA = (Spinner)v.findViewById(R.id.houseTypeA);
-                final Spinner spHouseSizeA = (Spinner) v.findViewById(R.id.houseSizeA);
-
-                final String selectedEducationLevel;
-                final String selectedHouseType;
-                final String selectedHouseSize;
-
-                ArrayAdapter<String> educationLevelQ;
-                ArrayAdapter<String> houseTypeQ;
-                ArrayAdapter<String> houseSizeQ;
-
-                String[] educationLevels = {
-                        "-",
-                        "Level 1 - Primary Education",
-                        "Level 2 - Lower Secondary Education",
-                        "Level 3 - Upper Secondary Education",
-                        "Level 4 - Post-Secondary Non-Tertiary Education",
-                        "Level 5 - Short Cycle Tertiary Education",
-                        "Level 6 - Bachelor's or equivalent level",
-                        "Level 7 - Master's or equivalent level",
-                        "Level 8 - Doctoral or equivalent level"
-                };
-
-                educationLevelQ = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,educationLevels);
-                educationLevelQ.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spEducationA.setAdapter(educationLevelQ);
-                selectedEducationLevel = spEducationA.getSelectedItem().toString();
-
-                String[] houseTypes = {
-                        "-",
-                        "Detached",
-                        "Semi-detached",
-                        "Mid-terrace",
-                        "Apartment/Flat",
-                        "Other"
-                };
-
-                houseTypeQ = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,houseTypes);
-                houseTypeQ.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spHouseTypeA.setAdapter(houseTypeQ);
-                selectedHouseType = spHouseTypeA.getSelectedItem().toString();
-
-                String[] houseSizes = {
-                        "-",
-                        "1 Bed",
-                        "2 Bed",
-                        "3 Bed",
-                        "4 Bed",
-                        "5 Bed",
-                        "6 Bed +"
-                };
-
-                houseSizeQ = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,houseSizes);
-                houseSizeQ.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spHouseSizeA.setAdapter(houseSizeQ);
-                selectedHouseSize = spHouseSizeA.getSelectedItem().toString();
-
-
-                final Button[] bEmploymentStatusA = new Button[5];
-                bEmploymentStatusA[0] = (Button)v.findViewById(R.id.employmentStatusA1);
-                bEmploymentStatusA[0].setText("Full-time Employee");
-                bEmploymentStatusA[1] = (Button)v.findViewById(R.id.employmentStatusA2);
-                bEmploymentStatusA[1].setText("Part-Time Employee");
-                bEmploymentStatusA[2] = (Button)v.findViewById(R.id.employmentStatusA3);
-                bEmploymentStatusA[2].setText("Self-Employed");
-                bEmploymentStatusA[3] = (Button)v.findViewById(R.id.employmentStatusA4);
-                bEmploymentStatusA[3].setText("In Education");
-                bEmploymentStatusA[4] = (Button)v.findViewById(R.id.employmentStatusA5);
-                bEmploymentStatusA[4].setText("Unemployed");
-                for(int i = 0; i<bEmploymentStatusA.length;i++){
-                    final int index = i;
-                    bEmploymentStatusA[i].setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(bEmploymentStatusA[index].isPressed()){
-                                bEmploymentStatusA[index].setPressed(false);
-                            }else{
-                                bEmploymentStatusA[index].setPressed(true);
-                                for(int j = 0;j<bEmploymentStatusA.length;j++){
-                                    if(j!=index){
-                                        bEmploymentStatusA[j].setPressed(false);
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }
-                nextScreen = 3;
-                final int passTwo= nextScreen;
-                Button next = (Button) v.findViewById(R.id.toPartThree);
-                next.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String selectedEmploymentStatus = "-";
-                        for(int i = 0; i<bEmploymentStatusA.length;i++){
-                            if(bEmploymentStatusA[i].isPressed()){
-                                selectedEmploymentStatus = bEmploymentStatusA[i].getText().toString();
-                                break;
-                            }
-                        }
-                        String submitAnswers = QID[0]+","+selectedEducationLevel+"\n"+
-                                                QID[1]+","+selectedEmploymentStatus+"\n"+
-                                                QID[2]+","+selectedHouseType+"\n"+
-                                                QID[3]+","+selectedHouseSize+"\n";
-                        //ToDo submit answers.
                         try{
-                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
-                            String nextScreen = passTwo+"";
-                            fos.write(nextScreen.getBytes());
-                            fos.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                //ToDo move to next screen.
-                break;
-            case 3:
-                v = inflater.inflate(R.layout.survey_fragment_part_three, container, false);
-                final String[] QIDS = {
-                        "5",
-                        "6"
-                };
-                String[] houseAges = new String[]{
-                        "-",
-                        "Pre 1900s",
-                        "1900 - 1909",
-                        "1910 - 1919",
-                        "1920 - 1929",
-                        "1930 - 1939",
-                        "1940 - 1949",
-                        "1950 - 1959",
-                        "1960 - 1969",
-                        "1970 - 1979",
-                        "1980 - 1989",
-                        "1990 - 1999",
-                        "2000 - 2009",
-                        "2010+"
-                };
-                String[] numberOfOccupants = new String[]{
-                        "-",
-                        "1",
-                        "2",
-                        "3",
-                        "4",
-                        "5",
-                        "6+"
-                };
-                TextView txHouseAgeQ = (TextView) v.findViewById(R.id.houseAgeQ);
-                txHouseAgeQ.setText("Approximately when was your house built?");
-                TextView txHouseOccupantNumberQ = (TextView) v.findViewById(R.id.houseOccupantNumberQ);
-                txHouseOccupantNumberQ.setText("How many people live in your house?");
-
-                final Spinner spHouseAgeA = (Spinner) v.findViewById(R.id.houseAgeA);
-                final Spinner spHouseOccupantNumberA = (Spinner) v.findViewById(R.id.houseOccupantNumberA);
-
-                ArrayAdapter<String> houseAgeQ;
-                ArrayAdapter<String> houseOccupantNumberQ;
-
-                final String selectedHouseAge;
-                final String selectedOccupantNumber;
-
-                houseAgeQ = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,houseAges);
-                houseAgeQ.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spHouseAgeA.setAdapter(houseAgeQ);
-                selectedHouseAge = spHouseAgeA.getSelectedItem().toString();
-
-                houseOccupantNumberQ = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,numberOfOccupants);
-                houseOccupantNumberQ.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spHouseOccupantNumberA.setAdapter(houseOccupantNumberQ);
-                selectedOccupantNumber = spHouseOccupantNumberA.getSelectedItem().toString();
-
-                nextScreen = 4;
-                final int passThree = nextScreen;
-                Button bFour = (Button) v.findViewById(R.id.toPartFour);
-                bFour.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String submit = QIDS[0]+","+selectedHouseAge+"\n"+
-                                        QIDS[1]+","+selectedOccupantNumber+"\n";
-                        //ToDO submit
-                        try{
-                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
-                            String nextScreen = passThree+"";
-                            fos.write(nextScreen.getBytes());
-                            fos.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                });
-//ToDo move to next screen.
-                break;
-            case 4:
-                v = inflater.inflate(R.layout.survey_fragment_part_four, container, false);
-                final String[] Q = {
-                        "11-1",
-                        "11-2",
-                        "11-3",
-                        "11-4",
-                        "11-5",
-                        "11-6",
-                        "11-7",
-                        "11-8",
-                        "11-9",
-                        "11-10",
-                        "11-11",
-                        "11-12",
-                        "11-13",
-                        "11-14"
-                };
-
-                TextView txWhichAppliancesQ = (TextView)v.findViewById(R.id.appliancesOwnedQ);
-                txWhichAppliancesQ.setText("Which appliances do you have at home?");
-
-                final CheckBox cbWashingMachine = (CheckBox)v.findViewById(R.id.washingMachine);
-                cbWashingMachine.setText("Washing Machine");
-                final CheckBox cbTumbleDryer = (CheckBox)v.findViewById(R.id.tumbleDryer);
-                cbTumbleDryer.setText("Tumble Dryer");
-                final CheckBox cbComputerLaptop = (CheckBox)v.findViewById(R.id.laptop);
-                cbComputerLaptop.setText("Computer(Laptop)");
-                final CheckBox cbComputerDesktop = (CheckBox)v.findViewById(R.id.desktop);
-                cbComputerDesktop.setText("Computer(Desktop)");
-                final CheckBox cbOven = (CheckBox)v.findViewById(R.id.oven);
-                cbOven.setText("Oven");
-                final CheckBox cbHob = (CheckBox)v.findViewById(R.id.hob);
-                cbHob.setText("Hob");
-                final CheckBox cbElectricShower = (CheckBox)v.findViewById(R.id.electricShower);
-                cbElectricShower.setText("Electric Shower");
-                final CheckBox cbDishwasher = (CheckBox)v.findViewById(R.id.dishwasher);
-                cbDishwasher.setText("Dishwasher");
-                final CheckBox cbElectricHeater = (CheckBox)v.findViewById(R.id.electricHeater);
-                cbElectricHeater.setText("Electric Heater");
-                final CheckBox cbAirConditioner = (CheckBox)v.findViewById(R.id.airConditioner);
-                cbAirConditioner.setText("Air Conditioner");
-                final CheckBox cbKettle = (CheckBox)v.findViewById(R.id.kettle);
-                cbKettle.setText("Kettle");
-                final CheckBox cbMicrowave = (CheckBox)v.findViewById(R.id.microwave);
-                cbMicrowave.setText("Microwave");
-                final CheckBox cbFreezer = (CheckBox)v.findViewById(R.id.freezer);
-                cbFreezer.setText("Freezer");
-                final CheckBox cbFridge = (CheckBox)v.findViewById(R.id.fridge);
-                cbFridge.setText("Fridge");
-
-                nextScreen = 5;
-                final int passFour = nextScreen;
-                Button bFive = (Button) v.findViewById(R.id.toPartFive);
-                bFive.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        /**
-                         * "Hob",0
-                         * "Oven",1
-                         * "TumbleDryer",2
-                         * "WashingMachine",3
-                         * "Computer",4
-                         * "Kettle",5
-                         * "DishWasher",6
-                         * "Shower"7
-                         */
-                        String[] enableTable = new String[8];
-                        String washingMachine,tumbleDryer,computerLaptop,computerDesktop,oven,hob,electricShower,dishWasher,electricHeater,airConditioner,kettle,microwave,freezer,fridge;
-                        if(cbWashingMachine.isChecked()){
-                            washingMachine = "true";
-                            enableTable[3] = "WashingMachine,true";
-                        }else{
-                            washingMachine = "false";
-                            enableTable[3] = "WashingMachine,false";
-                        }
-                        if(cbTumbleDryer.isChecked()){
-                            tumbleDryer = "true";
-                            enableTable[2] = "TumbleDryer,true";
-                        }else{
-                            tumbleDryer = "false";
-                            enableTable[2] = "TumbleDryer,false";
-                        }
-                        if(cbComputerLaptop.isChecked()){
-                            computerLaptop = "true";
-                            enableTable[4] = "Computer,true";
-                        }else{
-                            computerLaptop = "false";
-                            enableTable[4] = "Computer,false";
-                        }
-                        if(cbComputerDesktop.isChecked()){
-                            computerDesktop = "true";
-                            enableTable[4] = "Computer,true";
-                        }else{
-                            computerDesktop = "false";
-                            enableTable[4] = "Computer,false";
-                        }
-                        if(cbOven.isChecked()){
-                            oven = "true";
-                            enableTable[1] = "Oven,true";
-                        }else{
-                            oven = "false";
-                            enableTable[1] = "Oven,false";
-                        }
-                        if(cbHob.isChecked()){
-                            hob = "true";
-                            enableTable[0] = "Hob,true";
-                        }else{
-                            hob = "false";
-                            enableTable[0] = "Hob,false";
-                        }
-                        if(cbElectricShower.isChecked()){
-                            electricShower = "true";
-                            enableTable[7] = "Shower,true";
-                        }else{
-                            electricShower = "false";
-                            enableTable[7] = "Shower,false";
-                        }
-                        if(cbDishwasher.isChecked()){
-                            dishWasher = "true";
-                            enableTable[6] = "Dishwasher,true";
-                        }else{
-                            dishWasher = "false";
-                            enableTable[6] = "Dishwasher,true";
-                        }
-                        if(cbElectricHeater.isChecked()){
-                            electricHeater = "true";
-                        }else{
-                            electricHeater = "false";
-                        }
-                        if(cbAirConditioner.isChecked()){
-                            airConditioner = "true";
-                        }else{
-                            airConditioner = "false";
-                        }
-                        if(cbKettle.isChecked()){
-                            kettle = "true";
-                            enableTable[5] = "Kettle,true";
-                        }else{
-                            kettle = "false";
-                            enableTable[5] = "Kettle,false";
-                        }
-                        if(cbMicrowave.isChecked()){
-                            microwave = "true";
-                        }else{
-                            microwave = "false";
-                        }
-                        if(cbFreezer.isChecked()){
-                            freezer = "true";
-                        }else{
-                            freezer = "false";
-                        }
-                        if(cbFridge.isChecked()){
-                            fridge = "true";
-                        }else{
-                            fridge = "false";
-                        }
-                        String submit =
-                                Q[0]+","+washingMachine+"\n"+
-                                Q[1]+","+tumbleDryer+"\n"+
-                                Q[2]+","+computerLaptop+"\n"+
-                                Q[3]+","+computerDesktop+"\n"+
-                                Q[4]+","+oven+"\n"+
-                                Q[5]+","+hob+"\n"+
-                                Q[6]+","+electricShower+"\n"+
-                                Q[7]+","+dishWasher+"\n"+
-                                Q[8]+","+electricHeater+"\n"+
-                                Q[9]+","+airConditioner+"\n"+
-                                Q[10]+","+kettle+"\n"+
-                                Q[11]+","+microwave+"\n"+
-                                Q[12]+","+freezer+"\n"+
-                                Q[13]+","+fridge+"\n";
-                        String enableTableData=enableTable[0];
-                        for(int q = 1; q<enableTable.length;q++){
-                            enableTableData+="\n"+enableTable[q];
-                        }
-                        try{
-                            FileOutputStream fos = getActivity().openFileOutput("appliancesEnabledDataFile.txt",Context.MODE_PRIVATE);
-                            fos.write(enableTableData.getBytes());
-                            fos.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-                        try{
-                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
-                            String nextScreen = passFour+"";
-                            fos.write(nextScreen.getBytes());
-                            fos.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-                        //ToDo move to next screen.
-                    }
-                });
-                break;
-            case 5:
-                v = inflater.inflate(R.layout.survey_fragment_part_five, container, false);
-
-                nextScreen = 6;
-                final int passFive = nextScreen;
-                Button bSix = (Button) v.findViewById(R.id.toPartSix);
-                bSix.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        String submit = Q[0]+","+selectedHouseAge+"\n"+
-//                                Q[1]+","+selectedOccupantNumber+"\n";
-                        //ToDO submit
-                        try{
-                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
-                            String nextScreen = passFive+"";
-                            fos.write(nextScreen.getBytes());
-                            fos.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                break;
-            case 6:
-                v = inflater.inflate(R.layout.survey_fragment_part_six, container, false);
-                nextScreen = 7;
-                final int passSix = nextScreen;
-                Button bSeven = (Button) v.findViewById(R.id.toPartSeven);
-                bSeven.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        String submit = Q[0]+","+selectedHouseAge+"\n"+
-//                                Q[1]+","+selectedOccupantNumber+"\n";
-                        //ToDO submit
-                        try{
-                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
-                            String nextScreen = passSix+"";
-                            fos.write(nextScreen.getBytes());
-                            fos.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                //ToDo move to next screen.
-                break;
-            case 7:
-                v = inflater.inflate(R.layout.survey_fragment_part_seven, container, false);
-                nextScreen = 8;
-                final int passSeven = nextScreen;
-                Button bEight = (Button) v.findViewById(R.id.toPartEight);
-                bEight.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        String submit = Q[0]+","+selectedHouseAge+"\n"+
-//                                Q[1]+","+selectedOccupantNumber+"\n";
-                        //ToDO submit
-                        try{
-                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
-                            String nextScreen = passSeven+"";
-                            fos.write(nextScreen.getBytes());
-                            fos.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                //ToDo move to next screen.
-                break;
-            case 8:
-                v = inflater.inflate(R.layout.survey_fragment_part_eight, container, false);
-                nextScreen = 9;
-                final int passEight = nextScreen;
-                Button bNine = (Button) v.findViewById(R.id.toPartNine);
-                bNine.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        String submit = Q[0]+","+selectedHouseAge+"\n"+
-//                                Q[1]+","+selectedOccupantNumber+"\n";
-                        //ToDO submit
-                        try{
-                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
-                            String nextScreen = passEight+"";
-                            fos.write(nextScreen.getBytes());
-                            fos.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                //ToDo move to next screen.
-                break;
-            case 9:
-                v = inflater.inflate(R.layout.survey_fragment_part_nine, container, false);
-                nextScreen = 10;
-                final int passNine = nextScreen;
-                Button bTen = (Button) v.findViewById(R.id.toPartTen);
-                bTen.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        String submit = Q[0]+","+selectedHouseAge+"\n"+
-//                                Q[1]+","+selectedOccupantNumber+"\n";
-                        //ToDO submit
-                        try{
-                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
-                            String nextScreen = passNine+"";
-                            fos.write(nextScreen.getBytes());
-                            fos.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                //ToDo move to next screen.
-                break;
-            case 10:
-                v = inflater.inflate(R.layout.survey_fragment_part_ten, container, false);
-                Button bDismiss= (Button) v.findViewById(R.id.finished);
-                bDismiss.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        String submit = Q[0]+","+selectedHouseAge+"\n"+
-//                                Q[1]+","+selectedOccupantNumber+"\n";
-                        //ToDO submit
-                    }
-                });
-                //ToDo move to next screen.
-                break;
-            default:
-                v = inflater.inflate(R.layout.survey_fragment_part_one, container, false);
-                nextScreen = 2;
-                final int passTen = nextScreen;
-                Button bEleven = (Button) v.findViewById(R.id.toPartTwo);
-                bEleven.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        String submit = Q[0]+","+selectedHouseAge+"\n"+
-//                                Q[1]+","+selectedOccupantNumber+"\n";
-                        //ToDO submit
-                        try{
-                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
-                            String nextScreen = passTen+"";
-                            fos.write(nextScreen.getBytes());
+                            FileOutputStream fos = getActivity().openFileOutput("surveyResults.txt",Context.MODE_PRIVATE);
+                            fos.write(submitAnswers.getBytes());
                             fos.close();
                         }catch(Exception e){
                             e.printStackTrace();

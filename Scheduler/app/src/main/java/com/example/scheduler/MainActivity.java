@@ -172,6 +172,7 @@ public class MainActivity extends AppCompatActivity
             String applianceNamesFile = "applianceNames.txt";
             String suggestedPlanFile = "suggestedPlan.txt";
             String todayScheduleFile = "TodaySchedule.txt";
+            String surveyResultsFiles = "surveyResults.txt";
             try{
                 FileOutputStream fos = this.openFileOutput(applianceNamesFile,MODE_APPEND);
                 for(int i = 0; i<applianceNames.length;i++){
@@ -189,6 +190,15 @@ public class MainActivity extends AppCompatActivity
             }catch(Exception e){
                 e.printStackTrace();
             }
+
+            try{
+                FileOutputStream fos = this.openFileOutput(surveyResultsFiles,MODE_PRIVATE);
+                fos.write(" ".getBytes());
+                fos.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
             try{
                 FileOutputStream fos = this.openFileOutput(suggestedPlanFile,MODE_PRIVATE);
                 fos.write(" ".getBytes());

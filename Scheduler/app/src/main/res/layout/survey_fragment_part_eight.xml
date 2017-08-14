@@ -12,7 +12,25 @@
     <SeekBar
         android:id="@+id/nonSoloEnergyEfficientA"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:max="4"
+        android:progress="2"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text = "Disagree"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text = "Agree"/>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/nonSoloDiscomfortEscalationQ"
@@ -23,7 +41,25 @@
     <SeekBar
         android:id="@+id/nonSoloDiscomfortEscalationA"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:max="4"
+        android:progress="2"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text = "Disagree"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text = "Agree"/>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/technologyToScheduleForEfficiencyQ"
@@ -34,7 +70,25 @@
     <SeekBar
         android:id="@+id/technologyToScheduleForEfficiencyA"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:max="4"
+        android:progress="2"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text = "Disagree"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text = "Agree"/>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/selfScheduleForEfficiencyQ"
@@ -45,7 +99,25 @@
     <SeekBar
         android:id="@+id/selfScheduleForEfficiencyA"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:max="4"
+        android:progress="2"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text = "Disagree"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text = "Agree"/>
+    </RelativeLayout>
     <Button
         android:id="@+id/toPartNine"
         android:layout_width="wrap_content"

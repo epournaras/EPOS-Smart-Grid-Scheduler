@@ -44,6 +44,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
+    <CheckBox
+        android:id="@+id/option7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CheckBox" />
+    <TextView
+        android:id="@+id/takeBackControlAtWhatLevelOfDiscomfortQ"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    <SeekBar
+        android:id="@+id/takeBackControlAtWhatLevelOfDiscomfortA"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="4"
+        android:progress="2"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text = "Low"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text = "High"/>
+    </RelativeLayout>
     <Button
         android:id="@+id/toPartTen"
         android:layout_width="wrap_content"

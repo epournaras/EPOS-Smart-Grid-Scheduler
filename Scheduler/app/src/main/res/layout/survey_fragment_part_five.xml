@@ -12,8 +12,25 @@
     <SeekBar
         android:id="@+id/residentialEnergyConcernA"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:max="4"
+        android:progress="2" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text = "Disagree"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text = "Agree"/>
+    </RelativeLayout>
     <TextView
         android:id="@+id/desireToReduceResidentialEnergyQ"
         android:layout_width="match_parent"
@@ -23,7 +40,25 @@
     <SeekBar
         android:id="@+id/desireToReduceResidentialEnergyA"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:max = "4"
+        android:progress = "2"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text = "Disagree"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text = "Agree"/>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/desireToBeMoreEfficientWithResidentialEnergyQ"
@@ -34,7 +69,25 @@
     <SeekBar
         android:id="@+id/desireToBeMoreEfficientWithResidentialEnergyA"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:max = "4"
+        android:progress = "2"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text = "Disagree"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text = "Agree"/>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/reasonsForEfficiencyAndReductionQ"
