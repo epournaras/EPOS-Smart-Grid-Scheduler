@@ -24,45 +24,55 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Button
+        <ToggleButton
             android:id="@+id/employmentStatusA1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Button"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+            android:textSize="5sp" />
 
-        <Button
+        <ToggleButton
             android:id="@+id/employmentStatusA2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Button"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+            android:textSize="5sp" />
 
-        <Button
+        <ToggleButton
             android:id="@+id/employmentStatusA3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Button"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+            android:textSize="5sp" />
 
-        <Button
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ToggleButton
             android:id="@+id/employmentStatusA4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Button"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+            android:textSize="5sp" />
 
-        <Button
+        <ToggleButton
             android:id="@+id/employmentStatusA5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Button"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+            android:textSize="5sp" />
     </LinearLayout>
 
     <TextView
@@ -86,10 +96,22 @@
         android:id="@+id/houseSizeA"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-    <Button
-        android:id="@+id/toPartThree"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:text="Next" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:text="2/10"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textSize="40sp" />
+        <Button
+            android:id="@+id/toPartThree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Next" />
+    </RelativeLayout>
 </LinearLayout>

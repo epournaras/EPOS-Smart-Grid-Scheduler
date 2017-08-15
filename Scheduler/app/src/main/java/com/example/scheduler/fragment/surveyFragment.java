@@ -17,8 +17,10 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.example.scheduler.Interface.MyDialogCloseListener;
+import com.example.scheduler.ObjectGroup.ToggleButtonsGroup;
 import com.example.scheduler.R;
 
 import org.w3c.dom.Text;
@@ -128,35 +130,44 @@ public class surveyFragment extends DialogFragment {
 
 
 
-                final Button[] bEmploymentStatusA = new Button[5];
-                bEmploymentStatusA[0] = (Button)v.findViewById(R.id.employmentStatusA1);
-                bEmploymentStatusA[0].setText("Full-time Employee");
-                bEmploymentStatusA[1] = (Button)v.findViewById(R.id.employmentStatusA2);
-                bEmploymentStatusA[1].setText("Part-Time Employee");
-                bEmploymentStatusA[2] = (Button)v.findViewById(R.id.employmentStatusA3);
+                final ToggleButton[] bEmploymentStatusA = new ToggleButton[5];
+                bEmploymentStatusA[0] = (ToggleButton)v.findViewById(R.id.employmentStatusA1);
+                bEmploymentStatusA[0].setTextSize(10);
+                bEmploymentStatusA[0].setText("Full-time");
+                bEmploymentStatusA[0].setTextOn("Full-time");
+                bEmploymentStatusA[0].setTextOff("Full-time");
+
+                bEmploymentStatusA[1] = (ToggleButton)v.findViewById(R.id.employmentStatusA2);
+                bEmploymentStatusA[1].setTextSize(10);
+                bEmploymentStatusA[1].setText("Part-Time");
+                bEmploymentStatusA[1].setTextOn("Part-Time");
+                bEmploymentStatusA[1].setTextOff("Part-Time");
+
+                bEmploymentStatusA[2] = (ToggleButton)v.findViewById(R.id.employmentStatusA3);
+                bEmploymentStatusA[2].setTextSize(10);
                 bEmploymentStatusA[2].setText("Self-Employed");
-                bEmploymentStatusA[3] = (Button)v.findViewById(R.id.employmentStatusA4);
-                bEmploymentStatusA[3].setText("In Education");
-                bEmploymentStatusA[4] = (Button)v.findViewById(R.id.employmentStatusA5);
+                bEmploymentStatusA[2].setTextOn("Self-Employed");
+                bEmploymentStatusA[2].setTextOff("Self-Employed");
+
+                bEmploymentStatusA[3] = (ToggleButton)v.findViewById(R.id.employmentStatusA4);
+                bEmploymentStatusA[3].setTextSize(10);
+                bEmploymentStatusA[3].setText("Student");
+                bEmploymentStatusA[3].setTextOn("Student");
+                bEmploymentStatusA[3].setTextOff("Student");
+
+                bEmploymentStatusA[4] = (ToggleButton)v.findViewById(R.id.employmentStatusA5);
+                bEmploymentStatusA[4].setTextSize(10);
                 bEmploymentStatusA[4].setText("Unemployed");
-                for(int i = 0; i<bEmploymentStatusA.length;i++){
-                    final int index = i;
-                    bEmploymentStatusA[i].setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(bEmploymentStatusA[index].isPressed()){
-                                bEmploymentStatusA[index].setPressed(false);
-                            }else{
-                                bEmploymentStatusA[index].setPressed(true);
-                                for(int j = 0;j<bEmploymentStatusA.length;j++){
-                                    if(j!=index){
-                                        bEmploymentStatusA[j].setPressed(false);
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }
+                bEmploymentStatusA[4].setTextOn("Unemployed");
+                bEmploymentStatusA[4].setTextOff("Unemployed");
+
+                ToggleButtonsGroup toggleButtonsGroup = new ToggleButtonsGroup();
+                toggleButtonsGroup.addButton(bEmploymentStatusA[0]);
+                toggleButtonsGroup.addButton(bEmploymentStatusA[1]);
+                toggleButtonsGroup.addButton(bEmploymentStatusA[2]);
+                toggleButtonsGroup.addButton(bEmploymentStatusA[3]);
+                toggleButtonsGroup.addButton(bEmploymentStatusA[4]);
+
                 nextScreen = 3;
                 final int passTwo= nextScreen;
                 Button next = (Button) v.findViewById(R.id.toPartThree);
@@ -168,8 +179,8 @@ public class surveyFragment extends DialogFragment {
                         String selectedHouseSize = spHouseSizeA.getSelectedItem().toString();
                         String selectedEmploymentStatus = "-";
                         for(int i = 0; i<bEmploymentStatusA.length;i++){
-                            if(bEmploymentStatusA[i].isPressed()){
-                                selectedEmploymentStatus = bEmploymentStatusA[i].getText().toString();
+                            if(bEmploymentStatusA[i].isChecked()){
+                                selectedEmploymentStatus = bEmploymentStatusA[i].getTextOn().toString();
                                 break;
                             }
                         }
@@ -277,7 +288,6 @@ public class surveyFragment extends DialogFragment {
                         }
                         String[] temp = results.split(",");
                         String[] matchingFactors = new String[4];
-                        System.out.print(temp[0]+" "+temp[1]+" "+selectedHouseAge+" "+selectedOccupantNumber+"\n");
                         matchingFactors[0] = temp[0];//Type
                         matchingFactors[1] = temp[1];//Size
                         matchingFactors[2] = selectedHouseAge;//Age
@@ -907,15 +917,15 @@ public class surveyFragment extends DialogFragment {
                 final CheckBox cbOptionOne = (CheckBox)v.findViewById(R.id.option1);
                 cbOptionOne.setText("30 minutes ahead");
                 final CheckBox cbOptionTwo = (CheckBox)v.findViewById(R.id.option2);
-                cbOptionOne.setText("1 hour ahead");
+                cbOptionTwo.setText("1 hour ahead");
                 final CheckBox cbOptionThree = (CheckBox)v.findViewById(R.id.option3);
-                cbOptionOne.setText("3 hours ahead");
+                cbOptionThree.setText("3 hours ahead");
                 final CheckBox cbOptionFour = (CheckBox)v.findViewById(R.id.option4);
-                cbOptionOne.setText("6 hours ahead");
+                cbOptionFour.setText("6 hours ahead");
                 final CheckBox cbOptionFive = (CheckBox)v.findViewById(R.id.option5);
-                cbOptionOne.setText("12 hours ahead");
+                cbOptionFive.setText("12 hours ahead");
                 final CheckBox cbOptionSix = (CheckBox)v.findViewById(R.id.option6);
-                cbOptionOne.setText(" 24 hours ahead");
+                cbOptionSix.setText(" 24 hours ahead");
                 final CheckBox cbOptionSeven = (CheckBox)v.findViewById(R.id.option7);
                 cbOptionSeven.setText("1 week ahead");
                 Button bTen = (Button) v.findViewById(R.id.toPartTen);
