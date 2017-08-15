@@ -1,7 +1,9 @@
 package com.example.scheduler.fragment;
 
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
@@ -16,6 +18,7 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.scheduler.Interface.MyDialogCloseListener;
 import com.example.scheduler.R;
 
 import org.w3c.dom.Text;
@@ -33,7 +36,7 @@ import java.util.Date;
  */
 
 public class surveyFragment extends DialogFragment {
-
+    public MyDialogCloseListener closeListener;
     public void onCreate(Bundle savedInstaceState) {
         super.onCreate(savedInstaceState);
     }
@@ -175,6 +178,15 @@ public class surveyFragment extends DialogFragment {
                                                 QID[1]+","+selectedEmploymentStatus+"\n"+
                                                 QID[2]+","+selectedHouseType+"\n"+
                                                 QID[3]+","+selectedHouseSize+"\n";
+
+                        String answersForHouseMatching = selectedHouseType+","+selectedHouseSize;
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("answersForHouseMatching.txt",Context.MODE_PRIVATE);
+                            fos.write(answersForHouseMatching.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
                         try{
                             FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
                             String nextScreen = passTwo+"";
@@ -190,7 +202,8 @@ public class surveyFragment extends DialogFragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
-                    }//ToDo move to next screen.
+                        dismiss();
+                    }
                 });
                 break;
             case 3:
@@ -254,6 +267,143 @@ public class surveyFragment extends DialogFragment {
                 bFour.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        String results = "";
+                        try{
+                            FileInputStream fis = getActivity().openFileInput("answersForHouseMatching.txt");
+                            int chr;
+                            StringBuilder builder = new StringBuilder();
+                            while ((chr = fis.read()) != -1) {
+                                builder.append((char) chr);
+                            }
+                            results = builder.toString();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        String[] temp = results.split(",");
+                        String[] matchingFactors = new String[4];
+                        matchingFactors[0] = temp[0];//Type
+                        matchingFactors[1] = temp[1];//Size
+                        matchingFactors[2] = selectedHouseAge;//Age
+                        matchingFactors[3] = selectedOccupantNumber;//Occupancy
+
+                        String[] houseWattages = {
+                                "1,29,1000,3000,1379,1800,9000,472,513",
+                                "2,75,1000,3000,770,2257,9000,2500,327",
+                                "3,16,1000,3000,1150,1550,9000,1373,492",
+                                "4,52,1000,3000,1350,1703,9000,2500,700",
+                                "5,66,1000,3000,1350,2352,9000,766,700",
+                                "6,66,1000,3000,778,2192,9000,2500,369",
+                                "7,75,1000,3000,613,1913,9000,2075,442",
+                                "8,19,1000,3000,1350,2340,9000,2500,273",
+                                "9,75,1000,3000,700,2359,9000,2500,507",
+                                "10,75,1000,3000,1350,1800,9000,2500,349",
+                                "11,10,1000,3000,753,1841,9000,2500,700",
+                                "12,75,1000,3000,1350,2482,9000,2500,700",
+                                "13,39,1000,3000,1250,1542,9000,1510,203",
+                                "15,20,1000,3000,1350,2521,9000,1476,495",
+                                "16,27,1000,3000,1239,1800,9000,2500,300",
+                                "17,20,1000,3000,1350,1689,9000,1594,373",
+                                "18,26,1000,3000,1021,1800,9000,2500,377",
+                                "19,75,1000,3000,1350,2448,9000,2500,700",
+                                "20,75,1000,3000,1350,2350,9000,1097,293",
+                                "21,75,1000,3000,1350,1276,9000,1240,434",
+                                "Default,75,1000,3000,1350,1800,9000,2500,700"};
+
+
+                        String[] houseDataArray = {
+                                //0,        	1,      2,      	3,          4,    	5,          6
+                                //number,   occupancy, age, # of Appliances,    type,   size,   approx age
+                                "1,2,1975-1980,35,Detached,4 bed,1970 - 1979",
+                                "2,4,-,15,Semi-detached,3 bed,-",
+                                "3,2,1988,27,Detached,3 bed,1980 - 1989",
+                                "4,2,1850-1899,33,Detached,4 bed,Pre 1900s",
+                                "5,4,1878,44,Mid-terrace,4 bed,Pre 1900s",
+                                "6,2,2005,49,Detached,4 bed,2000 - 2009",
+                                "7,4,1965-1974,25,Detached,3 bed,1960 - 1969",
+                                "8,2,1966,35,Detached,2 bed,1960 - 1969",
+                                "9,2,1919-1944,24,Detached,3 bed,1920 - 1929",
+                                "10,4,1919-1944,31,Detached,3 bed,1920 - 1929",
+                                "11,1,1945-1964,25,Detached,3 bed,1950 - 1959",
+                                "12,3,1991-1995,26,Detached,3 bed,1990 - 1999",
+                                "13,4,post 2002,28,Detached,4 bed,2000 - 2010",
+                                "15,1,1965-1974,19,Semi-detached,3 bed,1960 - 1969",
+                                "16,6,1981-1990,48,Detached,5 bed,1980 - 1989",
+                                "17,3,mid 60s,22,Detached,3 bed,1960 - 1969",
+                                "18,2,1965-1974,34,Detached,3 bed,1960 - 1969",
+                                "19,4,1945-1964,26,Semi-detached,3 bed,1950 - 1959",
+                                "20,2,1965-1974,39,Detached,3 bed,1960 - 1969",
+                                "21,4,1981-1990,23,Detached,3 bed,1980 - 1989"};
+
+                        String houseToUse = "";
+                        double[] houseCount = {
+                                0,//House 1
+                                0,//House 2
+                                0,//House 3
+                                0,//House 4
+                                0,//House 5
+                                0,//House 6
+                                0,//House 7
+                                0,//House 8
+                                0,//House 9
+                                0,//House 10
+                                0,//House 11
+                                0,//House 12
+                                0,//House 13
+                                0,//House 15
+                                0,//House 16
+                                0,//House 17
+                                0,//House 18
+                                0,//House 19
+                                0,//House 20
+                                0 //House 21
+                        };
+                        String[][] houseDataArraySplit = new String[houseDataArray.length][];
+                        for(int i =0; i<houseDataArraySplit.length;i++){
+                            houseDataArraySplit[i] = houseDataArray[i].split(",");
+                        }
+                        for(int i = 0; i<houseDataArraySplit.length;i++){
+                            //Occupancy
+                            if(matchingFactors[3].equals(houseDataArraySplit[i][1])){
+                                houseCount[i]+=0.533;
+                            }
+                            //Year Built
+                            if(matchingFactors[2].equals(houseDataArraySplit[i][6])){
+                                houseCount[i]+=0.067;
+                            }
+                            //Size
+                            if(matchingFactors[1].equals(houseDataArraySplit[i][5])){
+                                houseCount[i]+=0.267;
+                            }
+                            //House Type
+                            if(matchingFactors[0].equals(houseDataArraySplit[i][4])){
+                                houseCount[i]+=0.133;
+                            }
+                        }
+                        int closestHouseIndex = 0;
+                        for(int i = 1; i<houseCount.length;i++){
+                            double newNumber = houseCount[i];
+                            if(newNumber>houseCount[closestHouseIndex]){
+                                closestHouseIndex = i;
+                            }
+                        }
+                        String wattages = "";
+                        if(houseCount[closestHouseIndex]<0.5){
+                            wattages = houseWattages[houseWattages.length-1];
+                        }else{
+                            wattages = houseWattages[closestHouseIndex];
+                        }
+
+                        String wattageFile = "wattagesFile.txt";
+
+                        FileOutputStream fOut;
+                        try{
+                            fOut = getActivity().openFileOutput(wattageFile, Context.MODE_PRIVATE);
+                            fOut.write(wattages.getBytes());
+                            fOut.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+
                         String submit = QIDS[0]+","+selectedHouseAge+"\n"+
                                         QIDS[1]+","+selectedOccupantNumber+"\n";
                         try{
@@ -271,7 +421,8 @@ public class surveyFragment extends DialogFragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
-                    }//ToDo move to next screen.
+                        dismiss();
+                    }
                 });
                 break;
             case 4:
@@ -394,10 +545,10 @@ public class surveyFragment extends DialogFragment {
                         }
                         if(cbDishwasher.isChecked()){
                             dishWasher = "true";
-                            enableTable[6] = "Dishwasher,true";
+                            enableTable[6] = "DishWasher,true";
                         }else{
                             dishWasher = "false";
-                            enableTable[6] = "Dishwasher,true";
+                            enableTable[6] = "DishWasher,true";
                         }
                         if(cbElectricHeater.isChecked()){
                             electricHeater = "true";
@@ -472,7 +623,7 @@ public class surveyFragment extends DialogFragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
-                        //ToDo move to next screen.
+                        dismiss();
                     }
                 });
                 break;
@@ -495,13 +646,13 @@ public class surveyFragment extends DialogFragment {
                 final CheckBox cbReasonOne = (CheckBox)v.findViewById(R.id.reason1);
                 cbReasonOne.setText("Reduce my energy bill");
                 final CheckBox cbReasonTwo= (CheckBox)v.findViewById(R.id.reason2);
-                cbReasonOne.setText("Contribute to the grid reliability, e.g. prevent a blackout");
+                cbReasonTwo.setText("Contribute to the grid reliability, e.g. prevent a blackout");
                 final CheckBox cbReasonThree= (CheckBox)v.findViewById(R.id.reason3);
-                cbReasonOne.setText("Protect the environment");
+                cbReasonThree.setText("Protect the environment");
                 final CheckBox cbReasonFour= (CheckBox)v.findViewById(R.id.reason4);
-                cbReasonOne.setText("Others do, so I do.");
+                cbReasonFour.setText("Others do, so I do.");
                 final CheckBox cbReasonFive= (CheckBox)v.findViewById(R.id.reason5);
-                cbReasonOne.setText("Others do not, so I do");
+                cbReasonFive.setText("Others do not, so I do");
 
                 nextScreen = 6;
                 final int passFive = nextScreen;
@@ -557,7 +708,7 @@ public class surveyFragment extends DialogFragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
-                        //ToDo Move to next screen
+                        dismiss();
                     }
                 });
                 break;
@@ -638,7 +789,8 @@ public class surveyFragment extends DialogFragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
-                    }//ToDo move to next screen.
+                        dismiss();
+                    }
                 });
                 break;
             case 7:
@@ -688,7 +840,8 @@ public class surveyFragment extends DialogFragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
-                    }//ToDo move to next screen.
+                        dismiss();
+                    }
                 });
                 break;
             case 8:
@@ -738,7 +891,8 @@ public class surveyFragment extends DialogFragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
-                    }//ToDo move to next screen.
+                        dismiss();
+                    }
                 });
 
                 break;
@@ -825,8 +979,8 @@ public class surveyFragment extends DialogFragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
+                        dismiss();
                     }
-                    //ToDo move to next screen.
                 });
                 break;
             case 10:
@@ -852,7 +1006,7 @@ public class surveyFragment extends DialogFragment {
                 final CheckBox CBElectricShower = (CheckBox)v.findViewById(R.id.electricShower);
                 CBElectricShower.setText("Electric Shower");
                 final CheckBox CBDishwasher = (CheckBox)v.findViewById(R.id.dishwasher);
-                CBDishwasher.setText("Dishwasher");
+                CBDishwasher.setText("DishWasher");
                 final CheckBox CBElectricHeater = (CheckBox)v.findViewById(R.id.electricHeater);
                 CBElectricHeater.setText("Electric Heater");
                 final CheckBox CBAirConditioner = (CheckBox)v.findViewById(R.id.airConditioner);
@@ -993,6 +1147,14 @@ public class surveyFragment extends DialogFragment {
                             fOut.write(results.getBytes());
                             fOut.close();
                         } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
+                            String nextScreen = 0+"";
+                            fos.write(nextScreen.getBytes());
+                            fos.close();
+                        }catch(Exception e){
                             e.printStackTrace();
                         }
                         dismiss();
@@ -1326,9 +1488,9 @@ public class surveyFragment extends DialogFragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
+                        dismiss();
                     }
                 });
-                //ToDo move to next screen.
                 break;
         }
 
@@ -1340,5 +1502,16 @@ public class surveyFragment extends DialogFragment {
             e.printStackTrace();
         }
         return v;
+    }
+    public void DismissListner(MyDialogCloseListener closeListener) {
+        this.closeListener = closeListener;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog)
+    {
+        Activity activity = getActivity();
+        if(activity instanceof MyDialogCloseListener)
+            ((MyDialogCloseListener)activity).handleDialogClose(dialog);
     }
 }

@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -37,6 +38,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.DialogFragment;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -50,15 +53,17 @@ import com.example.schedulecreationlibrary.Schedule;
 import com.example.scheduler.Adapter.MyAdapter;
 import com.example.scheduler.BackgroundTasks.createSchedulesTask;
 import com.example.scheduler.Divider.DividerItemDecoration;
+import com.example.scheduler.Interface.MyDialogCloseListener;
 import com.example.scheduler.Notifications.NotificationService;
 import com.example.scheduler.fragment.addRemoveAppliance;
 import com.example.scheduler.fragment.betterPlanPopUpFragment;
 import com.example.scheduler.fragment.createTomorrowsPlans;
 import com.example.scheduler.fragment.editApplianceSettings;
+import com.example.scheduler.fragment.surveyFragment;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,MyDialogCloseListener {
     Animation FabOpen, FabClose, FabRClockwise,FabRAntiClockwise;
     boolean isOpen = false;
     public static String display;
@@ -72,6 +77,7 @@ public class MainActivity extends AppCompatActivity
     public AsyncTask motherTask;
     public boolean tasksStop = false;
     public NavigationView nav;
+    public MainActivity me = this;
     private String[] applianceNames = {
             "Hob",
             "Oven",
@@ -173,6 +179,8 @@ public class MainActivity extends AppCompatActivity
             String suggestedPlanFile = "suggestedPlan.txt";
             String todayScheduleFile = "TodaySchedule.txt";
             String surveyResultsFiles = "surveyResults.txt";
+            String surveyProgressFile = "surveyProgress.txt";
+            String surveyCompleteFile = "surveyComplete.txt";
             try{
                 FileOutputStream fos = this.openFileOutput(applianceNamesFile,MODE_APPEND);
                 for(int i = 0; i<applianceNames.length;i++){
@@ -190,7 +198,20 @@ public class MainActivity extends AppCompatActivity
             }catch(Exception e){
                 e.printStackTrace();
             }
-
+            try{
+                FileOutputStream fos = this.openFileOutput(surveyProgressFile,MODE_PRIVATE);
+                fos.write("1".getBytes());
+                fos.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            try{
+                FileOutputStream fos = this.openFileOutput(surveyCompleteFile,MODE_PRIVATE);
+                fos.write("false".getBytes());
+                fos.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
             try{
                 FileOutputStream fos = this.openFileOutput(surveyResultsFiles,MODE_PRIVATE);
                 fos.write(" ".getBytes());
@@ -341,11 +362,62 @@ public class MainActivity extends AppCompatActivity
             }catch(Exception e){
                 e.printStackTrace();
             }
-
-
+            FragmentManager fragManager = getFragmentManager();
+            android.app.FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+            surveyFragment newFragment = new surveyFragment();
+            newFragment.show(fragmentTransaction,"survey");
+            MyDialogCloseListener closeListener = new MyDialogCloseListener() {
+                @Override
+                public void handleDialogClose(DialogInterface dialog) {
+                    String progress = "0";
+                    try{
+                        FileInputStream fis = me.openFileInput("surveyProgress.txt");
+                        StringBuilder builder = new StringBuilder();
+                        int ch;
+                        while((ch = fis.read()) != -1){
+                            builder.append((char)ch);
+                        }
+                        progress = builder.toString();
+                        fis.close();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                    int nextScreen = Integer.parseInt(progress);
+                    System.out.print(nextScreen+"\n");
+                    if(nextScreen!=0){
+                        me.callSurvey();
+                    }else{
+                        try{
+                            FileOutputStream fos = me.openFileOutput("surveyComplete.txt",Context.MODE_PRIVATE);
+                            fos.write("true".getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            };
+            newFragment.DismissListner(closeListener);
             // record the fact that the app has been started at least once
             settings.edit().putBoolean("my_first_time", false).commit();
+        }else{
+            String surveyShow = "";
+            try{
+                FileInputStream fis = openFileInput("surveyComplete.txt");
+                int chr;
+                StringBuilder builder = new StringBuilder();
+                while ((chr = fis.read()) != -1) {
+                    builder.append((char) chr);
+                }
+                surveyShow = builder.toString();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            if(surveyShow.equals("false")){
+                callSurvey();
+            }
         }
+
         final FloatingActionButton fabEdit = (FloatingActionButton) findViewById(R.id.fabEditAppliances);
         fabEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1054,5 +1126,73 @@ public class MainActivity extends AppCompatActivity
                     textView.setText(todayDisplay);
                 }
             },100);
+    }
+
+    public void callSurvey(){
+        FragmentManager fragManager = getFragmentManager();
+        android.app.FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+        surveyFragment newFragment = new surveyFragment();
+        newFragment.show(fragmentTransaction,"survey");
+        MyDialogCloseListener closeListener = new MyDialogCloseListener() {
+            @Override
+            public void handleDialogClose(DialogInterface dialog) {
+                String progress = "0";
+                try{
+                    FileInputStream fis = me.openFileInput("surveyProgress.txt");
+                    StringBuilder builder = new StringBuilder();
+                    int ch;
+                    while((ch = fis.read()) != -1){
+                        builder.append((char)ch);
+                    }
+                    progress = builder.toString();
+                    fis.close();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                int nextScreen = Integer.parseInt(progress);
+                System.out.print(nextScreen+"\n");
+                if(nextScreen!=0){
+                    me.callSurvey();
+                }else{
+                    try{
+                        FileOutputStream fos = me.openFileOutput("surveyComplete.txt",Context.MODE_PRIVATE);
+                        fos.write("true".getBytes());
+                        fos.close();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        newFragment.DismissListner(closeListener);
+    }
+    @Override
+    public void handleDialogClose(DialogInterface dialog) {
+        String progress = "0";
+        try{
+            FileInputStream fis = me.openFileInput("surveyProgress.txt");
+            StringBuilder builder = new StringBuilder();
+            int ch;
+            while((ch = fis.read()) != -1){
+                builder.append((char)ch);
+            }
+            progress = builder.toString();
+            fis.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        int nextScreen = Integer.parseInt(progress);
+        System.out.print(nextScreen+"\n");
+        if(nextScreen!=0){
+            me.callSurvey();
+        }else{
+            try{
+                FileOutputStream fos = me.openFileOutput("surveyComplete.txt",Context.MODE_PRIVATE);
+                fos.write("true".getBytes());
+                fos.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 }

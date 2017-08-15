@@ -5,7 +5,7 @@
 
     <TextView
         android:id="@+id/acceptanceOfDiscomfortQ"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView" />
 
@@ -16,7 +16,7 @@
         android:max="4"
         android:progress="2"/>
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
@@ -34,7 +34,7 @@
 
     <TextView
         android:id="@+id/sacrificeOfEfficiencyQ"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView" />
 
@@ -63,7 +63,7 @@
 
     <TextView
         android:id="@+id/soloEnergyEfficientQ"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView" />
 
@@ -92,7 +92,7 @@
 
     <TextView
         android:id="@+id/groupAcceptanceOfDiscomfortQ"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView" />
 

@@ -5,31 +5,31 @@
 
     <TextView
         android:id="@+id/whenToScheduleQ"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView" />
 
     <CheckBox
         android:id="@+id/option1"
-        android:layout_width="570dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
 
     <CheckBox
         android:id="@+id/option2"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
 
     <CheckBox
         android:id="@+id/option3"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
 
     <CheckBox
         android:id="@+id/option4"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
 
@@ -41,17 +41,17 @@
 
     <CheckBox
         android:id="@+id/option6"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
     <CheckBox
         android:id="@+id/option7"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
     <TextView
         android:id="@+id/takeBackControlAtWhatLevelOfDiscomfortQ"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView" />
 

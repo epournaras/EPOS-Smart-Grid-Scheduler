@@ -5,87 +5,87 @@
 
     <TextView
         android:id="@+id/appliancesOwnedQ"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView" />
 
     <CheckBox
         android:id="@+id/washingMachine"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
 
     <CheckBox
         android:id="@+id/tumbleDryer"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
 
     <CheckBox
         android:id="@+id/laptop"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
     <CheckBox
         android:id="@+id/desktop"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
 
     <CheckBox
         android:id="@+id/oven"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
 
     <CheckBox
         android:id="@+id/hob"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
     <CheckBox
         android:id="@+id/electricShower"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
 
     <CheckBox
         android:id="@+id/dishwasher"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
 
     <CheckBox
         android:id="@+id/electricHeater"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
     <CheckBox
         android:id="@+id/airConditioner"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
 
     <CheckBox
         android:id="@+id/kettle"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
 
     <CheckBox
         android:id="@+id/microwave"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
     <CheckBox
         android:id="@+id/freezer"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
 
     <CheckBox
         android:id="@+id/fridge"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CheckBox" />
     <Button
