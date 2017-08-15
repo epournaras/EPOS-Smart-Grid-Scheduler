@@ -77,10 +77,6 @@ public class surveyFragment extends DialogFragment {
                 final Spinner spHouseTypeA = (Spinner)v.findViewById(R.id.houseTypeA);
                 final Spinner spHouseSizeA = (Spinner) v.findViewById(R.id.houseSizeA);
 
-                final String selectedEducationLevel;
-                final String selectedHouseType;
-                final String selectedHouseSize;
-
                 ArrayAdapter<String> educationLevelQ;
                 ArrayAdapter<String> houseTypeQ;
                 ArrayAdapter<String> houseSizeQ;
@@ -100,7 +96,7 @@ public class surveyFragment extends DialogFragment {
                 educationLevelQ = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,educationLevels);
                 educationLevelQ.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spEducationA.setAdapter(educationLevelQ);
-                selectedEducationLevel = spEducationA.getSelectedItem().toString();
+
 
                 String[] houseTypes = {
                         "-",
@@ -114,7 +110,7 @@ public class surveyFragment extends DialogFragment {
                 houseTypeQ = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,houseTypes);
                 houseTypeQ.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spHouseTypeA.setAdapter(houseTypeQ);
-                selectedHouseType = spHouseTypeA.getSelectedItem().toString();
+
 
                 String[] houseSizes = {
                         "-",
@@ -129,7 +125,7 @@ public class surveyFragment extends DialogFragment {
                 houseSizeQ = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,houseSizes);
                 houseSizeQ.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spHouseSizeA.setAdapter(houseSizeQ);
-                selectedHouseSize = spHouseSizeA.getSelectedItem().toString();
+
 
 
                 final Button[] bEmploymentStatusA = new Button[5];
@@ -167,6 +163,9 @@ public class surveyFragment extends DialogFragment {
                 next.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        String selectedEducationLevel = spEducationA.getSelectedItem().toString();
+                        String selectedHouseType = spHouseTypeA.getSelectedItem().toString();
+                        String selectedHouseSize = spHouseSizeA.getSelectedItem().toString();
                         String selectedEmploymentStatus = "-";
                         for(int i = 0; i<bEmploymentStatusA.length;i++){
                             if(bEmploymentStatusA[i].isPressed()){
@@ -248,18 +247,13 @@ public class surveyFragment extends DialogFragment {
                 ArrayAdapter<String> houseAgeQ;
                 ArrayAdapter<String> houseOccupantNumberQ;
 
-                final String selectedHouseAge;
-                final String selectedOccupantNumber;
-
                 houseAgeQ = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,houseAges);
                 houseAgeQ.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spHouseAgeA.setAdapter(houseAgeQ);
-                selectedHouseAge = spHouseAgeA.getSelectedItem().toString();
 
                 houseOccupantNumberQ = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,numberOfOccupants);
                 houseOccupantNumberQ.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spHouseOccupantNumberA.setAdapter(houseOccupantNumberQ);
-                selectedOccupantNumber = spHouseOccupantNumberA.getSelectedItem().toString();
 
                 nextScreen = 4;
                 final int passThree = nextScreen;
@@ -267,6 +261,8 @@ public class surveyFragment extends DialogFragment {
                 bFour.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        String selectedHouseAge = spHouseAgeA.getSelectedItem().toString();
+                        String selectedOccupantNumber = spHouseOccupantNumberA.getSelectedItem().toString();
                         String results = "";
                         try{
                             FileInputStream fis = getActivity().openFileInput("answersForHouseMatching.txt");
@@ -281,6 +277,7 @@ public class surveyFragment extends DialogFragment {
                         }
                         String[] temp = results.split(",");
                         String[] matchingFactors = new String[4];
+                        System.out.print(temp[0]+" "+temp[1]+" "+selectedHouseAge+" "+selectedOccupantNumber+"\n");
                         matchingFactors[0] = temp[0];//Type
                         matchingFactors[1] = temp[1];//Size
                         matchingFactors[2] = selectedHouseAge;//Age
@@ -548,7 +545,7 @@ public class surveyFragment extends DialogFragment {
                             enableTable[6] = "DishWasher,true";
                         }else{
                             dishWasher = "false";
-                            enableTable[6] = "DishWasher,true";
+                            enableTable[6] = "DishWasher,false";
                         }
                         if(cbElectricHeater.isChecked()){
                             electricHeater = "true";
