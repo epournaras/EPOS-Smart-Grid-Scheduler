@@ -39,7 +39,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.app.DialogFragment;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -57,7 +56,6 @@ import com.example.scheduler.Interface.MyDialogCloseListener;
 import com.example.scheduler.Notifications.NotificationService;
 import com.example.scheduler.fragment.addRemoveAppliance;
 import com.example.scheduler.fragment.betterPlanPopUpFragment;
-import com.example.scheduler.fragment.createTomorrowsPlans;
 import com.example.scheduler.fragment.editApplianceSettings;
 import com.example.scheduler.fragment.fragment_create;
 import com.example.scheduler.fragment.surveyFragment;

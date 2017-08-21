@@ -161,17 +161,32 @@ public class fragment_create extends DialogFragment {
                 boolean errorAdd = false;
                 if(dHour ==0){
                     if(dMinute==0){
-                        errorAdd=true;
+                        errorAdd = true;
+                        String toastString = "This task has no duration.";
+                        int durationOfToast = Toast.LENGTH_SHORT;
+                        Context context = getActivity();
+                        Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                        toast.show();
                     }
                 }
                 if(flexibility==0){
                     if(dMinute+sMinute>=60){
                         if(sHour+dHour+1>24){
                             errorAdd = true;
+                            String toastString = "This task cannot fit in the available time.";
+                            int durationOfToast = Toast.LENGTH_SHORT;
+                            Context context = getActivity();
+                            Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                            toast.show();
                         }
                     }else{
                         if(sHour+dHour>24){
                             errorAdd = true;
+                            String toastString = "This task cannot fit in the available time.";
+                            int durationOfToast = Toast.LENGTH_SHORT;
+                            Context context = getActivity();
+                            Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                            toast.show();
                         }
                     }
                 }else{
@@ -179,10 +194,20 @@ public class fragment_create extends DialogFragment {
                         if(sMinute-rangeRemainingMinutes<0){
                             if((sHour-rangeInHours-1)+dHour>24){
                                 errorAdd = true;
+                                String toastString = "This task cannot fit in the available time.";
+                                int durationOfToast = Toast.LENGTH_SHORT;
+                                Context context = getActivity();
+                                Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                                toast.show();
                             }
                         }else{
                             if((sHour-rangeInHours)+dHour>24){
                                 errorAdd = true;
+                                String toastString = "This task cannot fit in the available time.";
+                                int durationOfToast = Toast.LENGTH_SHORT;
+                                Context context = getActivity();
+                                Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                                toast.show();
                             }
                         }
 
@@ -191,10 +216,20 @@ public class fragment_create extends DialogFragment {
                             if(dMinute+sMinute>=60){
                                 if(sHour+dHour+1>24){
                                     errorAdd = true;
+                                    String toastString = "This task cannot fit in the available time.";
+                                    int durationOfToast = Toast.LENGTH_SHORT;
+                                    Context context = getActivity();
+                                    Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                                    toast.show();
                                 }
                             }else{
                                 if(sHour+dHour>24){
                                     errorAdd = true;
+                                    String toastString = "This task cannot fit in the available time.";
+                                    int durationOfToast = Toast.LENGTH_SHORT;
+                                    Context context = getActivity();
+                                    Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                                    toast.show();
                                 }
                             }
                         }else{
@@ -202,10 +237,20 @@ public class fragment_create extends DialogFragment {
                                 if(sMinute-rangeRemainingMinutes<0){
                                     if((sHour-rangeInHours-1)+dHour>24){
                                         errorAdd = true;
+                                        String toastString = "This task cannot fit in the available time.";
+                                        int durationOfToast = Toast.LENGTH_SHORT;
+                                        Context context = getActivity();
+                                        Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                                        toast.show();
                                     }
                                 }else{
                                     if((sHour-rangeInHours)+dHour>24){
                                         errorAdd = true;
+                                        String toastString = "This task cannot fit in the available time.";
+                                        int durationOfToast = Toast.LENGTH_SHORT;
+                                        Context context = getActivity();
+                                        Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                                        toast.show();
                                     }
                                 }
                             }
@@ -425,7 +470,9 @@ public class fragment_create extends DialogFragment {
                 }
             }
         });
-
+        if(!cbBeforeAndAfter.isChecked()){
+            cbBeforeAndAfter.toggle();
+        }
         cbBeforeAndAfter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

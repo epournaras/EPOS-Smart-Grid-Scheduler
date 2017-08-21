@@ -40,47 +40,37 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="25" column="33" selection-start-line="25" selection-start-column="33" selection-end-line="25" selection-end-column="33" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="224">
-              <caret line="176" column="48" selection-start-line="176" selection-start-column="48" selection-end-line="176" selection-end-column="73" />
+            <state relative-caret-position="254">
+              <caret line="602" column="29" selection-start-line="598" selection-start-column="16" selection-end-line="602" selection-end-column="29" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#3339#3572#0" expanded="true" />
-                <element signature="e#3571#3572#0" expanded="true" />
-                <element signature="e#16035#17340#0" expanded="true" />
-                <element signature="e#17339#17340#0" expanded="true" />
-                <element signature="e#18264#18706#0" expanded="true" />
-                <element signature="e#18705#18706#0" expanded="true" />
-                <element signature="e#18886#19323#0" expanded="true" />
-                <element signature="e#19322#19323#0" expanded="true" />
-                <element signature="e#19503#19934#0" expanded="true" />
-                <element signature="e#19933#19934#0" expanded="true" />
-                <element signature="e#20228#21704#0" expanded="true" />
-                <element signature="e#21703#21704#0" expanded="true" />
-                <element signature="e#21935#21966#0" expanded="true" />
-                <element signature="e#21968#22000#0" expanded="true" />
-                <element signature="e#35391#35399#0" expanded="true" />
-                <element signature="e#35458#35466#0" expanded="true" />
-                <element signature="e#37958#37966#0" expanded="true" />
-                <element signature="e#38029#38037#0" expanded="true" />
-                <element signature="e#40493#44365#0" expanded="true" />
-                <element signature="e#44364#44365#0" expanded="true" />
-                <element signature="e#46219#47038#0" expanded="true" />
-                <element signature="e#47037#47038#0" expanded="true" />
-                <element signature="e#47397#48637#0" expanded="true" />
-                <element signature="e#48636#48637#0" expanded="true" />
+                <element signature="e#3258#3491#0" expanded="true" />
+                <element signature="e#3490#3491#0" expanded="true" />
+                <element signature="e#15954#17259#0" expanded="true" />
+                <element signature="e#17258#17259#0" expanded="true" />
+                <element signature="e#18183#18625#0" expanded="true" />
+                <element signature="e#18624#18625#0" expanded="true" />
+                <element signature="e#18805#19242#0" expanded="true" />
+                <element signature="e#19241#19242#0" expanded="true" />
+                <element signature="e#19422#19853#0" expanded="true" />
+                <element signature="e#19852#19853#0" expanded="true" />
+                <element signature="e#20147#21623#0" expanded="true" />
+                <element signature="e#21622#21623#0" expanded="true" />
+                <element signature="e#21854#21885#0" expanded="true" />
+                <element signature="e#21887#21919#0" expanded="true" />
+                <element signature="e#35310#35318#0" expanded="true" />
+                <element signature="e#35377#35385#0" expanded="true" />
+                <element signature="e#37877#37885#0" expanded="true" />
+                <element signature="e#37948#37956#0" expanded="true" />
+                <element signature="e#40412#44284#0" expanded="true" />
+                <element signature="e#44283#44284#0" expanded="true" />
+                <element signature="e#46138#46957#0" expanded="true" />
+                <element signature="e#46956#46957#0" expanded="true" />
+                <element signature="e#47316#48556#0" expanded="true" />
+                <element signature="e#48555#48556#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -106,21 +96,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="createTomorrowsPlans.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/fragment/createTomorrowsPlans.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="461">
-              <caret line="165" column="48" selection-start-line="165" selection-start-column="8" selection-end-line="165" selection-end-column="48" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="fragment_create.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="fragment_create.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/fragment/fragment_create.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="194">
-              <caret line="86" column="51" selection-start-line="86" selection-start-column="40" selection-end-line="86" selection-end-column="51" />
+            <state relative-caret-position="-197">
+              <caret line="247" column="56" selection-start-line="247" selection-start-column="56" selection-end-line="247" selection-end-column="56" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1207#1208#0" expanded="true" />
@@ -136,20 +116,20 @@
                 <element signature="e#5483#5491#0" expanded="true" />
                 <element signature="e#5616#5624#0" expanded="true" />
                 <element signature="e#5749#5757#0" expanded="true" />
-                <element signature="e#6915#21043#0" expanded="true" />
-                <element signature="e#21042#21043#0" expanded="true" />
-                <element signature="e#21091#21419#0" expanded="true" />
-                <element signature="e#21418#21419#0" expanded="true" />
-                <element signature="e#21462#21798#0" expanded="true" />
-                <element signature="e#21797#21798#0" expanded="true" />
-                <element signature="e#21840#22178#0" expanded="true" />
-                <element signature="e#22177#22178#0" expanded="true" />
-                <element signature="e#22286#24468#0" expanded="true" />
-                <element signature="e#24467#24468#0" expanded="true" />
-                <element signature="e#26817#27100#0" expanded="true" />
-                <element signature="e#27099#27100#0" expanded="true" />
-                <element signature="e#31945#32277#0" expanded="true" />
-                <element signature="e#32276#32277#0" expanded="true" />
+                <element signature="e#6915#24542#0" expanded="true" />
+                <element signature="e#24541#24542#0" expanded="true" />
+                <element signature="e#24681#25009#0" expanded="true" />
+                <element signature="e#25008#25009#0" expanded="true" />
+                <element signature="e#25052#25388#0" expanded="true" />
+                <element signature="e#25387#25388#0" expanded="true" />
+                <element signature="e#25430#25768#0" expanded="true" />
+                <element signature="e#25767#25768#0" expanded="true" />
+                <element signature="e#25876#28058#0" expanded="true" />
+                <element signature="e#28057#28058#0" expanded="true" />
+                <element signature="e#30407#30690#0" expanded="true" />
+                <element signature="e#30689#30690#0" expanded="true" />
+                <element signature="e#35535#35867#0" expanded="true" />
+                <element signature="e#35866#35867#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -3063,6 +3043,28 @@
               <option name="myItemId" value="app" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Scheduler" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="layout" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -4032,21 +4034,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_create_tomorrows_plans.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4110">
-          <caret line="274" column="13" selection-start-line="274" selection-start-column="13" selection-end-line="274" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Library/Android/sdk/sources/android-24/android/app/Fragment.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="580">
           <caret line="2352" column="0" selection-start-line="2352" selection-start-column="0" selection-end-line="2352" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -4110,52 +4102,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/fragment/createTomorrowsPlans.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="461">
-          <caret line="165" column="48" selection-start-line="165" selection-start-column="8" selection-end-line="165" selection-end-column="48" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="176" column="48" selection-start-line="176" selection-start-column="48" selection-end-line="176" selection-end-column="73" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#3339#3572#0" expanded="true" />
-            <element signature="e#3571#3572#0" expanded="true" />
-            <element signature="e#16035#17340#0" expanded="true" />
-            <element signature="e#17339#17340#0" expanded="true" />
-            <element signature="e#18264#18706#0" expanded="true" />
-            <element signature="e#18705#18706#0" expanded="true" />
-            <element signature="e#18886#19323#0" expanded="true" />
-            <element signature="e#19322#19323#0" expanded="true" />
-            <element signature="e#19503#19934#0" expanded="true" />
-            <element signature="e#19933#19934#0" expanded="true" />
-            <element signature="e#20228#21704#0" expanded="true" />
-            <element signature="e#21703#21704#0" expanded="true" />
-            <element signature="e#21935#21966#0" expanded="true" />
-            <element signature="e#21968#22000#0" expanded="true" />
-            <element signature="e#35391#35399#0" expanded="true" />
-            <element signature="e#35458#35466#0" expanded="true" />
-            <element signature="e#37958#37966#0" expanded="true" />
-            <element signature="e#38029#38037#0" expanded="true" />
-            <element signature="e#40493#44365#0" expanded="true" />
-            <element signature="e#44364#44365#0" expanded="true" />
-            <element signature="e#46219#47038#0" expanded="true" />
-            <element signature="e#47037#47038#0" expanded="true" />
-            <element signature="e#47397#48637#0" expanded="true" />
-            <element signature="e#48636#48637#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/fragment/fragment_create.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
-          <caret line="86" column="51" selection-start-line="86" selection-start-column="40" selection-end-line="86" selection-end-column="51" />
+        <state relative-caret-position="-197">
+          <caret line="247" column="56" selection-start-line="247" selection-start-column="56" selection-end-line="247" selection-end-column="56" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1207#1208#0" expanded="true" />
@@ -4171,20 +4121,73 @@
             <element signature="e#5483#5491#0" expanded="true" />
             <element signature="e#5616#5624#0" expanded="true" />
             <element signature="e#5749#5757#0" expanded="true" />
-            <element signature="e#6915#21043#0" expanded="true" />
-            <element signature="e#21042#21043#0" expanded="true" />
-            <element signature="e#21091#21419#0" expanded="true" />
-            <element signature="e#21418#21419#0" expanded="true" />
-            <element signature="e#21462#21798#0" expanded="true" />
-            <element signature="e#21797#21798#0" expanded="true" />
-            <element signature="e#21840#22178#0" expanded="true" />
-            <element signature="e#22177#22178#0" expanded="true" />
-            <element signature="e#22286#24468#0" expanded="true" />
-            <element signature="e#24467#24468#0" expanded="true" />
-            <element signature="e#26817#27100#0" expanded="true" />
-            <element signature="e#27099#27100#0" expanded="true" />
-            <element signature="e#31945#32277#0" expanded="true" />
-            <element signature="e#32276#32277#0" expanded="true" />
+            <element signature="e#6915#24542#0" expanded="true" />
+            <element signature="e#24541#24542#0" expanded="true" />
+            <element signature="e#24681#25009#0" expanded="true" />
+            <element signature="e#25008#25009#0" expanded="true" />
+            <element signature="e#25052#25388#0" expanded="true" />
+            <element signature="e#25387#25388#0" expanded="true" />
+            <element signature="e#25430#25768#0" expanded="true" />
+            <element signature="e#25767#25768#0" expanded="true" />
+            <element signature="e#25876#28058#0" expanded="true" />
+            <element signature="e#28057#28058#0" expanded="true" />
+            <element signature="e#30407#30690#0" expanded="true" />
+            <element signature="e#30689#30690#0" expanded="true" />
+            <element signature="e#35535#35867#0" expanded="true" />
+            <element signature="e#35866#35867#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/fragment/createTomorrowsPlans.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="206">
+          <caret line="148" column="52" selection-start-line="0" selection-start-column="0" selection-end-line="940" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_create_tomorrows_plans.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="281">
+          <caret line="260" column="42" selection-start-line="0" selection-start-column="0" selection-end-line="274" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="254">
+          <caret line="602" column="29" selection-start-line="598" selection-start-column="16" selection-end-line="602" selection-end-column="29" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3258#3491#0" expanded="true" />
+            <element signature="e#3490#3491#0" expanded="true" />
+            <element signature="e#15954#17259#0" expanded="true" />
+            <element signature="e#17258#17259#0" expanded="true" />
+            <element signature="e#18183#18625#0" expanded="true" />
+            <element signature="e#18624#18625#0" expanded="true" />
+            <element signature="e#18805#19242#0" expanded="true" />
+            <element signature="e#19241#19242#0" expanded="true" />
+            <element signature="e#19422#19853#0" expanded="true" />
+            <element signature="e#19852#19853#0" expanded="true" />
+            <element signature="e#20147#21623#0" expanded="true" />
+            <element signature="e#21622#21623#0" expanded="true" />
+            <element signature="e#21854#21885#0" expanded="true" />
+            <element signature="e#21887#21919#0" expanded="true" />
+            <element signature="e#35310#35318#0" expanded="true" />
+            <element signature="e#35377#35385#0" expanded="true" />
+            <element signature="e#37877#37885#0" expanded="true" />
+            <element signature="e#37948#37956#0" expanded="true" />
+            <element signature="e#40412#44284#0" expanded="true" />
+            <element signature="e#44283#44284#0" expanded="true" />
+            <element signature="e#46138#46957#0" expanded="true" />
+            <element signature="e#46956#46957#0" expanded="true" />
+            <element signature="e#47316#48556#0" expanded="true" />
+            <element signature="e#48555#48556#0" expanded="true" />
           </folding>
         </state>
       </provider>
