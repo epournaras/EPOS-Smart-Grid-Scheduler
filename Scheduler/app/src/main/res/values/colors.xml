@@ -10,4 +10,6 @@
     <color name = "cleargray">#D0D0D0</color>
     <color name = "bright_yellow">#FFFF00</color>
     <color name="green">#04E645</color>
+    <color name="black">#000000</color>
+
 </resources>

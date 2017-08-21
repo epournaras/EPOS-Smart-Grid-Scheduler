@@ -59,6 +59,7 @@ import com.example.scheduler.fragment.addRemoveAppliance;
 import com.example.scheduler.fragment.betterPlanPopUpFragment;
 import com.example.scheduler.fragment.createTomorrowsPlans;
 import com.example.scheduler.fragment.editApplianceSettings;
+import com.example.scheduler.fragment.fragment_create;
 import com.example.scheduler.fragment.surveyFragment;
 
 
@@ -445,8 +446,8 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 FragmentManager fragManager = getFragmentManager();
                 android.app.FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
-                DialogFragment newFragment = new createTomorrowsPlans();
-                newFragment.show(fragmentTransaction, "createTomorrowsPlans");
+                DialogFragment newFragment = new fragment_create();
+                newFragment.show(fragmentTransaction, "fragment_create");
             }
         });
         fabEdit.setClickable(false);
