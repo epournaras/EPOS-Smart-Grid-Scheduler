@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content">
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
@@ -30,7 +30,7 @@
             android:textSize="15sp"
             android:textColor="#000000"/>
         <GridLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp">
             <Spinner
@@ -62,7 +62,7 @@
             android:textSize="15sp"
             android:textColor="#000000"/>
         <GridLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp">
             <Spinner
@@ -86,38 +86,6 @@
                 android:layout_column="2"/>
         </GridLayout>
 
-        <TextView
-            android:id="@+id/titleFlexibility"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/window_size_title"
-            android:layout_marginStart="10dp"
-            android:textSize="15sp"
-            android:textColor="#000000"/>
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="2dp">
-            <Spinner
-                android:id="@+id/flexHour"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                />
-            <TextView
-                android:id="@+id/flexMiddle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="1"
-                android:text="@string/hour_minute_delimiter"
-                android:textSize="15sp"
-                android:textColor="#000000" />
-            <Spinner
-                android:id="@+id/flexMinute"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="2"/>
-        </GridLayout>
         <TextView
             android:id="@+id/titleCheckboxes"
             android:layout_width="wrap_content"
@@ -143,6 +111,40 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/after_only"/>
+
+        <TextView
+            android:id="@+id/titleFlexibility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/window_size_title"
+            android:layout_marginStart="10dp"
+            android:textSize="15sp"
+            android:textColor="#000000"/>
+        <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp">
+            <Spinner
+                android:id="@+id/flexHour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                />
+            <TextView
+                android:id="@+id/flexMiddle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:text="@string/hour_minute_delimiter"
+                android:textSize="15sp"
+                android:textColor="#000000" />
+            <Spinner
+                android:id="@+id/flexMinute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="2"/>
+        </GridLayout>
+
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleHorizontal"
@@ -151,7 +153,7 @@
 
         <Button
             android:id="@+id/add"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/add" />
 

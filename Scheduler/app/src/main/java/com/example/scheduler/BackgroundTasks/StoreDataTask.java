@@ -6,18 +6,11 @@ package com.example.scheduler.BackgroundTasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.design.widget.NavigationView;
-import android.util.TimingLogger;
 import android.widget.Toast;
-
-
 import com.example.schedulecreationlibrary.Action;
 import com.example.schedulecreationlibrary.Schedule;
 import com.example.scheduler.MainActivity;
-
 import java.io.FileOutputStream;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by warrens on 11.05.17.
@@ -36,13 +29,13 @@ public class StoreDataTask extends AsyncTask<Schedule, Integer, String> {
     }
 
     private String[] actionNames = {
-            "cooking (Hob)",
-            "cooking(Oven)",
-            "Dry clothes (Tumble Dryer)",
-            "Wash clothes (Washing Machine)",
-            "Use Computer",
-            "Boil Water (Kettle)",
-            "Wash Dishes (dishwasher)",
+            "Hob",
+            "Oven",
+            "TumbleDryer",
+            "WashingMachine",
+            "Computer",
+            "Kettle",
+            "DishWasher",
             "Shower"
     };
     private String[][][] parseableData;
@@ -84,25 +77,25 @@ public class StoreDataTask extends AsyncTask<Schedule, Integer, String> {
                 }
                 int index = 0;
                 switch(fullList[i][j].name){
-                    case "cooking (Hob)":
+                    case "Hob":
                         index = 0;
                         break;
-                    case "cooking(Oven)":
+                    case "Oven":
                         index = 1;
                         break;
-                    case "Dry clothes (Tumble Dryer)":
+                    case "TumbleDryer":
                         index = 2;
                         break;
-                    case "Wash clothes (Washing Machine)":
+                    case "WashingMachine":
                         index = 3;
                         break;
-                    case "Use Computer":
+                    case "Computer":
                         index = 4;
                         break;
-                    case "Boil Water (Kettle)":
+                    case "Kettle":
                         index = 5;
                         break;
-                    case "Wash Dishes (dishwasher)":
+                    case "DishWasher":
                         index = 6;
                         break;
                     case "Shower":

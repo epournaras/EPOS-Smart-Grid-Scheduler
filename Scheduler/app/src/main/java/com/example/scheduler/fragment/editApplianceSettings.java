@@ -1,4 +1,5 @@
 package com.example.scheduler.fragment;
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.InputType;
@@ -10,12 +11,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.app.DialogFragment;
-
 import com.example.scheduler.R;
-
-import org.w3c.dom.Text;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -24,7 +20,7 @@ import java.util.ArrayList;
  * Created by warrens on 07.08.17.
  */
 
-public class editApplianceSettings extends DialogFragment {
+public class editApplianceSettings extends Fragment {
     public ArrayList textViewIds = new ArrayList();
     public ArrayList editTextIds = new ArrayList();
     @Override
@@ -36,7 +32,6 @@ public class editApplianceSettings extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final Context context = getActivity();
-        this.getDialog().setCanceledOnTouchOutside(true);
         final View v = inflater.inflate(R.layout.fragment_edit_appliance_settings, container, false);
         String appliancesEnabledDataFile = "appliancesEnabledDataFile.txt";
         String appliancesEnabled="";
@@ -144,6 +139,7 @@ public class editApplianceSettings extends DialogFragment {
             }
         }
         final String[][] enableTableFinal = enableTable;
+        final Fragment thisFrag = this;
         Button confirm = (Button) v.findViewById(R.id.button2);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,14 +200,14 @@ public class editApplianceSettings extends DialogFragment {
                 }catch(Exception e){
                     e.printStackTrace();
                 }
-                dismiss();
+                getActivity().getFragmentManager().beginTransaction().remove(thisFrag).commit();
             }
         });
         Button cancel = (Button) v.findViewById(R.id.button);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View g) {
-                dismiss();
+                getActivity().getFragmentManager().beginTransaction().remove(thisFrag).commit();
             }
         });
         return v;

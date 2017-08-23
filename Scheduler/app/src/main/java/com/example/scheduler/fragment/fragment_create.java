@@ -3,7 +3,6 @@ package com.example.scheduler.fragment;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,17 +11,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.GridLayout;
-import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.schedulecreationlibrary.Action;
 import com.example.scheduler.MainActivity;
 import com.example.scheduler.R;
-
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
@@ -92,7 +86,7 @@ public class fragment_create extends DialogFragment {
 
 
         String[] hours = {
-                "00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","17","18","19","20","21","22","23"
+                "00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23"
         };
         String[] minutes = {"00","01","02","03","04","05","06","07","08","09",
                 "10","11","12","13","14","15","16","17","18","19",
@@ -258,7 +252,6 @@ public class fragment_create extends DialogFragment {
                     }
                 }
                 if(errorAdd){
-
                     //message to say it is an error
                 }else{
                     int startTimeHour=0,startTimeMinute=0,endTimeHour=23,endTimeMinute=59;
@@ -482,6 +475,9 @@ public class fragment_create extends DialogFragment {
                 if(cbBeforeOnly.isChecked()){
                     cbBeforeOnly.toggle();
                 }
+                TextView tx = (TextView) layoutView.findViewById(R.id.titleFlexibility);
+                String beforeAndAfter = getActivity().getResources().getString(R.string.window_size_title);
+                tx.setText(beforeAndAfter);
             }
         });
         cbBeforeOnly.setOnClickListener(new View.OnClickListener() {
@@ -493,6 +489,9 @@ public class fragment_create extends DialogFragment {
                 if(cbBeforeAndAfter.isChecked()){
                     cbBeforeAndAfter.toggle();
                 }
+                TextView tx = (TextView) layoutView.findViewById(R.id.titleFlexibility);
+                String before = getActivity().getResources().getString(R.string.window_size_title_before);
+                tx.setText(before);
             }
         });
         cbAfterOnly.setOnClickListener(new View.OnClickListener() {
@@ -504,6 +503,9 @@ public class fragment_create extends DialogFragment {
                 if(cbBeforeAndAfter.isChecked()){
                     cbBeforeAndAfter.toggle();
                 }
+                TextView tx = (TextView) layoutView.findViewById(R.id.titleFlexibility);
+                String after = getActivity().getResources().getString(R.string.window_size_title_after);
+                tx.setText(after);
             }
         });
         Button submit = (Button) layoutView.findViewById(R.id.submit);
@@ -522,22 +524,23 @@ public class fragment_create extends DialogFragment {
                     list.toArray(array);
                     if(array.length>0){
                         passMain.callBackgroundTasks(array,30);
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                        String time = simpleDateFormat.format(new Date());
+                        char[] timeChars = time.toCharArray();
+                        String date = ""+timeChars[0]+timeChars[1]+timeChars[2]+timeChars[3]+timeChars[4]+timeChars[5]+timeChars[6]+timeChars[7]+timeChars[8]+timeChars[9];
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("lastSendPressDayDate.txt", Context.MODE_PRIVATE);
+                            fos.write(date.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        dismiss();
                     }else{
                         String toastString = "No input";
                         int durationOfToast = Toast.LENGTH_SHORT;
                         Toast toast = Toast.makeText(context, toastString, durationOfToast);
                         toast.show();
-                    }
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-                    String time = simpleDateFormat.format(new Date());
-                    char[] timeChars = time.toCharArray();
-                    String date = ""+timeChars[0]+timeChars[1]+timeChars[2]+timeChars[3]+timeChars[4]+timeChars[5]+timeChars[6]+timeChars[7]+timeChars[8]+timeChars[9];
-                    try{
-                        FileOutputStream fos = getActivity().openFileOutput("lastSendPressDayDate.txt", Context.MODE_PRIVATE);
-                        fos.write(date.getBytes());
-                        fos.close();
-                    }catch(Exception e){
-                        e.printStackTrace();
                     }
                 } catch (NullPointerException ex) {
                     String toastString = "Error Send.";
@@ -547,7 +550,7 @@ public class fragment_create extends DialogFragment {
                     toast.show();
                     ex.printStackTrace();
                 }
-                dismiss();
+
             }
         });
 

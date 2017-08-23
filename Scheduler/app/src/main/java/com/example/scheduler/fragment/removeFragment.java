@@ -15,7 +15,6 @@ import android.widget.Spinner;
 import android.app.DialogFragment;
 import com.example.scheduler.MainActivity;
 import com.example.scheduler.R;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;

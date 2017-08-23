@@ -23,6 +23,7 @@
     <string name="flexibility">Flexibility</string>
     <string name = "add">ADD</string>
     <string name = "checkbox_title">When, around the input start time, could you otherwise start this task?</string>
-    <string name = "window_size_title">Size of the window of time in which you could start this task other than the input start.</string>
-
+    <string name = "window_size_title">How long before and after the input start time could you otherwise start this task?</string>
+    <string name = "window_size_title_before">How long before the input start time could you otherwise start this task?</string>
+    <string name = "window_size_title_after">How long after the input start time could you otherwise start this task?</string>
 </resources>

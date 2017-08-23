@@ -1,5 +1,6 @@
 package com.example.scheduler.fragment;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,7 +10,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.app.DialogFragment;
 import com.example.scheduler.MainActivity;
 import com.example.scheduler.R;
 
@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * Created by warrens on 07.08.17.
  */
 
-public class addRemoveAppliance extends DialogFragment {
+public class addRemoveAppliance extends Fragment {
     private CheckBox[] applianceCheckBoxs;
     private String[] applianceEnableBooleans;
     private ArrayList checkBoxIdArrayList = new ArrayList();
@@ -39,7 +39,7 @@ public class addRemoveAppliance extends DialogFragment {
         final Context context = getActivity();
         final MainActivity m = (MainActivity)getActivity();
         View v = inflater.inflate(R.layout.fragment_add_remove_appliance, container, false);
-        this.getDialog().setCanceledOnTouchOutside(true);
+
         final String appliancesEnabledDataFile = "appliancesEnabledDataFile.txt";
         String appliancesEnabled="";
         try{
@@ -108,6 +108,9 @@ public class addRemoveAppliance extends DialogFragment {
                     }
                 }
             }
+            RelativeLayout.LayoutParams llp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+            llp.setMargins(50,15,0,0);
+            temp.setLayoutParams(llp);
             try{
                 lin.addView(tempLayoutView);
                 tempLayoutView.addView(temp);
@@ -129,11 +132,12 @@ public class addRemoveAppliance extends DialogFragment {
             relativeLayoutIdArrayList.add(tempLayoutView.getId());
             relativeLayoutArrayList.add(tempLayoutView);
         }
+        final Fragment thisFrag = this;
         Button cancel = (Button) v.findViewById(R.id.button);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View g) {
-                dismiss();
+                getActivity().getFragmentManager().beginTransaction().remove(thisFrag).commit();
             }
         });
 
@@ -164,7 +168,7 @@ public class addRemoveAppliance extends DialogFragment {
                 }catch(Exception e){
                     e.printStackTrace();
                 }
-                dismiss();
+                getActivity().getFragmentManager().beginTransaction().remove(thisFrag).commit();
             }
         });
         return v;

@@ -6,16 +6,10 @@ package com.example.scheduler.BackgroundTasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.TimingLogger;
 import android.widget.Toast;
-
-
 import com.example.schedulecreationlibrary.Schedule;
 import com.example.scheduler.MainActivity;
-
 import java.io.FileOutputStream;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by warrens on 11.05.17.

@@ -1,9 +1,10 @@
 package com.example.scheduler.fragment;
 
-import android.app.Activity;
-import android.app.DialogFragment;
+
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
@@ -13,23 +14,17 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-
 import com.example.scheduler.Interface.MyDialogCloseListener;
 import com.example.scheduler.ObjectGroup.ToggleButtonsGroup;
 import com.example.scheduler.R;
-
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -37,7 +32,7 @@ import java.util.Date;
  * Created by warrens on 10.08.17.
  */
 
-public class surveyFragment extends DialogFragment {
+public class surveyFragment extends Fragment {
     public MyDialogCloseListener closeListener;
     public void onCreate(Bundle savedInstaceState) {
         super.onCreate(savedInstaceState);
@@ -46,8 +41,8 @@ public class surveyFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v;
+        final Fragment thisFrag = this;
         Context context = getActivity();
-        this.setCancelable(false);
         int nextScreen;
         String surveyProgress = "0";
         try{
@@ -168,9 +163,9 @@ public class surveyFragment extends DialogFragment {
                 toggleButtonsGroup.addButton(bEmploymentStatusA[3]);
                 toggleButtonsGroup.addButton(bEmploymentStatusA[4]);
 
-                nextScreen = 3;
-                final int passTwo= nextScreen;
+
                 Button next = (Button) v.findViewById(R.id.toPartThree);
+
                 next.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -199,7 +194,7 @@ public class surveyFragment extends DialogFragment {
                         }
                         try{
                             FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
-                            String nextScreen = passTwo+"";
+                            String nextScreen = 3+"";
                             fos.write(nextScreen.getBytes());
                             fos.close();
                         }catch(Exception e){
@@ -212,7 +207,12 @@ public class surveyFragment extends DialogFragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
-                        dismiss();
+                        Fragment stageTwo = new surveyFragment();
+                        FragmentManager fragManager = getActivity().getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                        fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
                     }
                 });
                 break;
@@ -266,8 +266,6 @@ public class surveyFragment extends DialogFragment {
                 houseOccupantNumberQ.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spHouseOccupantNumberA.setAdapter(houseOccupantNumberQ);
 
-                nextScreen = 4;
-                final int passThree = nextScreen;
                 Button bFour = (Button) v.findViewById(R.id.toPartFour);
                 bFour.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -294,27 +292,31 @@ public class surveyFragment extends DialogFragment {
                         matchingFactors[3] = selectedOccupantNumber;//Occupancy
 
                         String[] houseWattages = {
-                                "1,29,1000,3000,1379,1800,9000,472,513",
-                                "2,75,1000,3000,770,2257,9000,2500,327",
-                                "3,16,1000,3000,1150,1550,9000,1373,492",
-                                "4,52,1000,3000,1350,1703,9000,2500,700",
-                                "5,66,1000,3000,1350,2352,9000,766,700",
-                                "6,66,1000,3000,778,2192,9000,2500,369",
-                                "7,75,1000,3000,613,1913,9000,2075,442",
-                                "8,19,1000,3000,1350,2340,9000,2500,273",
-                                "9,75,1000,3000,700,2359,9000,2500,507",
-                                "10,75,1000,3000,1350,1800,9000,2500,349",
-                                "11,10,1000,3000,753,1841,9000,2500,700",
-                                "12,75,1000,3000,1350,2482,9000,2500,700",
-                                "13,39,1000,3000,1250,1542,9000,1510,203",
-                                "15,20,1000,3000,1350,2521,9000,1476,495",
-                                "16,27,1000,3000,1239,1800,9000,2500,300",
-                                "17,20,1000,3000,1350,1689,9000,1594,373",
-                                "18,26,1000,3000,1021,1800,9000,2500,377",
-                                "19,75,1000,3000,1350,2448,9000,2500,700",
-                                "20,75,1000,3000,1350,2350,9000,1097,293",
-                                "21,75,1000,3000,1350,1276,9000,1240,434",
-                                "Default,75,1000,3000,1350,1800,9000,2500,700"};
+                                /*
+                                "Hob","Oven","TumbleDryer","WashingMachine","Computer","Kettle","DishWasher","Shower"
+                                 */
+                                //House Number,Cooker (Hob),Cooker (Oven),Tumble Dryer, Washing Machine, Computer, Kettle,Dishwasher,Shower
+                                "1,1000,3000,472,513,29,1800,1379,9000",
+                                "2,1000,3000,2500,327,75,2257,770,9000",
+                                "3,1000,3000,1373,492,16,1550,1150,9000",
+                                "4,1000,3000,2500,700,52,1703,1350,9000",
+                                "5,1000,3000,766,700,66,2352,1350,9000",
+                                "6,1000,3000,2500,369,66,2192,778,9000",
+                                "7,1000,3000,2075,442,75,1913,613,9000",
+                                "8,1000,3000,2500,273,19,2340,1350,9000",
+                                "9,1000,3000,2500,507,75,2359,700,9000",
+                                "10,1000,3000,2500,349,75,1800,1350,9000",
+                                "11,1000,3000,2500,700,10,1841,753,9000",
+                                "12,1000,3000,2500,700,75,2482,1350,9000",
+                                "13,1000,3000,1510,203,39,1542,1250,9000",
+                                "15,1000,3000,1476,495,20,2521,1350,9000",
+                                "16,1000,3000,2500,300,27,1800,1239,9000",
+                                "17,1000,3000,1594,373,20,1689,1350,9000",
+                                "18,1000,3000,2500,377,26,1800,1021,9000",
+                                "19,1000,3000,2500,700,75,2448,1350,9000",
+                                "20,1000,3000,1097,293,75,2350,1350,9000",
+                                "21,1000,3000,1240,434,75,1276,1350,9000",
+                                "Default,1000,3000,2500,700,75,1800,1350,9000"};
 
 
                         String[] houseDataArray = {
@@ -415,7 +417,7 @@ public class surveyFragment extends DialogFragment {
                                         QIDS[1]+","+selectedOccupantNumber+"\n";
                         try{
                             FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
-                            String nextScreen = passThree+"";
+                            String nextScreen = 4+"";
                             fos.write(nextScreen.getBytes());
                             fos.close();
                         }catch(Exception e){
@@ -428,7 +430,12 @@ public class surveyFragment extends DialogFragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
-                        dismiss();
+                        Fragment stageTwo = new surveyFragment();
+                        FragmentManager fragManager = getActivity().getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                        fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
                     }
                 });
                 break;
@@ -483,8 +490,6 @@ public class surveyFragment extends DialogFragment {
                 final CheckBox cbFridge = (CheckBox)v.findViewById(R.id.fridge);
                 cbFridge.setText("Fridge");
 
-                nextScreen = 5;
-                final int passFour = nextScreen;
                 Button bFive = (Button) v.findViewById(R.id.toPartFive);
                 bFive.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -617,7 +622,7 @@ public class surveyFragment extends DialogFragment {
                         }
                         try{
                             FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
-                            String nextScreen = passFour+"";
+                            String nextScreen = 5+"";
                             fos.write(nextScreen.getBytes());
                             fos.close();
                         }catch(Exception e){
@@ -630,7 +635,12 @@ public class surveyFragment extends DialogFragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
-                        dismiss();
+                        Fragment stageTwo = new surveyFragment();
+                        FragmentManager fragManager = getActivity().getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                        fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
                     }
                 });
                 break;
@@ -661,8 +671,6 @@ public class surveyFragment extends DialogFragment {
                 final CheckBox cbReasonFive= (CheckBox)v.findViewById(R.id.reason5);
                 cbReasonFive.setText("Others do not, so I do");
 
-                nextScreen = 6;
-                final int passFive = nextScreen;
                 Button bSix = (Button) v.findViewById(R.id.toPartSix);
                 bSix.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -702,7 +710,7 @@ public class surveyFragment extends DialogFragment {
                                 questionFifteenAnswers;
                         try{
                             FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
-                            String nextScreen = passFive+"";
+                            String nextScreen = 6+"";
                             fos.write(nextScreen.getBytes());
                             fos.close();
                         }catch(Exception e){
@@ -715,13 +723,17 @@ public class surveyFragment extends DialogFragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
-                        dismiss();
+                        Fragment stageTwo = new surveyFragment();
+                        FragmentManager fragManager = getActivity().getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                        fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
                     }
                 });
                 break;
             case 6:
                 v = inflater.inflate(R.layout.survey_fragment_part_six, container, false);
-                nextScreen = 7;
                 final String[] QuestionIDS = {"16-1","16-2","17-1","17-2","17-3","17-4"};
 
                 TextView txDesiredMeansToBeEfficientQ = (TextView) v.findViewById(R.id.desiredMeansToBeEfficientQ);
@@ -743,7 +755,6 @@ public class surveyFragment extends DialogFragment {
                 final CheckBox cbResultFour = (CheckBox)v.findViewById(R.id.result4);
                 cbResultFour.setText("Doing my daily residential activities at different and maybe undesirable times.");
 
-                final int passSix = nextScreen;
                 Button bSeven = (Button) v.findViewById(R.id.toPartSeven);
                 bSeven.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -783,7 +794,7 @@ public class surveyFragment extends DialogFragment {
                         String submit = questionSixteenAnswers+questionSevenTeenAnswers;
                         try{
                             FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
-                            String nextScreen = passSix+"";
+                            String nextScreen = 7+"";
                             fos.write(nextScreen.getBytes());
                             fos.close();
                         }catch(Exception e){
@@ -796,14 +807,17 @@ public class surveyFragment extends DialogFragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
-                        dismiss();
+                        Fragment stageTwo = new surveyFragment();
+                        FragmentManager fragManager = getActivity().getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                        fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
                     }
                 });
                 break;
             case 7:
                 v = inflater.inflate(R.layout.survey_fragment_part_seven, container, false);
-                nextScreen = 8;
-                final int passSeven = nextScreen;
                 final String[] Questionids = {"18","19","20","21"};
                 TextView txAcceptanceOfDiscomfortQ = (TextView) v.findViewById(R.id.acceptanceOfDiscomfortQ);
                 txAcceptanceOfDiscomfortQ.setText("I would like to accept discomfort to make more efficient energy usage.");
@@ -834,7 +848,7 @@ public class surveyFragment extends DialogFragment {
                                 Questionids[3]+","+progressGroupAcceptanceOfDiscomfortA+"\n";
                         try{
                             FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
-                            String nextScreen = passSeven+"";
+                            String nextScreen = 8+"";
                             fos.write(nextScreen.getBytes());
                             fos.close();
                         }catch(Exception e){
@@ -847,15 +861,18 @@ public class surveyFragment extends DialogFragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
-                        dismiss();
+                        Fragment stageTwo = new surveyFragment();
+                        FragmentManager fragManager = getActivity().getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                        fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
                     }
                 });
                 break;
             case 8:
                 v = inflater.inflate(R.layout.survey_fragment_part_eight, container, false);
-                nextScreen = 9;
                 final String[] questionIDS = {"22","23","24","25"};
-                final int passEight = nextScreen;
                 TextView txNonSoloEnergyEfficientQ = (TextView)v.findViewById(R.id.nonSoloEnergyEfficientQ);
                 txNonSoloEnergyEfficientQ.setText("I would not like to be energy efficient if others are not energy efficient as well.");
                 TextView txNonSoloDiscomfortEscalationQ = (TextView)v.findViewById(R.id.nonSoloDiscomfortEscalationQ);
@@ -885,7 +902,7 @@ public class surveyFragment extends DialogFragment {
                                 questionIDS[3]+","+progressSelfScheduleForEfficiencyA+"\n";
                         try{
                             FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
-                            String nextScreen = passEight+"";
+                            String nextScreen = 9+"";
                             fos.write(nextScreen.getBytes());
                             fos.close();
                         }catch(Exception e){
@@ -898,15 +915,18 @@ public class surveyFragment extends DialogFragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
-                        dismiss();
+                        Fragment stageTwo = new surveyFragment();
+                        FragmentManager fragManager = getActivity().getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                        fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
                     }
                 });
 
                 break;
             case 9:
                 v = inflater.inflate(R.layout.survey_fragment_part_nine, container, false);
-                nextScreen = 10;
-                final int passNine = nextScreen;
                 final String[] questionID = {"26-1","26-2","26-3","26-4","26-5","26-6","26-7","27"};
                 TextView txWhenToScheduleQ = (TextView) v.findViewById(R.id.whenToScheduleQ);
                 txWhenToScheduleQ.setText("Scheduling of appliances to make a more efficient energy usage best works for me:");
@@ -973,7 +993,7 @@ public class surveyFragment extends DialogFragment {
 
                         try{
                             FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
-                            String nextScreen = passNine+"";
+                            String nextScreen = 10+"";
                             fos.write(nextScreen.getBytes());
                             fos.close();
                         }catch(Exception e){
@@ -986,7 +1006,12 @@ public class surveyFragment extends DialogFragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
-                        dismiss();
+                        Fragment stageTwo = new surveyFragment();
+                        FragmentManager fragManager = getActivity().getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                        fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
                     }
                 });
                 break;
@@ -1164,7 +1189,15 @@ public class surveyFragment extends DialogFragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
-                        dismiss();
+                        try{
+                            FileOutputStream fos = getActivity().openFileOutput("surveyComplete.txt",Context.MODE_PRIVATE);
+                            String nextScreen = "true";
+                            fos.write(nextScreen.getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        getActivity().getFragmentManager().beginTransaction().remove(thisFrag).commit();
                     }
                 });
                 break;
@@ -1495,7 +1528,12 @@ public class surveyFragment extends DialogFragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
-                        dismiss();
+                        Fragment stageTwo = new surveyFragment();
+                        FragmentManager fragManager = getActivity().getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                        fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
                     }
                 });
                 break;
@@ -1514,11 +1552,4 @@ public class surveyFragment extends DialogFragment {
         this.closeListener = closeListener;
     }
 
-    @Override
-    public void onDismiss(DialogInterface dialog)
-    {
-        Activity activity = getActivity();
-        if(activity instanceof MyDialogCloseListener)
-            ((MyDialogCloseListener)activity).handleDialogClose(dialog);
-    }
 }

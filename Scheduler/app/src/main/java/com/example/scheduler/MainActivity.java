@@ -2,6 +2,7 @@ package com.example.scheduler;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
+import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -361,10 +362,12 @@ public class MainActivity extends AppCompatActivity
             }catch(Exception e){
                 e.printStackTrace();
             }
-            FragmentManager fragManager = getFragmentManager();
-            android.app.FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
             surveyFragment newFragment = new surveyFragment();
-            newFragment.show(fragmentTransaction,"survey");
+            FragmentManager fragManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+            fragmentTransaction.add(R.id.fragment_container, newFragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
             MyDialogCloseListener closeListener = new MyDialogCloseListener() {
                 @Override
                 public void handleDialogClose(DialogInterface dialog) {
@@ -420,10 +423,12 @@ public class MainActivity extends AppCompatActivity
         fabEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Fragment newFragment = new editApplianceSettings();
                 FragmentManager fragManager = getFragmentManager();
-                android.app.FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
-                DialogFragment newFragment = new editApplianceSettings();
-                newFragment.show(fragmentTransaction,"editApplianceSettings");
+                FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                fragmentTransaction.add(R.id.fragment_container, newFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             }
         });
 
@@ -431,10 +436,12 @@ public class MainActivity extends AppCompatActivity
         fabAddRemoveAppliances.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Fragment newFragment = new addRemoveAppliance();
                 FragmentManager fragManager = getFragmentManager();
-                android.app.FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
-                DialogFragment newFragment = new addRemoveAppliance();
-                newFragment.show(fragmentTransaction, "addRemoveAppliance");
+                FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                fragmentTransaction.add(R.id.fragment_container, newFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             }
         });
 
@@ -1127,10 +1134,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void callSurvey(){
-        FragmentManager fragManager = getFragmentManager();
-        android.app.FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
         surveyFragment newFragment = new surveyFragment();
-        newFragment.show(fragmentTransaction,"survey");
+        FragmentManager fragManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+        fragmentTransaction.add(R.id.fragment_container, newFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
         MyDialogCloseListener closeListener = new MyDialogCloseListener() {
             @Override
             public void handleDialogClose(DialogInterface dialog) {
@@ -1193,4 +1202,28 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
+    public String[] getWattage(){
+        String wattage = "";
+        String[] wattageArray;
+        try{
+            FileInputStream fis = openFileInput("wattagesFile.txt");
+            int chr;
+            StringBuilder builder = new StringBuilder();
+            while ((chr = fis.read()) != -1) {
+                builder.append((char) chr);
+            }
+            wattage = builder.toString();
+            //  0,              1,          2,          3,              4,    5,      6,        7,              8
+            //House Number, Computer, Cooker (Hob),Cooker (Oven),Dishwasher,Kettle,Shower,Tumble Dryer, Washing Machine
+
+            fis.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        System.out.print("Wattage List:"+wattage+"\n");
+        wattageArray = wattage.split(",");
+        return wattageArray;
+    }
+
 }
