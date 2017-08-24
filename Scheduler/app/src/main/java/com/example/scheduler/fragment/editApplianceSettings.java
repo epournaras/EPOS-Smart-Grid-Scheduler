@@ -1,7 +1,9 @@
 package com.example.scheduler.fragment;
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +11,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.example.scheduler.MainActivity;
 import com.example.scheduler.R;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -72,39 +75,14 @@ public class editApplianceSettings extends Fragment {
         System.out.print(wattages+"\n");
         final String[] wattagesArray = wattages.split(",");
         LinearLayout lin = (LinearLayout)v.findViewById(R.id.editTextLayout);
-        RelativeLayout tempLayoutView;
-        RelativeLayout tempLayoutViewText;
-
+        LinearLayout tempLayoutView;
+        LinearLayout tempLayoutViewText;
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(50,15,0,0);
         for(int i =0; i<enableTable.length;i++){
             String currentText;
-            int index = 1;
             if(enableTable[i][1].equals("true")){
-                switch(enableTable[i][0]){
-                    case "Computer":
-                        index = 1;
-                        break;
-                    case "Hob":
-                        index = 2;
-                        break;
-                    case "Oven":
-                        index = 3;
-                        break;
-                    case "DishWasher":
-                        index = 4;
-                        break;
-                    case "Kettle":
-                        index = 5;
-                        break;
-                    case "Shower":
-                        index = 6;
-                        break;
-                    case "TumbleDryer":
-                        index = 7;
-                        break;
-                    case "WashingMachine":
-                        index = 8;
-                        break;
-                }
+                int index = i+1;
 
                 String applianceIWattage = wattagesArray[index];
                 currentText = enableTable[i][0]+": "+applianceIWattage+" watts";
@@ -115,21 +93,24 @@ public class editApplianceSettings extends Fragment {
 
                 TextView textTemp = new TextView(context);
                 textTemp.setText(currentText);
+                textTemp.setTextSize(15);
+                textTemp.setTextColor(getResources().getColor(R.color.black));
+                textTemp.setTypeface(null, Typeface.BOLD);
                 textTemp.setId(v.generateViewId());
 
-                tempLayoutView = new RelativeLayout(getActivity());
+                tempLayoutView = new LinearLayout(getActivity());
                 tempLayoutView.setId(v.generateViewId());
                 tempLayoutView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
 
-                tempLayoutViewText = new RelativeLayout(getActivity());
+                tempLayoutViewText = new LinearLayout(getActivity());
                 tempLayoutViewText.setId(v.generateViewId());
                 tempLayoutViewText.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
                 try{
-                    tempLayoutViewText.addView(textTemp);
+                    tempLayoutViewText.addView(textTemp,params);
                     lin.addView(tempLayoutViewText);
-                    tempLayoutView.addView(etTemp);
+                    tempLayoutView.addView(etTemp,params);
                     lin.addView(tempLayoutView);
                     editTextIds.add(etTemp.getId());
                     textViewIds.add(textTemp.getId());
@@ -146,7 +127,6 @@ public class editApplianceSettings extends Fragment {
             public void onClick(View g) {
                 String wattFile = "";
                 int ind = 0;
-                int index = 0;
                 for(int i = 1; i<wattagesArray.length;i++){
                     if(enableTableFinal[i-1][1].equals("true")){
                         TextView textTemp = (TextView)v.findViewById((int)textViewIds.get(ind));
@@ -155,34 +135,7 @@ public class editApplianceSettings extends Fragment {
                         String t = temp.getText().toString();
                         ind++;
                         String[] parts = title.split(":");
-                        String name = parts[0];
-                        switch(name){
-                            case "Computer":
-                                index = 1;
-                                break;
-                            case "Hob":
-                                index = 2;
-                                break;
-                            case "Oven":
-                                index = 3;
-                                break;
-                            case "DishWasher":
-                                index = 4;
-                                break;
-                            case "Kettle":
-                                index = 5;
-                                break;
-                            case "Shower":
-                                index = 6;
-                                break;
-                            case "TumbleDryer":
-                                index = 7;
-                                break;
-                            case "WashingMachine":
-                                index = 8;
-                                break;
-                        }
-                        wattagesArray[index] = t;
+                        wattagesArray[i] = t;
                     }
                 }
                 for(int i = 0; i<wattagesArray.length;i++) {
@@ -200,6 +153,9 @@ public class editApplianceSettings extends Fragment {
                 }catch(Exception e){
                     e.printStackTrace();
                 }
+                FloatingActionButton b =((MainActivity)getActivity()).getFabRevealFabs();
+                b.setClickable(true);
+                b.setVisibility(View.VISIBLE);
                 getActivity().getFragmentManager().beginTransaction().remove(thisFrag).commit();
             }
         });
@@ -207,9 +163,13 @@ public class editApplianceSettings extends Fragment {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View g) {
+                FloatingActionButton b =((MainActivity)getActivity()).getFabRevealFabs();
+                b.setClickable(true);
+                b.setVisibility(View.VISIBLE);
                 getActivity().getFragmentManager().beginTransaction().remove(thisFrag).commit();
             }
         });
         return v;
     }
+
 }

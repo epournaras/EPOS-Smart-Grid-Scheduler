@@ -78,6 +78,8 @@ public class MainActivity extends AppCompatActivity
     public boolean tasksStop = false;
     public NavigationView nav;
     public MainActivity me = this;
+    public FloatingActionButton fabRevealFabs;
+
     private String[] applianceNames = {
             "Hob",
             "Oven",
@@ -101,7 +103,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         final View layoutView = (View) findViewById(android.R.id.content);
         final Context context = this;
-
+        fabRevealFabs= (FloatingActionButton) findViewById(R.id.fabRevealFabs);
         fullTime = " ";
         date = " ";
         tomorrowsDate = " ";
@@ -418,8 +420,13 @@ public class MainActivity extends AppCompatActivity
                 callSurvey();
             }
         }
-
+        final FloatingActionButton fabAddRemoveAppliances= (FloatingActionButton) findViewById(R.id.fabAddRemoveAppliances);
+        final FloatingActionButton fabCreateTomorrowsPlan= (FloatingActionButton) findViewById(R.id.fabCreateTomorrowsPlan);
         final FloatingActionButton fabEdit = (FloatingActionButton) findViewById(R.id.fabEditAppliances);
+        fabEdit.setClickable(false);
+        fabCreateTomorrowsPlan.setClickable(false);
+        fabAddRemoveAppliances.setClickable(false);
+
         fabEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -429,10 +436,24 @@ public class MainActivity extends AppCompatActivity
                 fragmentTransaction.add(R.id.fragment_container, newFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
+                fabCreateTomorrowsPlan.startAnimation(FabClose);
+                fabEdit.startAnimation(FabClose);
+                fabAddRemoveAppliances.startAnimation(FabClose);
+                fabRevealFabs.startAnimation(FabRAntiClockwise);
+
+                textEdit.startAnimation(FabClose);
+                textAddRemove.startAnimation(FabClose);
+                textCreatePlan.startAnimation(FabClose);
+                fabEdit.setClickable(false);
+                fabCreateTomorrowsPlan.setClickable(false);
+                fabAddRemoveAppliances.setClickable(false);
+                fabRevealFabs.clearAnimation();
+                fabRevealFabs.setVisibility(View.INVISIBLE);
+                fabRevealFabs.setClickable(false);
+                isOpen = false;
             }
         });
 
-        final FloatingActionButton fabAddRemoveAppliances = (FloatingActionButton) findViewById(R.id.fabAddRemoveAppliances);
         fabAddRemoveAppliances.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -442,10 +463,24 @@ public class MainActivity extends AppCompatActivity
                 fragmentTransaction.add(R.id.fragment_container, newFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
+                fabCreateTomorrowsPlan.startAnimation(FabClose);
+                fabEdit.startAnimation(FabClose);
+                fabAddRemoveAppliances.startAnimation(FabClose);
+                fabRevealFabs.startAnimation(FabRAntiClockwise);
+
+                textEdit.startAnimation(FabClose);
+                textAddRemove.startAnimation(FabClose);
+                textCreatePlan.startAnimation(FabClose);
+                fabEdit.setClickable(false);
+                fabCreateTomorrowsPlan.setClickable(false);
+                fabAddRemoveAppliances.setClickable(false);
+                fabRevealFabs.clearAnimation();
+                fabRevealFabs.setVisibility(View.INVISIBLE);
+                fabRevealFabs.setClickable(false);
+                isOpen = false;
             }
         });
 
-        final FloatingActionButton fabCreateTomorrowsPlan = (FloatingActionButton) findViewById(R.id.fabCreateTomorrowsPlan);
         fabCreateTomorrowsPlan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -453,21 +488,29 @@ public class MainActivity extends AppCompatActivity
                 android.app.FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                 DialogFragment newFragment = new fragment_create();
                 newFragment.show(fragmentTransaction, "fragment_create");
+                fabCreateTomorrowsPlan.startAnimation(FabClose);
+                fabEdit.startAnimation(FabClose);
+                fabAddRemoveAppliances.startAnimation(FabClose);
+                fabRevealFabs.startAnimation(FabRAntiClockwise);
+
+                textEdit.startAnimation(FabClose);
+                textAddRemove.startAnimation(FabClose);
+                textCreatePlan.startAnimation(FabClose);
+                fabEdit.setClickable(false);
+                fabCreateTomorrowsPlan.setClickable(false);
+                fabAddRemoveAppliances.setClickable(false);
+                isOpen = false;
             }
         });
-        fabEdit.setClickable(false);
-        fabCreateTomorrowsPlan.setClickable(false);
-        fabAddRemoveAppliances.setClickable(false);
 
-        final FloatingActionButton fabRevealFabs = (FloatingActionButton) findViewById(R.id.fabRevealFabs);
         fabRevealFabs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(isOpen){
                     fabCreateTomorrowsPlan.startAnimation(FabClose);
-                    fabRevealFabs.startAnimation(FabRAntiClockwise);
                     fabEdit.startAnimation(FabClose);
                     fabAddRemoveAppliances.startAnimation(FabClose);
+                    fabRevealFabs.startAnimation(FabRAntiClockwise);
 
                     textEdit.startAnimation(FabClose);
                     textAddRemove.startAnimation(FabClose);
@@ -478,9 +521,9 @@ public class MainActivity extends AppCompatActivity
                     isOpen = false;
                 }else{
                     fabCreateTomorrowsPlan.startAnimation(FabOpen);
-                    fabRevealFabs.startAnimation(FabRClockwise);
                     fabEdit.startAnimation(FabOpen);
                     fabAddRemoveAppliances.startAnimation(FabOpen);
+                    fabRevealFabs.startAnimation(FabRClockwise);
 
                     textEdit.startAnimation(FabOpen);
                     textAddRemove.startAnimation(FabOpen);
@@ -532,6 +575,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        if(fabRevealFabs!=null){
+            fabRevealFabs.setClickable(true);
+            fabRevealFabs.setVisibility(View.VISIBLE);
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -553,6 +600,9 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        if(id==android.R.id.home){
+            onBackPressed();
+        }
 
 //        //noinspection SimplifiableIfStatement
 //        if (id == R.id.action_settings) {
@@ -1224,6 +1274,10 @@ public class MainActivity extends AppCompatActivity
         System.out.print("Wattage List:"+wattage+"\n");
         wattageArray = wattage.split(",");
         return wattageArray;
+    }
+
+    public FloatingActionButton getFabRevealFabs(){
+        return fabRevealFabs;
     }
 
 }

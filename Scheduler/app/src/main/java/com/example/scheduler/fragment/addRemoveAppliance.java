@@ -3,6 +3,7 @@ package com.example.scheduler.fragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,7 @@ public class addRemoveAppliance extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final Context context = getActivity();
-        final MainActivity m = (MainActivity)getActivity();
+
         View v = inflater.inflate(R.layout.fragment_add_remove_appliance, container, false);
 
         final String appliancesEnabledDataFile = "appliancesEnabledDataFile.txt";
@@ -137,6 +138,9 @@ public class addRemoveAppliance extends Fragment {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View g) {
+                FloatingActionButton b =((MainActivity)getActivity()).getFabRevealFabs();
+                b.setClickable(true);
+                b.setVisibility(View.VISIBLE);
                 getActivity().getFragmentManager().beginTransaction().remove(thisFrag).commit();
             }
         });
@@ -153,7 +157,7 @@ public class addRemoveAppliance extends Fragment {
                     for(int j = 0; j<enableTable[i].length;j++){
                         System.out.print(j+" "+enableTable.length+" "+enableTable[i][j]+"\n");
                         if(j==enableTable[i].length-1){
-                            if(enableTable[i][j].equals("false")) m.removeItemWithName(enableTable[i][0]);
+                            if(enableTable[i][j].equals("false")) ((MainActivity)getActivity()).removeItemWithName(enableTable[i][0]);
                             submitString+=enableTable[i][j];
                         }else{
                             submitString+=enableTable[i][j]+",";
@@ -168,6 +172,9 @@ public class addRemoveAppliance extends Fragment {
                 }catch(Exception e){
                     e.printStackTrace();
                 }
+                FloatingActionButton b =((MainActivity)getActivity()).getFabRevealFabs();
+                b.setClickable(true);
+                b.setVisibility(View.VISIBLE);
                 getActivity().getFragmentManager().beginTransaction().remove(thisFrag).commit();
             }
         });

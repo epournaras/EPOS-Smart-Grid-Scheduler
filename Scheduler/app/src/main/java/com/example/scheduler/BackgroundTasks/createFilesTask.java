@@ -251,6 +251,5 @@ public class createFilesTask extends AsyncTask<String, Integer, String> {
 
     public void returnDataTask(String data, int indexOfSchedule, int indexOfDevice){
         submitableData[indexOfSchedule][indexOfDevice] = data;
-        System.out.print(data+"\n");
     }
 }

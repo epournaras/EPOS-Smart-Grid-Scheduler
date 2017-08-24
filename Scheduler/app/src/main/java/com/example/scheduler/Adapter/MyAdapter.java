@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import com.example.scheduler.MainActivity;
 import com.example.scheduler.R;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 
@@ -67,6 +68,20 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         final ViewHolder holder = hlder;
         holder.mCheckBox.setText(mDataset[position]);
         boxes[position] = holder.mCheckBox;
+        System.out.print("Boxes: "+boxes.length+"\n");
+        System.out.print("Data Set: "+mDataset.length+"\n");
+        String chosenPlan = " ";
+        try{
+            FileInputStream fis = mainActivity.openFileInput("chosenPlan.txt");
+            int ch;
+            StringBuilder builder = new StringBuilder();
+            while((ch=fis.read())!=-1){
+                builder.append((char)ch);
+            }
+            chosenPlan = builder.toString();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         if(position==0){
             if(boxes[position].isChecked()){
                 try{
@@ -77,21 +92,29 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                     e.printStackTrace();
                 }
             }else{
-                boxes[position].toggle();
-                try{
-                    FileOutputStream fos = mainActivity.openFileOutput("chosenPlan.txt", Context.MODE_PRIVATE);
-                    fos.write(boxes[position].getText().toString().getBytes());
-                    fos.close();
-                }catch(Exception e){
-                    e.printStackTrace();
+                if(chosenPlan.equals(" ")){
+                    boxes[position].toggle();
+                    try{
+                        FileOutputStream fos = mainActivity.openFileOutput("chosenPlan.txt", Context.MODE_PRIVATE);
+                        fos.write(boxes[position].getText().toString().getBytes());
+                        fos.close();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
                 }
             }
         }else{
-            if(boxes[position].isChecked()){
-                boxes[position].toggle();
+            if(chosenPlan.equals(boxes[position].getText().toString())){
+                if(!boxes[position].isChecked()){
+                    boxes[position].toggle();
+                }
+            }else{
+                if(boxes[position].isChecked()){
+                    boxes[position].toggle();
+                }
             }
         }
-        holder.mCheckBox.setOnClickListener(new View.OnClickListener() {
+        boxes[position].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CheckBox cb = (CheckBox) v;
@@ -106,9 +129,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                     }
                     for(int i = 0 ; i<boxes.length;i++){
                         if(i!=index){
-                            if(boxes[i].isChecked()){
-                                boxes[i].toggle();
+                            try{
+                                if(boxes[i].isChecked()){
+                                    boxes[i].toggle();
+                                }
+                            }catch(Exception e){
+                                System.out.print("Issue at index:"+i+"\n");
+                                e.printStackTrace();
                             }
+
                         }
                     }
                 }

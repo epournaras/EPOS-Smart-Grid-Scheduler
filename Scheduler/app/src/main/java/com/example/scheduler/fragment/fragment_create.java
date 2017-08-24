@@ -32,7 +32,7 @@ import java.util.Date;
 public class fragment_create extends DialogFragment {
     public Context context;
     public ArrayList<Action> list = new ArrayList<>();
-
+    public final MainActivity m = (MainActivity)getActivity();
     public String[][]enableTable;
     public void onCreate(Bundle savedInstaceState){
         super.onCreate(savedInstaceState);
@@ -523,7 +523,7 @@ public class fragment_create extends DialogFragment {
                     Action[] array = new Action[list.size()];
                     list.toArray(array);
                     if(array.length>0){
-                        passMain.callBackgroundTasks(array,30);
+                        passMain.callBackgroundTasks(array,6);
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                         String time = simpleDateFormat.format(new Date());
                         char[] timeChars = time.toCharArray();
