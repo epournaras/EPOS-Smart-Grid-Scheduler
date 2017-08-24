@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -78,7 +79,13 @@ public class editApplianceSettings extends Fragment {
         LinearLayout tempLayoutView;
         LinearLayout tempLayoutViewText;
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(50,15,0,0);
+        params.setMargins(100,0,50,50);
+        LinearLayout.LayoutParams paramsText = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        paramsText.setMargins(50,25,50,0);
+        LinearLayout.LayoutParams paramsLayoutText =new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        paramsLayoutText.setMargins(15,5,15,0);
+        LinearLayout.LayoutParams paramsLayout = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        paramsLayout.setMargins(15,0,15,5);
         for(int i =0; i<enableTable.length;i++){
             String currentText;
             if(enableTable[i][1].equals("true")){
@@ -90,28 +97,36 @@ public class editApplianceSettings extends Fragment {
                 etTemp.setInputType(InputType.TYPE_CLASS_NUMBER);
                 etTemp.setText(applianceIWattage);
                 etTemp.setId(v.generateViewId());
+                etTemp.setTextColor(getResources().getColor(R.color.white));
+                etTemp.setShadowLayer(1.5f, -1, 1, getResources().getColor(R.color.black));
+                etTemp.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
                 TextView textTemp = new TextView(context);
                 textTemp.setText(currentText);
                 textTemp.setTextSize(15);
-                textTemp.setTextColor(getResources().getColor(R.color.black));
+                textTemp.setTextColor(getResources().getColor(R.color.white));
+                textTemp.setShadowLayer(1.5f, -1, 1, getResources().getColor(R.color.black));
                 textTemp.setTypeface(null, Typeface.BOLD);
                 textTemp.setId(v.generateViewId());
+
 
                 tempLayoutView = new LinearLayout(getActivity());
                 tempLayoutView.setId(v.generateViewId());
                 tempLayoutView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
+                tempLayoutView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
                 tempLayoutViewText = new LinearLayout(getActivity());
                 tempLayoutViewText.setId(v.generateViewId());
                 tempLayoutViewText.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
+                tempLayoutViewText.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
                 try{
-                    tempLayoutViewText.addView(textTemp,params);
-                    lin.addView(tempLayoutViewText);
+                    tempLayoutViewText.addView(textTemp,paramsText);
+                    lin.addView(tempLayoutViewText,paramsLayoutText);
                     tempLayoutView.addView(etTemp,params);
-                    lin.addView(tempLayoutView);
+                    lin.addView(tempLayoutView,paramsLayout);
                     editTextIds.add(etTemp.getId());
                     textViewIds.add(textTemp.getId());
                 }catch(Exception e){

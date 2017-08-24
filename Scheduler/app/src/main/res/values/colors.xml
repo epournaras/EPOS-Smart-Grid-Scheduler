@@ -7,9 +7,10 @@
     <color name="strong_blue">#04B9E6</color>
     <color name="medium_gray">#BBBBBB</color>
     <color name = "solid_gray">#A0A0A0</color>
-    <color name = "cleargray">#D0D0D0</color>
+    <color name = "clear_gray">#D0D0D0</color>
     <color name = "bright_yellow">#FFFF00</color>
     <color name="green">#04E645</color>
     <color name="black">#000000</color>
-
+    <color name="soft_grey">#d3d3d3</color>
+    <color name = "white">#FFFFFF</color>
 </resources>

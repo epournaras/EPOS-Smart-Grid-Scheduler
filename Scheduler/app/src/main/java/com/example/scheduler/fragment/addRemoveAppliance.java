@@ -26,8 +26,8 @@ public class addRemoveAppliance extends Fragment {
     private CheckBox[] applianceCheckBoxs;
     private String[] applianceEnableBooleans;
     private ArrayList checkBoxIdArrayList = new ArrayList();
-    private ArrayList relativeLayoutIdArrayList = new ArrayList();
-    private ArrayList<RelativeLayout> relativeLayoutArrayList = new ArrayList<>();
+    private ArrayList LinearLayoutIdArrayList = new ArrayList();
+    private ArrayList<LinearLayout> LinearLayoutArrayList = new ArrayList<>();
     private String[] applianceNames;
     @Override
     public void onCreate(Bundle savedInstaceState) {
@@ -79,22 +79,26 @@ public class addRemoveAppliance extends Fragment {
         applianceCheckBoxs = new CheckBox[applianceNames.length];
         applianceEnableBooleans = new String[applianceNames.length];
 
-        RelativeLayout tempLayoutView;
+        LinearLayout tempLayoutView;
 
         LinearLayout lin = (LinearLayout)v.findViewById(R.id.checkBoxLayout);
         for(int i = 0; i<applianceCheckBoxs.length;i++){
             final int index = i;
             final CheckBox temp;
-            tempLayoutView = new RelativeLayout(getActivity());
+            tempLayoutView = new LinearLayout(getActivity());
             tempLayoutView.setId(v.generateViewId());
             tempLayoutView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT));
+            tempLayoutView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
             temp = new CheckBox(getActivity());
             temp.setId(v.generateViewId());
             temp.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT));
             temp.setText(applianceNames[i]);
+            temp.setTextColor(getResources().getColor(R.color.white));
+            temp.setShadowLayer(1.5f, -1, 1, getResources().getColor(R.color.black));
+
             if(applianceNames[i].equals(enableTable[i][0])){
                 applianceEnableBooleans[i] = "false";
                 if(enableTable[i][1].equals("true")){
@@ -109,11 +113,15 @@ public class addRemoveAppliance extends Fragment {
                     }
                 }
             }
-            RelativeLayout.LayoutParams llp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
-            llp.setMargins(50,15,0,0);
+            LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+            llp.setMargins(50,15,0,50 );
+
+            LinearLayout.LayoutParams relParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT);
+            relParams.setMargins(15,0,15,5);
+
             temp.setLayoutParams(llp);
             try{
-                lin.addView(tempLayoutView);
+                lin.addView(tempLayoutView,relParams);
                 tempLayoutView.addView(temp);
             }catch(Exception e){
                 e.printStackTrace();
@@ -130,8 +138,8 @@ public class addRemoveAppliance extends Fragment {
             });
             applianceCheckBoxs[i] = temp;
             checkBoxIdArrayList.add(temp.getId());
-            relativeLayoutIdArrayList.add(tempLayoutView.getId());
-            relativeLayoutArrayList.add(tempLayoutView);
+            LinearLayoutIdArrayList.add(tempLayoutView.getId());
+            LinearLayoutArrayList.add(tempLayoutView);
         }
         final Fragment thisFrag = this;
         Button cancel = (Button) v.findViewById(R.id.button);

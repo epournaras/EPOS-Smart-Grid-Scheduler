@@ -79,7 +79,8 @@ public class MainActivity extends AppCompatActivity
     public NavigationView nav;
     public MainActivity me = this;
     public FloatingActionButton fabRevealFabs;
-
+    public final String PREFS_NAME = "MyPrefsFile";
+    public SharedPreferences settings;
     private String[] applianceNames = {
             "Hob",
             "Oven",
@@ -116,17 +117,14 @@ public class MainActivity extends AppCompatActivity
         FabClose = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_close);
         FabRAntiClockwise = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_anticlockwise);
         FabRClockwise = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_clockwise);
-
-        final String PREFS_NAME = "MyPrefsFile";
-
-
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         int MY_PERMISSIONS_REQUEST_STORAGE = 200;
         settings.edit().putBoolean("putMin", false).commit();
         settings.edit().putBoolean("putMax", false).commit();
 
 
-        if(settings.getBoolean("my_first_time", true)){
+        if(firstTimeStart()){
+            System.out.print("First Time Launch\n");
             String[] perms = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"};
             int version = Build.VERSION.SDK_INT;
             if(version>=23){
@@ -1278,6 +1276,10 @@ public class MainActivity extends AppCompatActivity
 
     public FloatingActionButton getFabRevealFabs(){
         return fabRevealFabs;
+    }
+
+    public boolean firstTimeStart(){
+        return settings.getBoolean("my_first_time", true);
     }
 
 }

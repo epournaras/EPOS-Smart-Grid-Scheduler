@@ -71,7 +71,7 @@ public class Schedule {
             if(totalCombinations<0){
                 totalCombinations = 9223372036854775807L;
             }
-            int cores = Runtime.getRuntime().availableProcessors();
+            int cores = (Runtime.getRuntime().availableProcessors())*2;
             long[] startingPoints = new long[cores];
             for(int i = 0; i<startingPoints.length;i++){
                 startingPoints[i] = (totalCombinations/cores)*i;

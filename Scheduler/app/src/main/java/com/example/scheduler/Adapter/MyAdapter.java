@@ -82,7 +82,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         }catch(Exception e){
             e.printStackTrace();
         }
-        if(position==0){
+        if((position==0)&&(chosenPlan.equals(" "))){
             if(boxes[position].isChecked()){
                 try{
                     FileOutputStream fos = mainActivity.openFileOutput("chosenPlan.txt", Context.MODE_PRIVATE);
@@ -92,7 +92,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                     e.printStackTrace();
                 }
             }else{
-                if(chosenPlan.equals(" ")){
                     boxes[position].toggle();
                     try{
                         FileOutputStream fos = mainActivity.openFileOutput("chosenPlan.txt", Context.MODE_PRIVATE);
@@ -101,7 +100,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                     }catch(Exception e){
                         e.printStackTrace();
                     }
-                }
             }
         }else{
             if(chosenPlan.equals(boxes[position].getText().toString())){
