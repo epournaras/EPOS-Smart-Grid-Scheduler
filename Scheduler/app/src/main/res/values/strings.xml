@@ -26,4 +26,30 @@
     <string name = "window_size_title">How long before and after the input start time could you otherwise start this task?</string>
     <string name = "window_size_title_before">How long before the input start time could you otherwise start this task?</string>
     <string name = "window_size_title_after">How long after the input start time could you otherwise start this task?</string>
+
+    <string name = "timeMidnight" >00:00</string>
+    <string name = "time1am" >01:00</string>
+    <string name = "time2am" >02:00</string>
+    <string name = "time3am" >03:00</string>
+    <string name = "time4am" >04:00</string>
+    <string name = "time5am" >05:00</string>
+    <string name = "time6am" >06:00</string>
+    <string name = "time7am" >07:00</string>
+    <string name = "time8am" >08:00</string>
+    <string name = "time9am" >09:00</string>
+    <string name = "time10am" >10:00</string>
+    <string name = "time11am" >11:00</string>
+    <string name = "time12pm" >12:00</string>
+    <string name = "time1pm" >13:00</string>
+    <string name = "time2pm" >14:00</string>
+    <string name = "time3pm" >15:00</string>
+    <string name = "time4pm" >16:00</string>
+    <string name = "time5pm" >17:00</string>
+    <string name = "time6pm" >18:00</string>
+    <string name = "time7pm" >19:00</string>
+    <string name = "time8pm" >20:00</string>
+    <string name = "time9pm" >21:00</string>
+    <string name = "time10pm" >22:00</string>
+    <string name = "time11pm" >23:00</string>
+
 </resources>

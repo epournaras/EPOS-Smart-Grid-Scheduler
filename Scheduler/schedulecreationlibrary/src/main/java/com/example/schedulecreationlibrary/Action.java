@@ -61,7 +61,7 @@ public class Action {
         }
     }
 
-    public String getTimeString(int a){
+    public static String getTimeString(int a){
         int hour = a/60;
         int minute = a%60;
         String result;
@@ -99,7 +99,7 @@ public class Action {
         String[] times = {getTimeString(this.windowStart), getTimeString(this.windowEnd), getTimeString(this.duration)};
         return times;
     }
-
+    //Create a list of all possible versions of this task, with their start times at different valid points in the given window.
     private void createVersions(){
         int windowSpace = (this.windowEnd-this.duration)-this.windowStart;
 

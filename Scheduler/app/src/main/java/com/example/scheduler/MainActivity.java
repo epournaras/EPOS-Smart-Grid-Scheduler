@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Build;
@@ -18,6 +19,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.support.constraint.ConstraintSet;
 import android.support.design.widget.FloatingActionButton;
 
 import android.app.Fragment;
@@ -47,6 +49,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Random;
+
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 
 import com.example.schedulecreationlibrary.Action;
 import com.example.schedulecreationlibrary.Schedule;
@@ -81,6 +94,11 @@ public class MainActivity extends AppCompatActivity
     public FloatingActionButton fabRevealFabs;
     public final String PREFS_NAME = "MyPrefsFile";
     public SharedPreferences settings;
+
+    public ArrayList<TextView> eventsAdded = new ArrayList<>();
+    public TextView eventOne, eventTwo;
+    public int index = 0;
+
     private String[] applianceNames = {
             "Hob",
             "Oven",
@@ -1174,9 +1192,33 @@ public class MainActivity extends AppCompatActivity
                     }catch(Exception e){
                         e.printStackTrace();
                     }
-
-                    TextView textView = (TextView)layoutView.findViewById(R.id.text);
-                    textView.setText(todayDisplay);
+                    ConstraintLayout constraintLayout = (ConstraintLayout) findViewById(R.id.table);
+                    String[] parts = todayDisplay.split("\n");
+                    String[][] nameStartDuration = new String[parts.length][];
+                    if(index>0){
+                        for(int i = 0;i<index;i++){
+                            constraintLayout.removeView(eventsAdded.get(i));
+                        }
+                        eventsAdded.clear();
+                        index = 0;
+                    }
+                    for(int i =0;i<parts.length;i++){
+                        String[] temp = parts[i].split("\t");
+                        String[] timesTemp = temp[1].split("-");
+                        int timeOne = getIntTime(timesTemp[0]);
+                        int timeTwo = getIntTime(timesTemp[1]);
+                        int duration = timeTwo - timeOne;
+                        String durString = getTimeString(duration);
+                        temp[1] = timesTemp[0]+","+durString;
+                        String partsTogether = temp[0]+","+temp[1];
+                        parts[i] = partsTogether;
+                        nameStartDuration[i] = parts[i].split(",");
+                        System.out.print(i+": "+parts[i]+"\n");
+                        addEvent(nameStartDuration[i][0],nameStartDuration[i][1],nameStartDuration[i][2],constraintLayout);
+                    }
+//                    TextView textView = (TextView)layoutView.findViewById(R.id.text);
+//                    textView.setText(todayDisplay);
+                    //addEvent(String eventName, String startTimeString, String durationString, ConstraintLayout constraintLayout)
                 }
             },100);
     }
@@ -1281,5 +1323,278 @@ public class MainActivity extends AppCompatActivity
     public boolean firstTimeStart(){
         return settings.getBoolean("my_first_time", true);
     }
+    public double getBias(double minutesAfterStartingHour, double fullTimeFrame, double duration){
+        double bias = (minutesAfterStartingHour/(fullTimeFrame-duration));
+        if(minutesAfterStartingHour!=0){
+            System.out.print(minutesAfterStartingHour+" "+fullTimeFrame+" "+duration+"\n");
+            return bias;
+        }else{
+            return 0;
+        }
+
+    }
+
+    public static int getIntTime(String a){
+        int time;
+        char[] timeCharArray = a.toCharArray();
+        int hour = (Character.getNumericValue(timeCharArray[0])*10)+Character.getNumericValue(timeCharArray[1]);
+        int minute = (Character.getNumericValue(timeCharArray[3])*10)+Character.getNumericValue(timeCharArray[4]);
+        time=hour*60+minute;
+        return time;
+    }
+    public static String getTimeString(int a){
+        int hour = a/60;
+        int minute = a%60;
+        String result;
+        if(hour<10){
+            result = "0"+hour+":";
+        }else{
+            result = hour+":";
+        }
+        if(minute<10){
+            result+="0"+minute;
+        }else{
+            result+=minute;
+        }
+        return result;
+    }
+
+    public int getHour(int time){
+        return time/60;
+    }
+    public int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+    }
+
+    public void addEvent(String name, String startTimeString, String durationString, ConstraintLayout constraintLayout){
+        String eventName = name;
+        switch(name){
+            case"Hob":
+                eventName = "Hob";
+                break;
+            case "Oven":
+                eventName = "Oven";
+                break;
+            case "TumbleDryer":
+                eventName = "Tumble Dryer";
+                break;
+            case "WashingMachine":
+                eventName = "Washing Machine";
+                break;
+            case "Computer":
+                eventName = "Computer";
+                break;
+            case "Kettle":
+                eventName = "Kettle";
+                break;
+            case "DishWasher":
+                eventName = "Dish Washer";
+                break;
+            case "Shower":
+                eventName = "Shower";
+                break;
+            default:
+                eventName = name;
+                break;
+        }
+        int startTime = getIntTime(startTimeString);
+        int startingLine = getHour(startTime);
+        int duration = getIntTime(durationString);
+        int endTime = startTime+duration;
+        int endLine = getHour(endTime);
+        int frame = ((endLine+1)-startingLine)*60;
+        double bias = getBias(startTime%60,frame,duration);
+        View topOf;
+        View bottomOf;
+        switch (startingLine){
+            case 0:
+                topOf = (View) findViewById(R.id.topBar);
+                break;
+            case 1:
+                topOf = (View) findViewById(R.id.bar1am);
+                break;
+            case 2:
+                topOf = (View) findViewById(R.id.bar2am);
+                break;
+            case 3:
+                topOf = (View) findViewById(R.id.bar3am);
+                break;
+            case 4:
+                topOf = (View) findViewById(R.id.bar4am);
+                break;
+            case 5:
+                topOf = (View) findViewById(R.id.bar5am);
+                break;
+            case 6:
+                topOf = (View) findViewById(R.id.bar6am);
+                break;
+            case 7:
+                topOf = (View) findViewById(R.id.bar7am);
+                break;
+            case 8:
+                topOf = (View) findViewById(R.id.bar8am);
+                break;
+            case 9:
+                topOf = (View) findViewById(R.id.bar9am);
+                break;
+            case 10:
+                topOf = (View) findViewById(R.id.bar10am);
+                break;
+            case 11:
+                topOf = (View) findViewById(R.id.bar11am);
+                break;
+            case 12:
+                topOf = (View) findViewById(R.id.bar12pm);
+                break;
+            case 13:
+                topOf = (View) findViewById(R.id.bar1pm);
+                break;
+            case 14:
+                topOf = (View) findViewById(R.id.bar2pm);
+                break;
+            case 15:
+                topOf = (View) findViewById(R.id.bar3pm);
+                break;
+            case 16:
+                topOf = (View) findViewById(R.id.bar4pm);
+                break;
+            case 17:
+                topOf = (View) findViewById(R.id.bar5pm);
+                break;
+            case 18:
+                topOf = (View) findViewById(R.id.bar6pm);
+                break;
+            case 19:
+                topOf = (View) findViewById(R.id.bar7pm);
+                break;
+            case 20:
+                topOf = (View) findViewById(R.id.bar8pm);
+                break;
+            case 21:
+                topOf = (View) findViewById(R.id.bar9pm);
+                break;
+            case 22:
+                topOf = (View) findViewById(R.id.bar10pm);
+                break;
+            default:
+                topOf = (View) findViewById(R.id.bar11pm);
+                break;
+        }
+        switch (endLine+1){
+            case 0:
+                bottomOf = (View) findViewById(R.id.topBar);
+                break;
+            case 1:
+                bottomOf = (View) findViewById(R.id.bar1am);
+                break;
+            case 2:
+                bottomOf = (View) findViewById(R.id.bar2am);
+                break;
+            case 3:
+                bottomOf = (View) findViewById(R.id.bar3am);
+                break;
+            case 4:
+                bottomOf = (View) findViewById(R.id.bar4am);
+                break;
+            case 5:
+                bottomOf = (View) findViewById(R.id.bar5am);
+                break;
+            case 6:
+                bottomOf = (View) findViewById(R.id.bar6am);
+                break;
+            case 7:
+                bottomOf = (View) findViewById(R.id.bar7am);
+                break;
+            case 8:
+                bottomOf = (View) findViewById(R.id.bar8am);
+                break;
+            case 9:
+                bottomOf = (View) findViewById(R.id.bar9am);
+                break;
+            case 10:
+                bottomOf = (View) findViewById(R.id.bar10am);
+                break;
+            case 11:
+                bottomOf = (View) findViewById(R.id.bar11am);
+                break;
+            case 12:
+                bottomOf = (View) findViewById(R.id.bar12pm);
+                break;
+            case 13:
+                bottomOf = (View) findViewById(R.id.bar1pm);
+                break;
+            case 14:
+                bottomOf = (View) findViewById(R.id.bar2pm);
+                break;
+            case 15:
+                bottomOf = (View) findViewById(R.id.bar3pm);
+                break;
+            case 16:
+                bottomOf = (View) findViewById(R.id.bar4pm);
+                break;
+            case 17:
+                bottomOf = (View) findViewById(R.id.bar5pm);
+                break;
+            case 18:
+                bottomOf = (View) findViewById(R.id.bar6pm);
+                break;
+            case 19:
+                bottomOf = (View) findViewById(R.id.bar7pm);
+                break;
+            case 20:
+                bottomOf = (View) findViewById(R.id.bar8pm);
+                break;
+            case 21:
+                bottomOf = (View) findViewById(R.id.bar9pm);
+                break;
+            case 22:
+                bottomOf = (View) findViewById(R.id.bar10pm);
+                break;
+            case 23:
+                bottomOf = (View) findViewById(R.id.bar11pm);
+                break;
+            default:
+                bottomOf = (View) findViewById(R.id.bottomBar);
+                break;
+        }
+        View separatorBar = (View) findViewById(R.id.timeSeparator);
+        TextView tx = new TextView(this);
+        tx.setText(eventName);
+        tx.setTextSize(10);
+        tx.setId(View.generateViewId());
+        eventsAdded.add(tx);
+
+        int[] androidColors = getResources().getIntArray(R.array.androidcolors);
+        int colour = index%10;
+        int randomAndroidColor = androidColors[colour];
+        tx.setBackgroundColor(randomAndroidColor);
+        tx.setTextColor(getResources().getColor(R.color.white));
+        tx.setShadowLayer(1,1,1,getResources().getColor(R.color.black));
+        tx.setPadding(0,0,0,0);
+
+        constraintLayout.addView(tx);
+
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.connect(tx.getId(),ConstraintSet.TOP,topOf.getId(),ConstraintSet.BOTTOM);
+        constraintSet.connect(tx.getId(),ConstraintSet.BOTTOM,bottomOf.getId(),ConstraintSet.TOP);
+        if (index == 0) {
+            constraintSet.connect(tx.getId(),ConstraintSet.START,separatorBar.getId(),ConstraintSet.END);
+        }else{
+            constraintSet.connect(tx.getId(),ConstraintSet.START,eventsAdded.get(index-1).getId(),ConstraintSet.END);
+        }
+        constraintSet.connect(tx.getId(),ConstraintSet.RIGHT,ConstraintSet.PARENT_ID, ConstraintSet.RIGHT);
+        if(bias!=0){
+            constraintSet.setVerticalBias(tx.getId(),(float)bias);
+        }else{
+            constraintSet.setVerticalBias(tx.getId(),0);
+        }
+        constraintSet.constrainHeight(tx.getId(),dpToPx(duration));
+        constraintSet.constrainWidth(tx.getId(),dpToPx(60));
+        constraintSet.setHorizontalBias(tx.getId(),(float)0);
+        constraintSet.applyTo(constraintLayout);
+        index++;
+    }
+
 
 }

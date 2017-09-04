@@ -117,7 +117,7 @@ public class addRemoveAppliance extends Fragment {
             llp.setMargins(50,15,0,50 );
 
             LinearLayout.LayoutParams relParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT);
-            relParams.setMargins(15,0,15,5);
+            relParams.setMargins(15,5,15,50);
 
             temp.setLayoutParams(llp);
             try{
