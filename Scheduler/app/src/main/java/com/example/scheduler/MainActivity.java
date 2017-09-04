@@ -120,6 +120,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
         final View layoutView = (View) findViewById(android.R.id.content);
         final Context context = this;
         fabRevealFabs= (FloatingActionButton) findViewById(R.id.fabRevealFabs);
@@ -1202,19 +1204,24 @@ public class MainActivity extends AppCompatActivity
                         eventsAdded.clear();
                         index = 0;
                     }
-                    for(int i =0;i<parts.length;i++){
-                        String[] temp = parts[i].split("\t");
-                        String[] timesTemp = temp[1].split("-");
-                        int timeOne = getIntTime(timesTemp[0]);
-                        int timeTwo = getIntTime(timesTemp[1]);
-                        int duration = timeTwo - timeOne;
-                        String durString = getTimeString(duration);
-                        temp[1] = timesTemp[0]+","+durString;
-                        String partsTogether = temp[0]+","+temp[1];
-                        parts[i] = partsTogether;
-                        nameStartDuration[i] = parts[i].split(",");
-                        System.out.print(i+": "+parts[i]+"\n");
-                        addEvent(nameStartDuration[i][0],nameStartDuration[i][1],nameStartDuration[i][2],constraintLayout);
+                    if(parts.length>0)
+                    {
+                        if(!parts[0].equals(" ")){
+                            for(int i =0;i<parts.length;i++){
+                                String[] temp = parts[i].split("\t");
+                                String[] timesTemp = temp[1].split("-");
+                                int timeOne = getIntTime(timesTemp[0]);
+                                int timeTwo = getIntTime(timesTemp[1]);
+                                int duration = timeTwo - timeOne;
+                                String durString = getTimeString(duration);
+                                temp[1] = timesTemp[0]+","+durString;
+                                String partsTogether = temp[0]+","+temp[1];
+                                parts[i] = partsTogether;
+                                nameStartDuration[i] = parts[i].split(",");
+                                System.out.print(i+": "+parts[i]+"\n");
+                                addEvent(nameStartDuration[i][0],nameStartDuration[i][1],nameStartDuration[i][2],constraintLayout);
+                            }
+                        }
                     }
 //                    TextView textView = (TextView)layoutView.findViewById(R.id.text);
 //                    textView.setText(todayDisplay);
