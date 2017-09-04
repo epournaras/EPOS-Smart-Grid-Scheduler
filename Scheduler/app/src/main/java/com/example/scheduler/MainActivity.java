@@ -382,61 +382,61 @@ public class MainActivity extends AppCompatActivity
             }catch(Exception e){
                 e.printStackTrace();
             }
-            surveyFragment newFragment = new surveyFragment();
-            FragmentManager fragManager = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
-            fragmentTransaction.add(R.id.fragment_container, newFragment);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
-            MyDialogCloseListener closeListener = new MyDialogCloseListener() {
-                @Override
-                public void handleDialogClose(DialogInterface dialog) {
-                    String progress = "0";
-                    try{
-                        FileInputStream fis = me.openFileInput("surveyProgress.txt");
-                        StringBuilder builder = new StringBuilder();
-                        int ch;
-                        while((ch = fis.read()) != -1){
-                            builder.append((char)ch);
-                        }
-                        progress = builder.toString();
-                        fis.close();
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                    int nextScreen = Integer.parseInt(progress);
-                    if(nextScreen!=0){
-                        me.callSurvey();
-                    }else{
-                        try{
-                            FileOutputStream fos = me.openFileOutput("surveyComplete.txt",Context.MODE_PRIVATE);
-                            fos.write("true".getBytes());
-                            fos.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            };
-            newFragment.DismissListner(closeListener);
+//            surveyFragment newFragment = new surveyFragment();
+//            FragmentManager fragManager = getFragmentManager();
+//            FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+//            fragmentTransaction.add(R.id.fragment_container, newFragment);
+//            fragmentTransaction.addToBackStack(null);
+//            fragmentTransaction.commit();
+//            MyDialogCloseListener closeListener = new MyDialogCloseListener() {
+//                @Override
+//                public void handleDialogClose(DialogInterface dialog) {
+//                    String progress = "0";
+//                    try{
+//                        FileInputStream fis = me.openFileInput("surveyProgress.txt");
+//                        StringBuilder builder = new StringBuilder();
+//                        int ch;
+//                        while((ch = fis.read()) != -1){
+//                            builder.append((char)ch);
+//                        }
+//                        progress = builder.toString();
+//                        fis.close();
+//                    }catch(Exception e){
+//                        e.printStackTrace();
+//                    }
+//                    int nextScreen = Integer.parseInt(progress);
+//                    if(nextScreen!=0){
+//                        me.callSurvey();
+//                    }else{
+//                        try{
+//                            FileOutputStream fos = me.openFileOutput("surveyComplete.txt",Context.MODE_PRIVATE);
+//                            fos.write("true".getBytes());
+//                            fos.close();
+//                        }catch(Exception e){
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//            };
+//            newFragment.DismissListner(closeListener);
             // record the fact that the app has been started at least once
             settings.edit().putBoolean("my_first_time", false).commit();
         }else{
-            String surveyShow = "";
-            try{
-                FileInputStream fis = openFileInput("surveyComplete.txt");
-                int chr;
-                StringBuilder builder = new StringBuilder();
-                while ((chr = fis.read()) != -1) {
-                    builder.append((char) chr);
-                }
-                surveyShow = builder.toString();
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-            if(surveyShow.equals("false")){
-                callSurvey();
-            }
+//            String surveyShow = "";
+//            try{
+//                FileInputStream fis = openFileInput("surveyComplete.txt");
+//                int chr;
+//                StringBuilder builder = new StringBuilder();
+//                while ((chr = fis.read()) != -1) {
+//                    builder.append((char) chr);
+//                }
+//                surveyShow = builder.toString();
+//            }catch(Exception e){
+//                e.printStackTrace();
+//            }
+//            if(surveyShow.equals("false")){
+//                callSurvey();
+//            }
         }
         final FloatingActionButton fabAddRemoveAppliances= (FloatingActionButton) findViewById(R.id.fabAddRemoveAppliances);
         final FloatingActionButton fabCreateTomorrowsPlan= (FloatingActionButton) findViewById(R.id.fabCreateTomorrowsPlan);

@@ -95,12 +95,12 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="644">
-              <caret line="1224" column="21" selection-start-line="1224" selection-start-column="21" selection-end-line="1224" selection-end-column="21" />
+            <state relative-caret-position="105">
+              <caret line="415" column="50" selection-start-line="415" selection-start-column="50" selection-end-line="415" selection-end-column="50" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#57037#57038#0" expanded="true" />
-                <element signature="e#57067#57068#0" expanded="true" />
+                <element signature="e#57141#57142#0" expanded="true" />
+                <element signature="e#57171#57172#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -4018,12 +4018,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="644">
-          <caret line="1224" column="21" selection-start-line="1224" selection-start-column="21" selection-end-line="1224" selection-end-column="21" />
+        <state relative-caret-position="105">
+          <caret line="415" column="50" selection-start-line="415" selection-start-column="50" selection-end-line="415" selection-end-column="50" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#57037#57038#0" expanded="true" />
-            <element signature="e#57067#57068#0" expanded="true" />
+            <element signature="e#57141#57142#0" expanded="true" />
+            <element signature="e#57171#57172#0" expanded="true" />
           </folding>
         </state>
       </provider>
