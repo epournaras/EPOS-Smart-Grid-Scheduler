@@ -38,6 +38,7 @@ public class addRemoveAppliance extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final Context context = getActivity();
+        ((MainActivity)getActivity()).setMainLayoutViewInvisible(true);
 
         View v = inflater.inflate(R.layout.fragment_add_remove_appliance, container, false);
 
@@ -149,6 +150,7 @@ public class addRemoveAppliance extends Fragment {
                 FloatingActionButton b =((MainActivity)getActivity()).getFabRevealFabs();
                 b.setClickable(true);
                 b.setVisibility(View.VISIBLE);
+                ((MainActivity)getActivity()).setMainLayoutViewInvisible(false);
                 getActivity().getFragmentManager().beginTransaction().remove(thisFrag).commit();
             }
         });
@@ -183,6 +185,7 @@ public class addRemoveAppliance extends Fragment {
                 FloatingActionButton b =((MainActivity)getActivity()).getFabRevealFabs();
                 b.setClickable(true);
                 b.setVisibility(View.VISIBLE);
+                ((MainActivity)getActivity()).setMainLayoutViewInvisible(false);
                 getActivity().getFragmentManager().beginTransaction().remove(thisFrag).commit();
             }
         });

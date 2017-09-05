@@ -19,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import com.example.scheduler.Interface.MyDialogCloseListener;
+import com.example.scheduler.MainActivity;
 import com.example.scheduler.ObjectGroup.ToggleButtonsGroup;
 import com.example.scheduler.R;
 import java.io.File;
@@ -40,6 +41,7 @@ public class surveyFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ((MainActivity)getActivity()).setMainLayoutViewInvisible(true);
         View v;
         final Fragment thisFrag = this;
         Context context = getActivity();
@@ -1197,6 +1199,7 @@ public class surveyFragment extends Fragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
+                        ((MainActivity)getActivity()).setMainLayoutViewInvisible(false);
                         getActivity().getFragmentManager().beginTransaction().remove(thisFrag).commit();
                     }
                 });

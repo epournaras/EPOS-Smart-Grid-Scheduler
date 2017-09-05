@@ -38,6 +38,7 @@ import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.DialogFragment;
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity
     public ArrayList<TextView> eventsAdded = new ArrayList<>();
     public TextView eventOne, eventTwo;
     public int index = 0;
+    public View mainLayoutView;
 
     private String[] applianceNames = {
             "Hob",
@@ -120,9 +122,10 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-        final View layoutView = (View) findViewById(android.R.id.content);
+        ScrollView scroll = (ScrollView) findViewById(R.id.scrollTable);
+        focusOnView(scroll);
+        mainLayoutView = (View) findViewById(R.id.table);
+        final View layoutView = (View) findViewById(android.R.id.content);;
         final Context context = this;
         fabRevealFabs= (FloatingActionButton) findViewById(R.id.fabRevealFabs);
         fullTime = " ";
@@ -141,7 +144,7 @@ public class MainActivity extends AppCompatActivity
         int MY_PERMISSIONS_REQUEST_STORAGE = 200;
         settings.edit().putBoolean("putMin", false).commit();
         settings.edit().putBoolean("putMax", false).commit();
-
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
         if(firstTimeStart()){
             System.out.print("First Time Launch\n");
@@ -175,7 +178,6 @@ public class MainActivity extends AppCompatActivity
                     "20,2,1965-1974,39,Detached,3 bed,1960 - 1969\n" +
                     "21,4,1981-1990,23,Detached,3 bed,1980 - 1989";
             //the app is being launched for first time, do something
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String lastSendPressDayDateFile = "lastSendPressDayDate.txt";
             display = null;
             fullTime= simpleDateFormat.format(new Date());
@@ -382,61 +384,61 @@ public class MainActivity extends AppCompatActivity
             }catch(Exception e){
                 e.printStackTrace();
             }
-//            surveyFragment newFragment = new surveyFragment();
-//            FragmentManager fragManager = getFragmentManager();
-//            FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
-//            fragmentTransaction.add(R.id.fragment_container, newFragment);
-//            fragmentTransaction.addToBackStack(null);
-//            fragmentTransaction.commit();
-//            MyDialogCloseListener closeListener = new MyDialogCloseListener() {
-//                @Override
-//                public void handleDialogClose(DialogInterface dialog) {
-//                    String progress = "0";
-//                    try{
-//                        FileInputStream fis = me.openFileInput("surveyProgress.txt");
-//                        StringBuilder builder = new StringBuilder();
-//                        int ch;
-//                        while((ch = fis.read()) != -1){
-//                            builder.append((char)ch);
-//                        }
-//                        progress = builder.toString();
-//                        fis.close();
-//                    }catch(Exception e){
-//                        e.printStackTrace();
-//                    }
-//                    int nextScreen = Integer.parseInt(progress);
-//                    if(nextScreen!=0){
-//                        me.callSurvey();
-//                    }else{
-//                        try{
-//                            FileOutputStream fos = me.openFileOutput("surveyComplete.txt",Context.MODE_PRIVATE);
-//                            fos.write("true".getBytes());
-//                            fos.close();
-//                        }catch(Exception e){
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//            };
-//            newFragment.DismissListner(closeListener);
+            surveyFragment newFragment = new surveyFragment();
+            FragmentManager fragManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, newFragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+            MyDialogCloseListener closeListener = new MyDialogCloseListener() {
+                @Override
+                public void handleDialogClose(DialogInterface dialog) {
+                    String progress = "0";
+                    try{
+                        FileInputStream fis = me.openFileInput("surveyProgress.txt");
+                        StringBuilder builder = new StringBuilder();
+                        int ch;
+                        while((ch = fis.read()) != -1){
+                            builder.append((char)ch);
+                        }
+                        progress = builder.toString();
+                        fis.close();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                    int nextScreen = Integer.parseInt(progress);
+                    if(nextScreen!=0){
+                        me.callSurvey();
+                    }else{
+                        try{
+                            FileOutputStream fos = me.openFileOutput("surveyComplete.txt",Context.MODE_PRIVATE);
+                            fos.write("true".getBytes());
+                            fos.close();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            };
+            newFragment.DismissListner(closeListener);
             // record the fact that the app has been started at least once
             settings.edit().putBoolean("my_first_time", false).commit();
         }else{
-//            String surveyShow = "";
-//            try{
-//                FileInputStream fis = openFileInput("surveyComplete.txt");
-//                int chr;
-//                StringBuilder builder = new StringBuilder();
-//                while ((chr = fis.read()) != -1) {
-//                    builder.append((char) chr);
-//                }
-//                surveyShow = builder.toString();
-//            }catch(Exception e){
-//                e.printStackTrace();
-//            }
-//            if(surveyShow.equals("false")){
-//                callSurvey();
-//            }
+            String surveyShow = "";
+            try{
+                FileInputStream fis = openFileInput("surveyComplete.txt");
+                int chr;
+                StringBuilder builder = new StringBuilder();
+                while ((chr = fis.read()) != -1) {
+                    builder.append((char) chr);
+                }
+                surveyShow = builder.toString();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            if(surveyShow.equals("false")){
+                callSurvey();
+            }
         }
         final FloatingActionButton fabAddRemoveAppliances= (FloatingActionButton) findViewById(R.id.fabAddRemoveAppliances);
         final FloatingActionButton fabCreateTomorrowsPlan= (FloatingActionButton) findViewById(R.id.fabCreateTomorrowsPlan);
@@ -451,7 +453,7 @@ public class MainActivity extends AppCompatActivity
                 Fragment newFragment = new editApplianceSettings();
                 FragmentManager fragManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
-                fragmentTransaction.add(R.id.fragment_container, newFragment);
+                fragmentTransaction.replace(R.id.fragment_container, newFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 fabCreateTomorrowsPlan.startAnimation(FabClose);
@@ -478,7 +480,7 @@ public class MainActivity extends AppCompatActivity
                 Fragment newFragment = new addRemoveAppliance();
                 FragmentManager fragManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
-                fragmentTransaction.add(R.id.fragment_container, newFragment);
+                fragmentTransaction.replace(R.id.fragment_container, newFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 fabCreateTomorrowsPlan.startAnimation(FabClose);
@@ -569,7 +571,8 @@ public class MainActivity extends AppCompatActivity
     }
     public void onResume() {
         super.onResume();
-
+        ScrollView scroll = (ScrollView) findViewById(R.id.scrollTable);
+        focusOnView(scroll);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         int minutes = prefs.getInt("interval",1); //user defined how often they want to be notified.
@@ -1234,7 +1237,7 @@ public class MainActivity extends AppCompatActivity
         surveyFragment newFragment = new surveyFragment();
         FragmentManager fragManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragment_container, newFragment);
+        fragmentTransaction.replace(R.id.fragment_container, newFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
         MyDialogCloseListener closeListener = new MyDialogCloseListener() {
@@ -1603,5 +1606,107 @@ public class MainActivity extends AppCompatActivity
         index++;
     }
 
+    public void setMainLayoutViewInvisible(boolean check){
+        if(check){
+            mainLayoutView.setVisibility(View.GONE);
+        }else{
+            mainLayoutView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private final void focusOnView(final ScrollView scroll) {
+        final View view = getHour();
+        scroll.post(new Runnable() {
+            @Override
+            public void run() {
+                scroll.smoothScrollTo(0,view.getTop());
+            }
+        });
+    }
+
+    private View getHour(){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String currentTimeHour = simpleDateFormat.format(new Date()).substring(11,13);
+        View barToScrollTo;
+        System.out.print("Hour:"+currentTimeHour+"\n");
+        switch(currentTimeHour){
+            case "00":
+                barToScrollTo= (View) findViewById(R.id.topBar);
+                break;
+            case "01":
+                barToScrollTo= (View) findViewById(R.id.bar1am);
+                break;
+            case "02":
+                barToScrollTo= (View) findViewById(R.id.bar2am);
+                break;
+            case "03":
+                barToScrollTo= (View) findViewById(R.id.bar3am);
+                break;
+            case "04":
+                barToScrollTo= (View) findViewById(R.id.bar4am);
+                break;
+            case "05":
+                barToScrollTo= (View) findViewById(R.id.bar5am);
+                break;
+            case "06":
+                barToScrollTo= (View) findViewById(R.id.bar6am);
+                break;
+            case "07":
+                barToScrollTo= (View) findViewById(R.id.bar7am);
+                break;
+            case "08":
+                barToScrollTo= (View) findViewById(R.id.bar8am);
+                break;
+            case "09":
+                barToScrollTo= (View) findViewById(R.id.bar9am);
+                break;
+            case "10":
+                barToScrollTo= (View) findViewById(R.id.bar10am);
+                break;
+            case "11":
+                barToScrollTo= (View) findViewById(R.id.bar11am);
+                break;
+            case "12":
+                barToScrollTo= (View) findViewById(R.id.bar12pm);
+                break;
+            case "13":
+                barToScrollTo= (View) findViewById(R.id.bar1pm);
+                break;
+            case "14":
+                barToScrollTo= (View) findViewById(R.id.bar2pm);
+                break;
+            case "15":
+                barToScrollTo= (View) findViewById(R.id.bar3pm);
+                break;
+            case "16":
+                barToScrollTo= (View) findViewById(R.id.bar4pm);
+                break;
+            case "17":
+                barToScrollTo= (View) findViewById(R.id.bar5pm);
+                break;
+            case "18":
+                barToScrollTo= (View) findViewById(R.id.bar6pm);
+                break;
+            case "19":
+                barToScrollTo= (View) findViewById(R.id.bar7pm);
+                break;
+            case "20":
+                barToScrollTo= (View) findViewById(R.id.bar8pm);
+                break;
+            case "21":
+                barToScrollTo= (View) findViewById(R.id.bar9pm);
+                break;
+            case "22":
+                barToScrollTo= (View) findViewById(R.id.bar10pm);
+                break;
+            case "23":
+                barToScrollTo= (View) findViewById(R.id.bar11pm);
+                break;
+            default:
+                barToScrollTo= (View) findViewById(R.id.bar12pm);
+                break;
+        }
+        return barToScrollTo;
+    }
 
 }

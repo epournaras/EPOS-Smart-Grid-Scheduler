@@ -35,6 +35,7 @@ public class editApplianceSettings extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ((MainActivity)getActivity()).setMainLayoutViewInvisible(true);
         final Context context = getActivity();
         final View v = inflater.inflate(R.layout.fragment_edit_appliance_settings, container, false);
         String appliancesEnabledDataFile = "appliancesEnabledDataFile.txt";
@@ -171,6 +172,7 @@ public class editApplianceSettings extends Fragment {
                 FloatingActionButton b =((MainActivity)getActivity()).getFabRevealFabs();
                 b.setClickable(true);
                 b.setVisibility(View.VISIBLE);
+                ((MainActivity)getActivity()).setMainLayoutViewInvisible(false);
                 getActivity().getFragmentManager().beginTransaction().remove(thisFrag).commit();
             }
         });
@@ -181,6 +183,7 @@ public class editApplianceSettings extends Fragment {
                 FloatingActionButton b =((MainActivity)getActivity()).getFabRevealFabs();
                 b.setClickable(true);
                 b.setVisibility(View.VISIBLE);
+                ((MainActivity)getActivity()).setMainLayoutViewInvisible(false);
                 getActivity().getFragmentManager().beginTransaction().remove(thisFrag).commit();
             }
         });
