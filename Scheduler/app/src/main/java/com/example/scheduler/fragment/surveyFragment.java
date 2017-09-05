@@ -5,9 +5,11 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 import com.example.scheduler.Interface.MyDialogCloseListener;
 import com.example.scheduler.MainActivity;
@@ -35,6 +38,8 @@ import java.util.Date;
 
 public class surveyFragment extends Fragment {
     public MyDialogCloseListener closeListener;
+    public final String PREFS_NAME = "MyPrefsFile";
+    public SharedPreferences settings;
     public void onCreate(Bundle savedInstaceState) {
         super.onCreate(savedInstaceState);
     }
@@ -43,6 +48,10 @@ public class surveyFragment extends Fragment {
                              Bundle savedInstanceState) {
         ((MainActivity)getActivity()).setMainLayoutViewInvisible(true);
         View v;
+        settings = getActivity().getSharedPreferences(PREFS_NAME, getActivity().MODE_PRIVATE);
+        FloatingActionButton fab = ((MainActivity)getActivity()).getFabRevealFabs();
+        fab.setVisibility(View.INVISIBLE);
+        fab.setClickable(false);
         final Fragment thisFrag = this;
         Context context = getActivity();
         int nextScreen;
@@ -181,40 +190,48 @@ public class surveyFragment extends Fragment {
                                 break;
                             }
                         }
-                        String submitAnswers = QID[0]+","+selectedEducationLevel+"\n"+
-                                                QID[1]+","+selectedEmploymentStatus+"\n"+
-                                                QID[2]+","+selectedHouseType+"\n"+
-                                                QID[3]+","+selectedHouseSize+"\n";
+                        if(selectedEducationLevel.equals("-")||selectedEmploymentStatus.equals("-")||selectedHouseType.equals("-")||selectedHouseSize.equals("-")){
+                            String toastString = "Please answer all questions.";
+                            int durationOfToast = Toast.LENGTH_SHORT;
+                            Context context = getActivity();
+                            Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                            toast.show();
+                        }else{
+                            String submitAnswers = QID[0]+","+selectedEducationLevel+"\n"+
+                                    QID[1]+","+selectedEmploymentStatus+"\n"+
+                                    QID[2]+","+selectedHouseType+"\n"+
+                                    QID[3]+","+selectedHouseSize+"\n";
 
-                        String answersForHouseMatching = selectedHouseType+","+selectedHouseSize;
-                        try{
-                            FileOutputStream fos = getActivity().openFileOutput("answersForHouseMatching.txt",Context.MODE_PRIVATE);
-                            fos.write(answersForHouseMatching.getBytes());
-                            fos.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
+                            String answersForHouseMatching = selectedHouseType+","+selectedHouseSize;
+                            try{
+                                FileOutputStream fos = getActivity().openFileOutput("answersForHouseMatching.txt",Context.MODE_PRIVATE);
+                                fos.write(answersForHouseMatching.getBytes());
+                                fos.close();
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
+                            try{
+                                FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
+                                String nextScreen = 3+"";
+                                fos.write(nextScreen.getBytes());
+                                fos.close();
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
+                            try{
+                                FileOutputStream fos = getActivity().openFileOutput("surveyResults.txt",Context.MODE_APPEND);
+                                fos.write(submitAnswers.getBytes());
+                                fos.close();
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
+                            Fragment stageTwo = new surveyFragment();
+                            FragmentManager fragManager = getActivity().getFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                            fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
+                            fragmentTransaction.addToBackStack(null);
+                            fragmentTransaction.commit();
                         }
-                        try{
-                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
-                            String nextScreen = 3+"";
-                            fos.write(nextScreen.getBytes());
-                            fos.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-                        try{
-                            FileOutputStream fos = getActivity().openFileOutput("surveyResults.txt",Context.MODE_APPEND);
-                            fos.write(submitAnswers.getBytes());
-                            fos.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-                        Fragment stageTwo = new surveyFragment();
-                        FragmentManager fragManager = getActivity().getFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
-                        fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
-                        fragmentTransaction.addToBackStack(null);
-                        fragmentTransaction.commit();
                     }
                 });
                 break;
@@ -274,170 +291,178 @@ public class surveyFragment extends Fragment {
                     public void onClick(View v) {
                         String selectedHouseAge = spHouseAgeA.getSelectedItem().toString();
                         String selectedOccupantNumber = spHouseOccupantNumberA.getSelectedItem().toString();
-                        String results = "";
-                        try{
-                            FileInputStream fis = getActivity().openFileInput("answersForHouseMatching.txt");
-                            int chr;
-                            StringBuilder builder = new StringBuilder();
-                            while ((chr = fis.read()) != -1) {
-                                builder.append((char) chr);
+                        if(selectedHouseAge.equals("-")||selectedOccupantNumber.equals("-")){
+                            String toastString = "Please answer all questions.";
+                            int durationOfToast = Toast.LENGTH_SHORT;
+                            Context context = getActivity();
+                            Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                            toast.show();
+                        }else{
+                            String results = "";
+                            try{
+                                FileInputStream fis = getActivity().openFileInput("answersForHouseMatching.txt");
+                                int chr;
+                                StringBuilder builder = new StringBuilder();
+                                while ((chr = fis.read()) != -1) {
+                                    builder.append((char) chr);
+                                }
+                                results = builder.toString();
+                            }catch(Exception e){
+                                e.printStackTrace();
                             }
-                            results = builder.toString();
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-                        String[] temp = results.split(",");
-                        String[] matchingFactors = new String[4];
-                        matchingFactors[0] = temp[0];//Type
-                        matchingFactors[1] = temp[1];//Size
-                        matchingFactors[2] = selectedHouseAge;//Age
-                        matchingFactors[3] = selectedOccupantNumber;//Occupancy
+                            String[] temp = results.split(",");
+                            String[] matchingFactors = new String[4];
+                            matchingFactors[0] = temp[0];//Type
+                            matchingFactors[1] = temp[1];//Size
+                            matchingFactors[2] = selectedHouseAge;//Age
+                            matchingFactors[3] = selectedOccupantNumber;//Occupancy
 
-                        String[] houseWattages = {
+                            String[] houseWattages = {
                                 /*
                                 "Hob","Oven","TumbleDryer","WashingMachine","Computer","Kettle","DishWasher","Shower"
                                  */
-                                //House Number,Cooker (Hob),Cooker (Oven),Tumble Dryer, Washing Machine, Computer, Kettle,Dishwasher,Shower
-                                "1,1000,3000,472,513,29,1800,1379,9000",
-                                "2,1000,3000,2500,327,75,2257,770,9000",
-                                "3,1000,3000,1373,492,16,1550,1150,9000",
-                                "4,1000,3000,2500,700,52,1703,1350,9000",
-                                "5,1000,3000,766,700,66,2352,1350,9000",
-                                "6,1000,3000,2500,369,66,2192,778,9000",
-                                "7,1000,3000,2075,442,75,1913,613,9000",
-                                "8,1000,3000,2500,273,19,2340,1350,9000",
-                                "9,1000,3000,2500,507,75,2359,700,9000",
-                                "10,1000,3000,2500,349,75,1800,1350,9000",
-                                "11,1000,3000,2500,700,10,1841,753,9000",
-                                "12,1000,3000,2500,700,75,2482,1350,9000",
-                                "13,1000,3000,1510,203,39,1542,1250,9000",
-                                "15,1000,3000,1476,495,20,2521,1350,9000",
-                                "16,1000,3000,2500,300,27,1800,1239,9000",
-                                "17,1000,3000,1594,373,20,1689,1350,9000",
-                                "18,1000,3000,2500,377,26,1800,1021,9000",
-                                "19,1000,3000,2500,700,75,2448,1350,9000",
-                                "20,1000,3000,1097,293,75,2350,1350,9000",
-                                "21,1000,3000,1240,434,75,1276,1350,9000",
-                                "Default,1000,3000,2500,700,75,1800,1350,9000"};
+                                    //House Number,Cooker (Hob),Cooker (Oven),Tumble Dryer, Washing Machine, Computer, Kettle,Dishwasher,Shower
+                                    "1,1000,3000,472,513,29,1800,1379,9000",
+                                    "2,1000,3000,2500,327,75,2257,770,9000",
+                                    "3,1000,3000,1373,492,16,1550,1150,9000",
+                                    "4,1000,3000,2500,700,52,1703,1350,9000",
+                                    "5,1000,3000,766,700,66,2352,1350,9000",
+                                    "6,1000,3000,2500,369,66,2192,778,9000",
+                                    "7,1000,3000,2075,442,75,1913,613,9000",
+                                    "8,1000,3000,2500,273,19,2340,1350,9000",
+                                    "9,1000,3000,2500,507,75,2359,700,9000",
+                                    "10,1000,3000,2500,349,75,1800,1350,9000",
+                                    "11,1000,3000,2500,700,10,1841,753,9000",
+                                    "12,1000,3000,2500,700,75,2482,1350,9000",
+                                    "13,1000,3000,1510,203,39,1542,1250,9000",
+                                    "15,1000,3000,1476,495,20,2521,1350,9000",
+                                    "16,1000,3000,2500,300,27,1800,1239,9000",
+                                    "17,1000,3000,1594,373,20,1689,1350,9000",
+                                    "18,1000,3000,2500,377,26,1800,1021,9000",
+                                    "19,1000,3000,2500,700,75,2448,1350,9000",
+                                    "20,1000,3000,1097,293,75,2350,1350,9000",
+                                    "21,1000,3000,1240,434,75,1276,1350,9000",
+                                    "Default,1000,3000,2500,700,75,1800,1350,9000"};
 
 
-                        String[] houseDataArray = {
-                                //0,        	1,      2,      	3,          4,    	5,          6
-                                //number,   occupancy, age, # of Appliances,    type,   size,   approx age
-                                "1,2,1975-1980,35,Detached,4 bed,1970 - 1979",
-                                "2,4,-,15,Semi-detached,3 bed,-",
-                                "3,2,1988,27,Detached,3 bed,1980 - 1989",
-                                "4,2,1850-1899,33,Detached,4 bed,Pre 1900s",
-                                "5,4,1878,44,Mid-terrace,4 bed,Pre 1900s",
-                                "6,2,2005,49,Detached,4 bed,2000 - 2009",
-                                "7,4,1965-1974,25,Detached,3 bed,1960 - 1969",
-                                "8,2,1966,35,Detached,2 bed,1960 - 1969",
-                                "9,2,1919-1944,24,Detached,3 bed,1920 - 1929",
-                                "10,4,1919-1944,31,Detached,3 bed,1920 - 1929",
-                                "11,1,1945-1964,25,Detached,3 bed,1950 - 1959",
-                                "12,3,1991-1995,26,Detached,3 bed,1990 - 1999",
-                                "13,4,post 2002,28,Detached,4 bed,2000 - 2010",
-                                "15,1,1965-1974,19,Semi-detached,3 bed,1960 - 1969",
-                                "16,6,1981-1990,48,Detached,5 bed,1980 - 1989",
-                                "17,3,mid 60s,22,Detached,3 bed,1960 - 1969",
-                                "18,2,1965-1974,34,Detached,3 bed,1960 - 1969",
-                                "19,4,1945-1964,26,Semi-detached,3 bed,1950 - 1959",
-                                "20,2,1965-1974,39,Detached,3 bed,1960 - 1969",
-                                "21,4,1981-1990,23,Detached,3 bed,1980 - 1989"};
+                            String[] houseDataArray = {
+                                    //0,        	1,      2,      	3,          4,    	5,          6
+                                    //number,   occupancy, age, # of Appliances,    type,   size,   approx age
+                                    "1,2,1975-1980,35,Detached,4 bed,1970 - 1979",
+                                    "2,4,-,15,Semi-detached,3 bed,-",
+                                    "3,2,1988,27,Detached,3 bed,1980 - 1989",
+                                    "4,2,1850-1899,33,Detached,4 bed,Pre 1900s",
+                                    "5,4,1878,44,Mid-terrace,4 bed,Pre 1900s",
+                                    "6,2,2005,49,Detached,4 bed,2000 - 2009",
+                                    "7,4,1965-1974,25,Detached,3 bed,1960 - 1969",
+                                    "8,2,1966,35,Detached,2 bed,1960 - 1969",
+                                    "9,2,1919-1944,24,Detached,3 bed,1920 - 1929",
+                                    "10,4,1919-1944,31,Detached,3 bed,1920 - 1929",
+                                    "11,1,1945-1964,25,Detached,3 bed,1950 - 1959",
+                                    "12,3,1991-1995,26,Detached,3 bed,1990 - 1999",
+                                    "13,4,post 2002,28,Detached,4 bed,2000 - 2010",
+                                    "15,1,1965-1974,19,Semi-detached,3 bed,1960 - 1969",
+                                    "16,6,1981-1990,48,Detached,5 bed,1980 - 1989",
+                                    "17,3,mid 60s,22,Detached,3 bed,1960 - 1969",
+                                    "18,2,1965-1974,34,Detached,3 bed,1960 - 1969",
+                                    "19,4,1945-1964,26,Semi-detached,3 bed,1950 - 1959",
+                                    "20,2,1965-1974,39,Detached,3 bed,1960 - 1969",
+                                    "21,4,1981-1990,23,Detached,3 bed,1980 - 1989"};
 
-                        String houseToUse = "";
-                        double[] houseCount = {
-                                0,//House 1
-                                0,//House 2
-                                0,//House 3
-                                0,//House 4
-                                0,//House 5
-                                0,//House 6
-                                0,//House 7
-                                0,//House 8
-                                0,//House 9
-                                0,//House 10
-                                0,//House 11
-                                0,//House 12
-                                0,//House 13
-                                0,//House 15
-                                0,//House 16
-                                0,//House 17
-                                0,//House 18
-                                0,//House 19
-                                0,//House 20
-                                0 //House 21
-                        };
-                        String[][] houseDataArraySplit = new String[houseDataArray.length][];
-                        for(int i =0; i<houseDataArraySplit.length;i++){
-                            houseDataArraySplit[i] = houseDataArray[i].split(",");
-                        }
-                        for(int i = 0; i<houseDataArraySplit.length;i++){
-                            //Occupancy
-                            if(matchingFactors[3].equals(houseDataArraySplit[i][1])){
-                                houseCount[i]+=0.533;
+                            String houseToUse = "";
+                            double[] houseCount = {
+                                    0,//House 1
+                                    0,//House 2
+                                    0,//House 3
+                                    0,//House 4
+                                    0,//House 5
+                                    0,//House 6
+                                    0,//House 7
+                                    0,//House 8
+                                    0,//House 9
+                                    0,//House 10
+                                    0,//House 11
+                                    0,//House 12
+                                    0,//House 13
+                                    0,//House 15
+                                    0,//House 16
+                                    0,//House 17
+                                    0,//House 18
+                                    0,//House 19
+                                    0,//House 20
+                                    0 //House 21
+                            };
+                            String[][] houseDataArraySplit = new String[houseDataArray.length][];
+                            for(int i =0; i<houseDataArraySplit.length;i++){
+                                houseDataArraySplit[i] = houseDataArray[i].split(",");
                             }
-                            //Year Built
-                            if(matchingFactors[2].equals(houseDataArraySplit[i][6])){
-                                houseCount[i]+=0.067;
+                            for(int i = 0; i<houseDataArraySplit.length;i++){
+                                //Occupancy
+                                if(matchingFactors[3].equals(houseDataArraySplit[i][1])){
+                                    houseCount[i]+=0.533;
+                                }
+                                //Year Built
+                                if(matchingFactors[2].equals(houseDataArraySplit[i][6])){
+                                    houseCount[i]+=0.067;
+                                }
+                                //Size
+                                if(matchingFactors[1].equals(houseDataArraySplit[i][5])){
+                                    houseCount[i]+=0.267;
+                                }
+                                //House Type
+                                if(matchingFactors[0].equals(houseDataArraySplit[i][4])){
+                                    houseCount[i]+=0.133;
+                                }
                             }
-                            //Size
-                            if(matchingFactors[1].equals(houseDataArraySplit[i][5])){
-                                houseCount[i]+=0.267;
+                            int closestHouseIndex = 0;
+                            for(int i = 1; i<houseCount.length;i++){
+                                double newNumber = houseCount[i];
+                                if(newNumber>houseCount[closestHouseIndex]){
+                                    closestHouseIndex = i;
+                                }
                             }
-                            //House Type
-                            if(matchingFactors[0].equals(houseDataArraySplit[i][4])){
-                                houseCount[i]+=0.133;
+                            String wattages = "";
+                            if(houseCount[closestHouseIndex]<0.5){
+                                wattages = houseWattages[houseWattages.length-1];
+                            }else{
+                                wattages = houseWattages[closestHouseIndex];
                             }
-                        }
-                        int closestHouseIndex = 0;
-                        for(int i = 1; i<houseCount.length;i++){
-                            double newNumber = houseCount[i];
-                            if(newNumber>houseCount[closestHouseIndex]){
-                                closestHouseIndex = i;
-                            }
-                        }
-                        String wattages = "";
-                        if(houseCount[closestHouseIndex]<0.5){
-                            wattages = houseWattages[houseWattages.length-1];
-                        }else{
-                            wattages = houseWattages[closestHouseIndex];
-                        }
 
-                        String wattageFile = "wattagesFile.txt";
+                            String wattageFile = "wattagesFile.txt";
 
-                        FileOutputStream fOut;
-                        try{
-                            fOut = getActivity().openFileOutput(wattageFile, Context.MODE_PRIVATE);
-                            fOut.write(wattages.getBytes());
-                            fOut.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
+                            FileOutputStream fOut;
+                            try{
+                                fOut = getActivity().openFileOutput(wattageFile, Context.MODE_PRIVATE);
+                                fOut.write(wattages.getBytes());
+                                fOut.close();
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
 
-                        String submit = QIDS[0]+","+selectedHouseAge+"\n"+
-                                        QIDS[1]+","+selectedOccupantNumber+"\n";
-                        try{
-                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
-                            String nextScreen = 4+"";
-                            fos.write(nextScreen.getBytes());
-                            fos.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
+                            String submit = QIDS[0]+","+selectedHouseAge+"\n"+
+                                    QIDS[1]+","+selectedOccupantNumber+"\n";
+                            try{
+                                FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
+                                String nextScreen = 4+"";
+                                fos.write(nextScreen.getBytes());
+                                fos.close();
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
+                            try{
+                                FileOutputStream fos = getActivity().openFileOutput("surveyResults.txt",Context.MODE_APPEND);
+                                fos.write(submit.getBytes());
+                                fos.close();
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
+                            Fragment stageTwo = new surveyFragment();
+                            FragmentManager fragManager = getActivity().getFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                            fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
+                            fragmentTransaction.addToBackStack(null);
+                            fragmentTransaction.commit();
                         }
-                        try{
-                            FileOutputStream fos = getActivity().openFileOutput("surveyResults.txt",Context.MODE_APPEND);
-                            fos.write(submit.getBytes());
-                            fos.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-                        Fragment stageTwo = new surveyFragment();
-                        FragmentManager fragManager = getActivity().getFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
-                        fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
-                        fragmentTransaction.addToBackStack(null);
-                        fragmentTransaction.commit();
                     }
                 });
                 break;
@@ -1191,14 +1216,7 @@ public class surveyFragment extends Fragment {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
-                        try{
-                            FileOutputStream fos = getActivity().openFileOutput("surveyComplete.txt",Context.MODE_PRIVATE);
-                            String nextScreen = "true";
-                            fos.write(nextScreen.getBytes());
-                            fos.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
+                        settings.edit().putBoolean("show_survey",false).commit();
                         ((MainActivity)getActivity()).setMainLayoutViewInvisible(false);
                         getActivity().getFragmentManager().beginTransaction().remove(thisFrag).commit();
                     }
@@ -1206,7 +1224,7 @@ public class surveyFragment extends Fragment {
                 break;
             default:
                 v = inflater.inflate(R.layout.survey_fragment_part_one, container, false);
-                nextScreen = 2;
+
                 final String[] QIDs = {"1","2","3","4"};
                 TextView txBirthYearQ = (TextView) v.findViewById(R.id.birthYearQ);
                 final Spinner spBirthYearA = (Spinner) v.findViewById(R.id.birthYearA);
@@ -1483,60 +1501,71 @@ public class surveyFragment extends Fragment {
                 ArrayAdapter<String> genderQ;
                 ArrayAdapter<String> countryOfResidenceQ;
 
-                final String selectedBirthYear;
-                final String selectedCountryOfOrigin;
-                final String selectedGender;
-                final String selectedCountryOfResidence;
+
+
 
                 birthYearQ = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,birthYears);
                 birthYearQ.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spBirthYearA.setAdapter(birthYearQ);
-                selectedBirthYear = spBirthYearA.getSelectedItem().toString();
+
 
                 countryOfOriginQ = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,countries);
                 countryOfOriginQ.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spCountryOfOriginA.setAdapter(countryOfOriginQ);
-                selectedCountryOfOrigin = spCountryOfOriginA.getSelectedItem().toString();
+
 
                 genderQ = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,genders);
                 genderQ.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spGenderA.setAdapter(genderQ);
-                selectedGender = spGenderA.getSelectedItem().toString();
+
 
                 countryOfResidenceQ = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,countries);
                 countryOfResidenceQ.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spCountryOfResidenceA.setAdapter(countryOfResidenceQ);
-                selectedCountryOfResidence = spCountryOfResidenceA.getSelectedItem().toString();
-                final int pass = nextScreen;
+
                 Button b  =(Button)v.findViewById(R.id.toPartTwo);
                 b.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String submitAnswers  = QIDs[0]+","+selectedBirthYear+"\n"
-                                +QIDs[1]+","+selectedCountryOfOrigin+"\n"
-                                +QIDs[2]+","+selectedGender+"\n"
-                                +QIDs[3]+","+selectedCountryOfResidence+"\n";
-                        try{
-                            FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
-                            String nextScreen = pass+"";
-                            fos.write(nextScreen.getBytes());
-                            fos.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
+                        String selectedBirthYear = spBirthYearA.getSelectedItem().toString();
+                        String selectedCountryOfOrigin= spCountryOfOriginA.getSelectedItem().toString();
+                        String selectedGender= spGenderA.getSelectedItem().toString();
+                        String selectedCountryOfResidence= spCountryOfResidenceA.getSelectedItem().toString();
+
+
+                        if(selectedBirthYear.equals("-")||selectedCountryOfOrigin.equals("-")||selectedGender.equals("-")||selectedCountryOfResidence.equals("-")){
+                            String toastString = "Please answer all questions.";
+                            int durationOfToast = Toast.LENGTH_SHORT;
+                            Context context = getActivity();
+                            Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                            toast.show();
+                        }else{
+                            String submitAnswers  = QIDs[0]+","+selectedBirthYear+"\n"
+                                    +QIDs[1]+","+selectedCountryOfOrigin+"\n"
+                                    +QIDs[2]+","+selectedGender+"\n"
+                                    +QIDs[3]+","+selectedCountryOfResidence+"\n";
+                            try{
+                                FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
+                                String nextScreen = 2+"";
+                                fos.write(nextScreen.getBytes());
+                                fos.close();
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
+                            try{
+                                FileOutputStream fos = getActivity().openFileOutput("surveyResults.txt",Context.MODE_PRIVATE);
+                                fos.write(submitAnswers.getBytes());
+                                fos.close();
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
+                            Fragment stageTwo = new surveyFragment();
+                            FragmentManager fragManager = getActivity().getFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                            fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
+                            fragmentTransaction.addToBackStack(null);
+                            fragmentTransaction.commit();
                         }
-                        try{
-                            FileOutputStream fos = getActivity().openFileOutput("surveyResults.txt",Context.MODE_PRIVATE);
-                            fos.write(submitAnswers.getBytes());
-                            fos.close();
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-                        Fragment stageTwo = new surveyFragment();
-                        FragmentManager fragManager = getActivity().getFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
-                        fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
-                        fragmentTransaction.addToBackStack(null);
-                        fragmentTransaction.commit();
                     }
                 });
                 break;

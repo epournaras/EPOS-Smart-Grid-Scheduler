@@ -26,6 +26,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -127,7 +128,7 @@ public class MainActivity extends AppCompatActivity
         mainLayoutView = (View) findViewById(R.id.table);
         final View layoutView = (View) findViewById(android.R.id.content);;
         final Context context = this;
-        fabRevealFabs= (FloatingActionButton) findViewById(R.id.fabRevealFabs);
+        fabRevealFabs = (FloatingActionButton) findViewById(R.id.fabRevealFabs);
         fullTime = " ";
         date = " ";
         tomorrowsDate = " ";
@@ -424,19 +425,7 @@ public class MainActivity extends AppCompatActivity
             // record the fact that the app has been started at least once
             settings.edit().putBoolean("my_first_time", false).commit();
         }else{
-            String surveyShow = "";
-            try{
-                FileInputStream fis = openFileInput("surveyComplete.txt");
-                int chr;
-                StringBuilder builder = new StringBuilder();
-                while ((chr = fis.read()) != -1) {
-                    builder.append((char) chr);
-                }
-                surveyShow = builder.toString();
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-            if(surveyShow.equals("false")){
+            if(showSurvey()){
                 callSurvey();
             }
         }
@@ -1234,7 +1223,19 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void callSurvey(){
+        fabRevealFabs = (FloatingActionButton) findViewById(R.id.fabRevealFabs);
+        fabRevealFabs.setVisibility(View.INVISIBLE);
+        fabRevealFabs.setClickable(false);
         surveyFragment newFragment = new surveyFragment();
+        newFragment.getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode==KeyEvent.KEYCODE_BACK){
+                    return true;
+                }
+                return false;
+            }
+        });
         FragmentManager fragManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, newFragment);
@@ -1261,13 +1262,9 @@ public class MainActivity extends AppCompatActivity
                 if(nextScreen!=0){
                     me.callSurvey();
                 }else{
-                    try{
-                        FileOutputStream fos = me.openFileOutput("surveyComplete.txt",Context.MODE_PRIVATE);
-                        fos.write("true".getBytes());
-                        fos.close();
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
+                    fabRevealFabs.setVisibility(View.VISIBLE);
+                    fabRevealFabs.setClickable(true);
+                    settings.edit().putBoolean("show_survey", false).commit();
                 }
             }
         };
@@ -1293,13 +1290,9 @@ public class MainActivity extends AppCompatActivity
         if(nextScreen!=0){
             me.callSurvey();
         }else{
-            try{
-                FileOutputStream fos = me.openFileOutput("surveyComplete.txt",Context.MODE_PRIVATE);
-                fos.write("true".getBytes());
-                fos.close();
-            }catch(Exception e){
-                e.printStackTrace();
-            }
+            fabRevealFabs.setVisibility(View.VISIBLE);
+            fabRevealFabs.setClickable(true);
+            settings.edit().putBoolean("show_survey",false).commit();
         }
     }
 
@@ -1330,6 +1323,9 @@ public class MainActivity extends AppCompatActivity
         return fabRevealFabs;
     }
 
+    public boolean showSurvey(){
+        return settings.getBoolean("show_survey",true);
+    }
     public boolean firstTimeStart(){
         return settings.getBoolean("my_first_time", true);
     }

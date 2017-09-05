@@ -11,7 +11,7 @@
 
     <Spinner
         android:id="@+id/educationLevelA"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <TextView
@@ -83,7 +83,7 @@
 
     <Spinner
         android:id="@+id/houseTypeA"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <TextView
@@ -94,7 +94,7 @@
 
     <Spinner
         android:id="@+id/houseSizeA"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <RelativeLayout
         android:layout_width="match_parent"
