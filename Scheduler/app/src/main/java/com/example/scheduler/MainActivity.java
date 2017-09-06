@@ -1227,6 +1227,9 @@ public class MainActivity extends AppCompatActivity
         fabRevealFabs.setVisibility(View.INVISIBLE);
         fabRevealFabs.setClickable(false);
         surveyFragment newFragment = new surveyFragment();
+
+        newFragment.getView().setFocusableInTouchMode(true);
+        newFragment.getView().requestFocus();
         newFragment.getView().setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -1236,6 +1239,7 @@ public class MainActivity extends AppCompatActivity
                 return false;
             }
         });
+        
         FragmentManager fragManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, newFragment);
