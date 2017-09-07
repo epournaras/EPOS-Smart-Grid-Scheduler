@@ -6,4 +6,5 @@
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="fab_margin">15dp</dimen>
     <dimen name = "sizeOfCells">60dp</dimen>
+    <dimen name = "sizeOfCellsForTomorrow">15dp</dimen>
 </resources>

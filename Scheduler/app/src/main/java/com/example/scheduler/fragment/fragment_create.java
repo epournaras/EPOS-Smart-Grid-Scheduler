@@ -1,6 +1,6 @@
 package com.example.scheduler.fragment;
 
-import android.app.DialogFragment;
+import android.support.v4.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -40,10 +40,11 @@ public class fragment_create extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        final View layoutView=inflater.inflate(R.layout.fragment_create,container,false);
+
         final String PREFS_NAME = "MyPrefsFile";
         final SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        final View layoutView=inflater.inflate(R.layout.fragment_create,container,false);
-        super.onCreate(savedInstanceState);
         context = getActivity();
         FileOutputStream fileOutputStream;
         ArrayList<String> arrayListString = new ArrayList<>();

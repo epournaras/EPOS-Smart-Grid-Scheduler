@@ -2,7 +2,6 @@ package com.example.scheduler;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
-import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Build;
@@ -22,11 +22,13 @@ import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintSet;
 import android.support.design.widget.FloatingActionButton;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -36,13 +38,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.DialogFragment;
+import android.support.v4.app.DialogFragment;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -75,6 +78,7 @@ import com.example.scheduler.fragment.betterPlanPopUpFragment;
 import com.example.scheduler.fragment.editApplianceSettings;
 import com.example.scheduler.fragment.fragment_create;
 import com.example.scheduler.fragment.surveyFragment;
+import com.example.scheduler.fragment.tabsFragment;
 
 
 public class MainActivity extends AppCompatActivity
@@ -91,12 +95,11 @@ public class MainActivity extends AppCompatActivity
     private int numberOfActions = 8;
     public AsyncTask motherTask;
     public boolean tasksStop = false;
-    public NavigationView nav;
     public MainActivity me = this;
     public FloatingActionButton fabRevealFabs;
     public final String PREFS_NAME = "MyPrefsFile";
     public SharedPreferences settings;
-
+    public View thisView ;
     public ArrayList<TextView> eventsAdded = new ArrayList<>();
     public TextView eventOne, eventTwo;
     public int index = 0;
@@ -122,7 +125,8 @@ public class MainActivity extends AppCompatActivity
     @SuppressLint({"NewAPI", "NewApi"})
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.app_bar_main);
+        thisView= (View) findViewById(android.R.id.content);
         ScrollView scroll = (ScrollView) findViewById(R.id.scrollTable);
         focusOnView(scroll);
         mainLayoutView = (View) findViewById(R.id.table);
@@ -146,7 +150,13 @@ public class MainActivity extends AppCompatActivity
         settings.edit().putBoolean("putMin", false).commit();
         settings.edit().putBoolean("putMax", false).commit();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-
+        try{
+            FileOutputStream fos = openFileOutput("tempChosenPlan.txt", Context.MODE_PRIVATE);
+            fos.write(" ".getBytes());
+            fos.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         if(firstTimeStart()){
             System.out.print("First Time Launch\n");
             String[] perms = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"};
@@ -386,7 +396,7 @@ public class MainActivity extends AppCompatActivity
                 e.printStackTrace();
             }
             surveyFragment newFragment = new surveyFragment();
-            FragmentManager fragManager = getFragmentManager();
+            FragmentManager fragManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, newFragment);
             fragmentTransaction.addToBackStack(null);
@@ -411,6 +421,9 @@ public class MainActivity extends AppCompatActivity
                     if(nextScreen!=0){
                         me.callSurvey();
                     }else{
+                        fabRevealFabs = (FloatingActionButton) findViewById(R.id.fabRevealFabs);
+                        fabRevealFabs.setVisibility(View.VISIBLE);
+                        fabRevealFabs.setClickable(true);
                         try{
                             FileOutputStream fos = me.openFileOutput("surveyComplete.txt",Context.MODE_PRIVATE);
                             fos.write("true".getBytes());
@@ -427,6 +440,9 @@ public class MainActivity extends AppCompatActivity
         }else{
             if(showSurvey()){
                 callSurvey();
+            }else{
+                fabRevealFabs.setVisibility(View.VISIBLE);
+                fabRevealFabs.setClickable(true);
             }
         }
         final FloatingActionButton fabAddRemoveAppliances= (FloatingActionButton) findViewById(R.id.fabAddRemoveAppliances);
@@ -440,7 +456,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Fragment newFragment = new editApplianceSettings();
-                FragmentManager fragManager = getFragmentManager();
+                FragmentManager fragManager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                 fragmentTransaction.replace(R.id.fragment_container, newFragment);
                 fragmentTransaction.addToBackStack(null);
@@ -467,7 +483,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Fragment newFragment = new addRemoveAppliance();
-                FragmentManager fragManager = getFragmentManager();
+                FragmentManager fragManager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                 fragmentTransaction.replace(R.id.fragment_container, newFragment);
                 fragmentTransaction.addToBackStack(null);
@@ -493,8 +509,8 @@ public class MainActivity extends AppCompatActivity
         fabCreateTomorrowsPlan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager fragManager = getFragmentManager();
-                android.app.FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                FragmentManager fragManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                 DialogFragment newFragment = new fragment_create();
                 newFragment.show(fragmentTransaction, "fragment_create");
                 fabCreateTomorrowsPlan.startAnimation(FabClose);
@@ -547,14 +563,6 @@ public class MainActivity extends AppCompatActivity
 
         checkForTodaysScheduleTask(this);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        nav = (NavigationView)findViewById(R.id.nav_view);
-        setUpNavigationDrawer();
         ensureDisplay(this, layoutView);
 
     }
@@ -570,8 +578,6 @@ public class MainActivity extends AppCompatActivity
 
         final View layoutView = (View) findViewById(android.R.id.content);
         ensureDisplay(this, layoutView);
-        nav = (NavigationView)findViewById(R.id.nav_view);
-        setUpNavigationDrawer();
         checkForTodaysScheduleTask(this);
         Intent i = new Intent(this, NotificationService.class);
         PendingIntent pi =PendingIntent.getService(this, 0, i, 0);
@@ -588,12 +594,6 @@ public class MainActivity extends AppCompatActivity
         if(fabRevealFabs!=null){
             fabRevealFabs.setClickable(true);
             fabRevealFabs.setVisibility(View.VISIBLE);
-        }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
         }
     }
 
@@ -645,62 +645,6 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    public void setUpNavigationDrawer(){
-        final RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.rv);
-        final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, R.drawable.divider));
-        if(display==null){
-            try {
-                FileInputStream fis = this.openFileInput("TomorrowSchedule.txt");
-                StringBuilder builder = new StringBuilder();
-                int ch;
-                while((ch = fis.read()) != -1){
-                    builder.append((char)ch);
-                }
-                fis.close();
-                display = builder.toString();
-            }catch(Exception e){
-                String toastString = "Couldnt get Tomorrow's schedule.";
-                int durationOfToast = Toast.LENGTH_SHORT;
-                Context context = this;
-                Toast toast = Toast.makeText(context, toastString, durationOfToast);
-                toast.show();
-                e.printStackTrace();
-            }
-        }
-        if(display!=null){
-            boolean doNotDisplay = false;
-            String[] list = display.split("[\\r\\n]+");
-            String[][] plans = new String [list.length][];
-            String[] myDataSet = new String[list.length];
-            for(int i =0; i<list.length;i++){
-                if(list.length== 1&&display.equals(" ")){
-                    doNotDisplay = true;
-                }else{
-                    myDataSet[i] = "";
-                    plans[i] = list[i].split(",");
-                    for(int j = 0; j<plans[i].length;j++){
-                        if(j==plans[i].length-1){
-                            myDataSet[i]+=plans[i][j];
-                        }else{
-                            myDataSet[i]+=plans[i][j]+"\n";
-                        }
-                    }
-                }
-            }
-            if(!doNotDisplay){
-                final RecyclerView.Adapter mAdapter = new MyAdapter(myDataSet, this);
-                mRecyclerView.setAdapter(mAdapter);
-                mRecyclerView.setHasFixedSize(true);
-            }else{
-
-            }
-        }else{
-
-        }
     }
 
 
@@ -833,11 +777,14 @@ public class MainActivity extends AppCompatActivity
             settings.edit().putBoolean("defaultBool",true).commit();
             String tomorrowsSchedule = "TomorrowSchedule.txt";
             FileOutputStream fos;
-            try {
-                mainActivity.setDisplay(" ");
-            } catch (Exception e) {
+            try{
+                fos = this.openFileOutput("TomorrowSchedule.txt", this.MODE_PRIVATE);
+                fos.write(" ".getBytes());
+                fos.close();
+            }catch(Exception e){
                 e.printStackTrace();
             }
+            this.display = " ";
             try {
                 fos = mainActivity.openFileOutput("chosenPlan.txt", Context.MODE_PRIVATE);
                 fos.write(" ".getBytes());
@@ -847,12 +794,11 @@ public class MainActivity extends AppCompatActivity
             }
             final View layoutView = (View) findViewById(android.R.id.content);
             ensureDisplay(this, layoutView);
-            nav = (NavigationView)findViewById(R.id.nav_view);
             display = null;
-            setUpNavigationDrawer();
         }
     }
     public void setDisplay(String s){
+        System.out.print(s+"\n");
         try{
             FileOutputStream fos = this.openFileOutput("TomorrowSchedule.txt", this.MODE_PRIVATE);
             fos.write(s.getBytes());
@@ -1148,8 +1094,8 @@ public class MainActivity extends AppCompatActivity
                     FileOutputStream fos = this.openFileOutput("suggestedPlan.txt",this.MODE_PRIVATE);
                     fos.write(a.getBytes());
                     fos.close();
-                    FragmentManager fragManager = getFragmentManager();
-                    android.app.FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                    FragmentManager fragManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                     DialogFragment newFragment = new betterPlanPopUpFragment();
                     newFragment.show(fragmentTransaction, "betterPlanPopUp");
                 }catch(Exception e){
@@ -1162,9 +1108,6 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-    }
-    public NavigationView getNav(){
-        return nav;
     }
 
     public void ensureDisplay(MainActivity ma, View v){
@@ -1226,24 +1169,11 @@ public class MainActivity extends AppCompatActivity
         fabRevealFabs = (FloatingActionButton) findViewById(R.id.fabRevealFabs);
         fabRevealFabs.setVisibility(View.INVISIBLE);
         fabRevealFabs.setClickable(false);
-        surveyFragment newFragment = new surveyFragment();
 
-        newFragment.getView().setFocusableInTouchMode(true);
-        newFragment.getView().requestFocus();
-        newFragment.getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(keyCode==KeyEvent.KEYCODE_BACK){
-                    return true;
-                }
-                return false;
-            }
-        });
-        
-        FragmentManager fragManager = getFragmentManager();
+        surveyFragment newFragment = new surveyFragment();
+        FragmentManager fragManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, newFragment);
-        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
         MyDialogCloseListener closeListener = new MyDialogCloseListener() {
             @Override
@@ -1709,4 +1639,25 @@ public class MainActivity extends AppCompatActivity
         return barToScrollTo;
     }
 
+    public void choicesPopUp(){
+        onOpenDialog(thisView);
+    }
+    public void onOpenDialog(View view)
+    {
+        FragmentManager fm = getSupportFragmentManager();
+        tabsFragment overlay = new tabsFragment();
+        overlay.show(fm, "FragmentDialog");
+    }
+
+    public void setFabRevealFabsVisibility(boolean a){
+        if(fabRevealFabs!=null){
+            if(a){
+                fabRevealFabs.setVisibility(View.VISIBLE);
+                fabRevealFabs.setClickable(true);
+            }else{
+                fabRevealFabs.setVisibility(View.INVISIBLE);
+                fabRevealFabs.setClickable(false);
+            }
+        }
+    }
 }

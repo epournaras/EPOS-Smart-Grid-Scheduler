@@ -1,9 +1,11 @@
 package com.example.scheduler.fragment;
 
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -226,10 +228,9 @@ public class surveyFragment extends Fragment {
                                 e.printStackTrace();
                             }
                             Fragment stageTwo = new surveyFragment();
-                            FragmentManager fragManager = getActivity().getFragmentManager();
+                            FragmentManager fragManager = getActivity().getSupportFragmentManager();
                             FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                             fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
-                            fragmentTransaction.addToBackStack(null);
                             fragmentTransaction.commit();
                         }
                     }
@@ -457,10 +458,9 @@ public class surveyFragment extends Fragment {
                                 e.printStackTrace();
                             }
                             Fragment stageTwo = new surveyFragment();
-                            FragmentManager fragManager = getActivity().getFragmentManager();
+                            FragmentManager fragManager = getActivity().getSupportFragmentManager();
                             FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                             fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
-                            fragmentTransaction.addToBackStack(null);
                             fragmentTransaction.commit();
                         }
                     }
@@ -663,10 +663,9 @@ public class surveyFragment extends Fragment {
                             e.printStackTrace();
                         }
                         Fragment stageTwo = new surveyFragment();
-                        FragmentManager fragManager = getActivity().getFragmentManager();
+                        FragmentManager fragManager = getActivity().getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                         fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
-                        fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                     }
                 });
@@ -751,10 +750,9 @@ public class surveyFragment extends Fragment {
                             e.printStackTrace();
                         }
                         Fragment stageTwo = new surveyFragment();
-                        FragmentManager fragManager = getActivity().getFragmentManager();
+                        FragmentManager fragManager = getActivity().getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                         fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
-                        fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                     }
                 });
@@ -835,10 +833,9 @@ public class surveyFragment extends Fragment {
                             e.printStackTrace();
                         }
                         Fragment stageTwo = new surveyFragment();
-                        FragmentManager fragManager = getActivity().getFragmentManager();
+                        FragmentManager fragManager = getActivity().getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                         fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
-                        fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                     }
                 });
@@ -889,10 +886,9 @@ public class surveyFragment extends Fragment {
                             e.printStackTrace();
                         }
                         Fragment stageTwo = new surveyFragment();
-                        FragmentManager fragManager = getActivity().getFragmentManager();
+                        FragmentManager fragManager = getActivity().getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                         fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
-                        fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                     }
                 });
@@ -943,10 +939,9 @@ public class surveyFragment extends Fragment {
                             e.printStackTrace();
                         }
                         Fragment stageTwo = new surveyFragment();
-                        FragmentManager fragManager = getActivity().getFragmentManager();
+                        FragmentManager fragManager = getActivity().getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                         fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
-                        fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                     }
                 });
@@ -1034,10 +1029,9 @@ public class surveyFragment extends Fragment {
                             e.printStackTrace();
                         }
                         Fragment stageTwo = new surveyFragment();
-                        FragmentManager fragManager = getActivity().getFragmentManager();
+                        FragmentManager fragManager = getActivity().getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                         fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
-                        fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                     }
                 });
@@ -1218,7 +1212,8 @@ public class surveyFragment extends Fragment {
                         }
                         settings.edit().putBoolean("show_survey",false).commit();
                         ((MainActivity)getActivity()).setMainLayoutViewInvisible(false);
-                        getActivity().getFragmentManager().beginTransaction().remove(thisFrag).commit();
+                        ((MainActivity)getActivity()).setFabRevealFabsVisibility(true);
+                        getActivity().getSupportFragmentManager().beginTransaction().remove(thisFrag).commit();
                     }
                 });
                 break;
@@ -1560,10 +1555,9 @@ public class surveyFragment extends Fragment {
                                 e.printStackTrace();
                             }
                             Fragment stageTwo = new surveyFragment();
-                            FragmentManager fragManager = getActivity().getFragmentManager();
+                            FragmentManager fragManager = getActivity().getSupportFragmentManager();
                             FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                             fragmentTransaction.replace(((ViewGroup)getView().getParent()).getId(), stageTwo);
-                            fragmentTransaction.addToBackStack(null);
                             fragmentTransaction.commit();
                         }
                     }

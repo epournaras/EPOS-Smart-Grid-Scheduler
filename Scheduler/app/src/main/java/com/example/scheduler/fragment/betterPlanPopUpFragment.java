@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import com.example.scheduler.R;
-import android.app.DialogFragment;
+import android.support.v4.app.DialogFragment;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 

@@ -26,7 +26,8 @@
     <string name = "window_size_title">How long before and after the input start time could you otherwise start this task?</string>
     <string name = "window_size_title_before">How long before the input start time could you otherwise start this task?</string>
     <string name = "window_size_title_after">How long after the input start time could you otherwise start this task?</string>
-
+    <string name = "confirm">Confirm</string>
+    <string name = "Choose">Use this plan option</string>
     <string name = "timeMidnight" >00:00</string>
     <string name = "time1am" >01:00</string>
     <string name = "time2am" >02:00</string>

@@ -1,5 +1,8 @@
 package com.example.scheduler.fragment;
-import android.app.Fragment;
+
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -173,7 +176,7 @@ public class editApplianceSettings extends Fragment {
                 b.setClickable(true);
                 b.setVisibility(View.VISIBLE);
                 ((MainActivity)getActivity()).setMainLayoutViewInvisible(false);
-                getActivity().getFragmentManager().beginTransaction().remove(thisFrag).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().remove(thisFrag).commit();
             }
         });
         Button cancel = (Button) v.findViewById(R.id.button);
@@ -184,7 +187,7 @@ public class editApplianceSettings extends Fragment {
                 b.setClickable(true);
                 b.setVisibility(View.VISIBLE);
                 ((MainActivity)getActivity()).setMainLayoutViewInvisible(false);
-                getActivity().getFragmentManager().beginTransaction().remove(thisFrag).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().remove(thisFrag).commit();
             }
         });
         return v;

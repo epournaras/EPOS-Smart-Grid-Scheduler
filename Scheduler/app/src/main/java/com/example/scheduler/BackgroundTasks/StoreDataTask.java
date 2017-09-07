@@ -150,7 +150,7 @@ public class StoreDataTask extends AsyncTask<Schedule, Integer, String> {
     protected void onPostExecute(String result) {
         if(!checkCancelled()){
             activity.setDisplay(result);
-            activity.setUpNavigationDrawer();
+            activity.choicesPopUp();
             String toastString = "Tomorrow's Schedule Set";
             int durationOfToast = Toast.LENGTH_SHORT;
             Toast toast = Toast.makeText(context, toastString, durationOfToast);
