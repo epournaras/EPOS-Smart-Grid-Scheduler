@@ -131,7 +131,7 @@ public class fragment_create extends DialogFragment {
         durationMinute.setAdapter(durationMinutesAdapter);
         flexHour.setAdapter(flexHourAdapter);
         flexMinute.setAdapter(flexMinuteAdapter);
-
+        //create an item with the details selected by the user and add it to the list of items.
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -509,6 +509,8 @@ public class fragment_create extends DialogFragment {
                 tx.setText(after);
             }
         });
+
+        //Once all items are added, this will start the background tasks for the possible plan generation and dismiss the fragment.
         Button submit = (Button) layoutView.findViewById(R.id.submit);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -558,6 +560,7 @@ public class fragment_create extends DialogFragment {
         return layoutView;
     }
 
+    //add the item with these parameters to the list of current items.
     public void addItem(String name, String start,String dur, String flex, View va, Action a){
         final View passView =va;
         String currentItems = "";
@@ -633,6 +636,8 @@ public class fragment_create extends DialogFragment {
             e.printStackTrace();
         }
     }
+
+    //Remove an item from the list of current items with the following parameters.
     public void removeItem(String name, String start,String dur, String flex, View v,Action a){
         final View passView =v;
         String currentItems = "";
@@ -689,7 +694,7 @@ public class fragment_create extends DialogFragment {
 
             }
         }
-
+        //reset the view and display it again with the old item removed.
         GridLayout displayGrid = (GridLayout)v.findViewById(R.id.displayGrid);
         displayGrid.removeAllViews();
         for(int i = 0 ; i < dataPostRemoval.length ; i++){

@@ -30,7 +30,9 @@ import static android.content.Context.POWER_SERVICE;
 /**
  * Created by warrens on 19.07.17.
  */
-
+//check if any notifications need to be given to the user depending on whether
+    //A) they've used the app today.
+    //B) A task for today has started.
 public class NotificationService extends Service {
     private PowerManager.WakeLock mWakeLock;
     /**

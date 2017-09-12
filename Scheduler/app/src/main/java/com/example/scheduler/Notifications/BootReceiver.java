@@ -12,7 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-
+//On start, check if notifications need to be pushed.
 public class BootReceiver extends BroadcastReceiver{
     public void onReceive(Context context, Intent intent) {
         // in our case intent will always be BOOT_COMPLETED, so we can just set

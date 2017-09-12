@@ -4,6 +4,8 @@ package com.example.scheduler.BackgroundTasks;
  * Created by warrens on 23.08.17.
  */
 
+//given a set of states, a wattage, a parent task from which it was called, and which schedule and device it is to work on, create an Energy plan for one possible plan and device.
+
 public class deviceFileFiller implements Runnable {
     public Thread t;
     private String threadName;

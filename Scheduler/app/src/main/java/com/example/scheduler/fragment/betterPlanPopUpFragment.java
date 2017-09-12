@@ -20,6 +20,8 @@ import java.io.FileOutputStream;
  * Created by warrens on 02.08.17.
  */
 
+//Offer a new plan and store it as the chosen plan if the user wants it.
+
 public class betterPlanPopUpFragment extends DialogFragment {
 
     public String plan;

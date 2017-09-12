@@ -1,14 +1,14 @@
 package com.example.scheduler.ObjectGroup;
 
 import android.widget.CompoundButton;
-
 import android.widget.ToggleButton;
-
 import java.util.ArrayList;
 
 /**
  * Created by warrens on 15.08.17.
  */
+
+//if a button is pressed, unselect the other buttons. Used in the survey for current employment status.
 public class ToggleButtonsGroup implements CompoundButton.OnCheckedChangeListener {
     private boolean mDataChanged;
     private ArrayList<ToggleButton> mButtons;

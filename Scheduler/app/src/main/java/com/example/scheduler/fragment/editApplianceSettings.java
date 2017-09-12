@@ -1,8 +1,6 @@
 package com.example.scheduler.fragment;
 
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -13,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -26,6 +23,8 @@ import java.util.ArrayList;
 /**
  * Created by warrens on 07.08.17.
  */
+
+//display the current wattages of the appliances and allow the user to change them.
 
 public class editApplianceSettings extends Fragment {
     public ArrayList textViewIds = new ArrayList();
@@ -62,6 +61,7 @@ public class editApplianceSettings extends Fragment {
         }
 
         String wattages = "";
+        //create a display for all enabled appliances.
         try{
             FileInputStream fis = context.openFileInput("wattagesFile.txt");
             int chr;

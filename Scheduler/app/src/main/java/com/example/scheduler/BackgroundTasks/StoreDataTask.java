@@ -42,7 +42,7 @@ public class StoreDataTask extends AsyncTask<Schedule, Integer, String> {
     protected void onPreExecute(){
 
     }
-
+    //create a file for each device and schedule, indicating what times the device is on or off at every minute during the day the plan is for.
     protected String doInBackground(Schedule... list){
         long startTime = System.currentTimeMillis();
         Schedule lists = list[0];
@@ -156,7 +156,7 @@ public class StoreDataTask extends AsyncTask<Schedule, Integer, String> {
             Toast toast = Toast.makeText(context, toastString, durationOfToast);
             toast.show();
             String[] pass = new String[]{"1"};
-           new createFilesTask(parseableData, context,activity).execute(pass);
+            new createFilesTask(parseableData, context,activity).execute(pass);
         }
     }
 

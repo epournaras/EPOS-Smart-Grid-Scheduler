@@ -5,15 +5,11 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.AsyncTask;
-import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,24 +17,17 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintSet;
 import android.support.design.widget.FloatingActionButton;
-
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
@@ -46,7 +35,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v4.app.DialogFragment;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -54,23 +42,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Random;
 
 import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.view.View;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
 
 import com.example.schedulecreationlibrary.Action;
 import com.example.schedulecreationlibrary.Schedule;
-import com.example.scheduler.Adapter.MyAdapter;
 import com.example.scheduler.BackgroundTasks.createSchedulesTask;
-import com.example.scheduler.Divider.DividerItemDecoration;
 import com.example.scheduler.Interface.MyDialogCloseListener;
 import com.example.scheduler.Notifications.NotificationService;
 import com.example.scheduler.fragment.addRemoveAppliance;
@@ -82,7 +60,7 @@ import com.example.scheduler.fragment.tabsFragment;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,MyDialogCloseListener {
+        implements MyDialogCloseListener {
     Animation FabOpen, FabClose, FabRClockwise,FabRAntiClockwise;
     boolean isOpen = false;
     public static String display;
@@ -90,9 +68,6 @@ public class MainActivity extends AppCompatActivity
     private String fullTime;
     public String date;
     public String tomorrowsDate;
-    private Fragment fragment = null;
-    private String batteryLevels = "";
-    private int numberOfActions = 8;
     public AsyncTask motherTask;
     public boolean tasksStop = false;
     public MainActivity me = this;
@@ -101,7 +76,6 @@ public class MainActivity extends AppCompatActivity
     public SharedPreferences settings;
     public View thisView ;
     public ArrayList<TextView> eventsAdded = new ArrayList<>();
-    public TextView eventOne, eventTwo;
     public int index = 0;
     public View mainLayoutView;
 
@@ -115,13 +89,7 @@ public class MainActivity extends AppCompatActivity
             "DishWasher",
             "Shower"
     };
-    private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver(){
-        @Override
-        public void onReceive(Context ctxt, Intent intent) {
-            int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
-            batteryLevels+=level+"\n";
-        }
-    };
+
     @SuppressLint({"NewAPI", "NewApi"})
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,6 +125,9 @@ public class MainActivity extends AppCompatActivity
         }catch(Exception e){
             e.printStackTrace();
         }
+
+        //If this is the first time the user is launching the application, the files that the application uses to store information and pass information from different parts
+        // of the application need to be created.
         if(firstTimeStart()){
             System.out.print("First Time Launch\n");
             String[] perms = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"};
@@ -195,24 +166,42 @@ public class MainActivity extends AppCompatActivity
             date = fullTime.substring(0,10);
             fullTime = simpleDateFormat.format(new Date(((new Date()).getTime() + 86400000)));
             tomorrowsDate = fullTime.substring(0,10);
+            //
             String fileName = "PastSchedules.txt";
+            //This file is used to pass schedules to be displayed to be chosen by the user
             String tomorrowSchedule = "TomorrowSchedule.txt";
             String listAsItWas = "ActionInputList.txt";
+            //This file stores the current date to test if the date has changed.
             String todayDate = "Date.txt";
+            //This stores the date for tomorrow. This is used to check if the date is correct for the schedule for the next calendar day.
             String tomorrowDate = "TomorrowsDate.txt";
+            //This was used to allow the user to use the output survey
             String password = "Password.txt";
+            //This was used to allow the user to use the app and complete the initial survey
             String passwordMain = "PasswordMain.txt";
+            //This is the file which contains to the wattages of the appliances of the houses of the REFIT data file
             String houseDataName = "houseData.txt";
+            //This stores the plan the user chose to use for the next calendar day.
             String chosenPlanFile = "chosenPlan.txt";
+            //This contains the users appliance wattages.
             String wattageFile = "wattagesFile.txt";
+            //This stores the start times of today's schedule at which they're supposed to start using their tasks.
             String timesToNotifyFile = "timesToNotify.txt";
+            //This stores what appliances the user told us they own.
             String appliancesEnabledDataFile = "appliancesEnabledDataFile.txt";
+            //This file holds a count of how many times a user planned today.
             String countFile = "count.txt";
+            //This stores the names of the appliances
             String applianceNamesFile = "applianceNames.txt";
+            //This is used to store the plan that the EPOS system may suggest.
             String suggestedPlanFile = "suggestedPlan.txt";
+            //This is used to store the schedule that is to be executed today.
             String todayScheduleFile = "TodaySchedule.txt";
+            //This stores the results of the survey as the user answers the parts.
             String surveyResultsFiles = "surveyResults.txt";
+            //This stores how far along the survey the user is.
             String surveyProgressFile = "surveyProgress.txt";
+            //This stores whether or not to show the user the survey.
             String surveyCompleteFile = "surveyComplete.txt";
             try{
                 FileOutputStream fos = this.openFileOutput(applianceNamesFile,MODE_APPEND);
@@ -395,12 +384,15 @@ public class MainActivity extends AppCompatActivity
             }catch(Exception e){
                 e.printStackTrace();
             }
+            //During the first open, open the survey.
             surveyFragment newFragment = new surveyFragment();
             FragmentManager fragManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, newFragment);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
+
+            //If a survey fragment is closed, check if its the last part or if a new part needs to be opened.
             MyDialogCloseListener closeListener = new MyDialogCloseListener() {
                 @Override
                 public void handleDialogClose(DialogInterface dialog) {
@@ -421,6 +413,7 @@ public class MainActivity extends AppCompatActivity
                     if(nextScreen!=0){
                         me.callSurvey();
                     }else{
+                        //when the survey is finished, allow the user to interact with the app through the floating action buttons.
                         fabRevealFabs = (FloatingActionButton) findViewById(R.id.fabRevealFabs);
                         fabRevealFabs.setVisibility(View.VISIBLE);
                         fabRevealFabs.setClickable(true);
@@ -431,9 +424,11 @@ public class MainActivity extends AppCompatActivity
                         }catch(Exception e){
                             e.printStackTrace();
                         }
+                        settings.edit().putBoolean("show_survey", false).commit();
                     }
                 }
             };
+
             newFragment.DismissListner(closeListener);
             // record the fact that the app has been started at least once
             settings.edit().putBoolean("my_first_time", false).commit();
@@ -443,6 +438,7 @@ public class MainActivity extends AppCompatActivity
             }else{
                 fabRevealFabs.setVisibility(View.VISIBLE);
                 fabRevealFabs.setClickable(true);
+                settings.edit().putBoolean("show_survey", false).commit();
             }
         }
         final FloatingActionButton fabAddRemoveAppliances= (FloatingActionButton) findViewById(R.id.fabAddRemoveAppliances);
@@ -451,7 +447,7 @@ public class MainActivity extends AppCompatActivity
         fabEdit.setClickable(false);
         fabCreateTomorrowsPlan.setClickable(false);
         fabAddRemoveAppliances.setClickable(false);
-
+        //Allow the user to edit the details of their appliances by opening this FAB (Floating Action Button).
         fabEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -461,6 +457,8 @@ public class MainActivity extends AppCompatActivity
                 fragmentTransaction.replace(R.id.fragment_container, newFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
+
+                //set the other FAB options to not be usable until the user is done with this one.
                 fabCreateTomorrowsPlan.startAnimation(FabClose);
                 fabEdit.startAnimation(FabClose);
                 fabAddRemoveAppliances.startAnimation(FabClose);
@@ -479,6 +477,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        //Allow the user to add appliances to the application or remove others.
         fabAddRemoveAppliances.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -488,6 +487,8 @@ public class MainActivity extends AppCompatActivity
                 fragmentTransaction.replace(R.id.fragment_container, newFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
+
+                //set the other FAB options to not be usable until the user is done with this one.
                 fabCreateTomorrowsPlan.startAnimation(FabClose);
                 fabEdit.startAnimation(FabClose);
                 fabAddRemoveAppliances.startAnimation(FabClose);
@@ -496,6 +497,7 @@ public class MainActivity extends AppCompatActivity
                 textEdit.startAnimation(FabClose);
                 textAddRemove.startAnimation(FabClose);
                 textCreatePlan.startAnimation(FabClose);
+
                 fabEdit.setClickable(false);
                 fabCreateTomorrowsPlan.setClickable(false);
                 fabAddRemoveAppliances.setClickable(false);
@@ -506,6 +508,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        //Open the fragment in which the user inputs the details of the schedule they want produced.
         fabCreateTomorrowsPlan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -566,9 +569,11 @@ public class MainActivity extends AppCompatActivity
         ensureDisplay(this, layoutView);
 
     }
+    //On returning to the main activity, ensure that everything is displayed correctly and that the notifications for today's tasks are queued.
     public void onResume() {
         super.onResume();
         ScrollView scroll = (ScrollView) findViewById(R.id.scrollTable);
+        //Scroll to the current hour of the day.
         focusOnView(scroll);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -588,7 +593,7 @@ public class MainActivity extends AppCompatActivity
             am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + minutes*60*1000,minutes*60*1000, pi);
         }
     }
-
+    //if back is pressed to exit one of the FAB options, ensure the FABs are revealed and usable again.
     @Override
     public void onBackPressed() {
         if(fabRevealFabs!=null){
@@ -621,35 +626,9 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-//        if (id == R.id.nav_camera) {
-//            // Handle the camera action
-//        } else if (id == R.id.nav_gallery) {
-//
-//        } else if (id == R.id.nav_slideshow) {
-//
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-
+    //If the date changes, store the new date for today and tomorrow, change the title and, if one is available, get the schedule that was planned yesterday for today and display it.
     public void setDate(MainActivity mainActivity){
-        String todayDate = "",tomorrowDate = "";
+        String todayDate = "",tomorrowDate;
         FileInputStream fisDate;
         StringBuilder builder;
         int ch;
@@ -661,17 +640,6 @@ public class MainActivity extends AppCompatActivity
             }
             fisDate.close();
             todayDate = builder.toString();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        try{
-            fisDate = mainActivity.openFileInput("TomorrowsDate.txt");
-            builder = new StringBuilder();
-            while ((ch = fisDate.read()) != -1) {
-                builder.append((char) ch);
-            }
-            fisDate.close();
-            tomorrowDate = builder.toString();
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -797,6 +765,8 @@ public class MainActivity extends AppCompatActivity
             display = null;
         }
     }
+
+    //set the TomorrowSchedule text file
     public void setDisplay(String s){
         System.out.print(s+"\n");
         try{
@@ -808,6 +778,8 @@ public class MainActivity extends AppCompatActivity
         }
         this.display = s;
     }
+
+    //Start the process of creating, rating, displaying and storing possible plans.
     public void callBackgroundTasks(Action[] array, int progressChangedValue){
         tasksStop = false;
         Schedule lists = new Schedule(array);
@@ -815,6 +787,7 @@ public class MainActivity extends AppCompatActivity
         motherTask = new createSchedulesTask(MainActivity.this,progressChangedValue, this).execute(pass);
     }
 
+    //If, before the background tasks are complete, they are called again, cancel the background tasks to reduce overhead and prevent crashing from overload.
     public void cancelBackgroundTasks(){
         if(motherTask!=null){
             tasksStop = true;
@@ -822,13 +795,12 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    //Check if the tasks are cancelled.
     public boolean checkTasksStop(){
         return tasksStop;
     }
-    public String getDisplay(){
-        return this.display;
-    }
 
+    //set the list the actions.
     public void setList(String a){
         try{
             FileOutputStream fos = this.openFileOutput("ActionInputList.txt", this.MODE_PRIVATE);
@@ -840,88 +812,7 @@ public class MainActivity extends AppCompatActivity
         this.list = a;
     }
 
-    public String sendActionList(){
-        try {
-            FileInputStream fis = this.openFileInput("ActionInputList.txt");
-            int ch;
-            StringBuilder builder = new StringBuilder();
-            while ((ch = fis.read()) != -1) {
-                builder.append((char) ch);
-            }
-            fis.close();
-            this.list = builder.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return this.list;
-    }
-
-    public void removeItem(String removeAction){
-        ArrayList<Action> actionList = new ArrayList<Action>();
-        ArrayList<String> actionStrings = new ArrayList<String>();
-        String[] testArray = list.split("[\\r\\n]+");
-        for(int i = 0; i<testArray.length;i++){
-            String[] temp = testArray[i].split(",");
-            boolean parallel;
-            switch(temp[0]){
-                case "Hob":
-                    parallel = false;
-                    break;
-                case "Oven":
-                    parallel = true;
-                    break;
-                case "TumbleDryer":
-                    parallel = true;
-                    break;
-                case "WashingMachine":
-                    parallel = true;
-                    break;
-                case "Computer":
-                    parallel = false;
-                    break;
-                case "Kettle":
-                    parallel = true;
-                    break;
-                case "DishWasher":
-                    parallel = true;
-                    break;
-                case "Shower":
-                    parallel = false;
-                    break;
-                default:
-                    parallel = false;
-                    break;
-            }
-            actionList.add(new Action(temp[0],temp[1],temp[2],temp[3],temp[4], parallel));
-            actionStrings.add(temp[0]+"\t"+temp[1]+"-"+temp[2]+"\t"+temp[4]);
-        }
-        String[] currentActions = new String[actionStrings.size()];
-        actionStrings.toArray(currentActions);
-        int indexOfRemoval = -1;
-        for(int i = 0; i< currentActions.length;i++){
-            if(currentActions[i].equals(removeAction)){
-                indexOfRemoval = i;
-                currentActions[i] = null;
-                int durationOfToast = Toast.LENGTH_SHORT;
-                String toastString = removeAction+" removed.";
-                Toast toast = Toast.makeText(this, toastString, durationOfToast);
-                toast.show();
-            }
-        }
-
-        if(indexOfRemoval>=0&&indexOfRemoval<actionList.size()){
-            actionList.remove(indexOfRemoval);
-        }
-
-        actionList.removeAll(Collections.singleton(null));
-        actionList.trimToSize();
-        String listCSV = "";
-        for(Action a: actionList){
-            listCSV+=a.name+","+a.getTimeString(a.windowStart)+","+a.getTimeString(a.windowEnd)+","+a.getTimeString(a.duration)+","+a.getTimeString(a.optimalTime)+"\n";
-        }
-        setList(listCSV);
-    }
-
+    //If an appliance is removed from the Add/Remove option, remove all instances of the appliance from the action list.
     public void removeItemWithName(String name){
         if(list!=null){
             ArrayList<Action> actionList = new ArrayList<Action>();
@@ -981,6 +872,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    //Check if a task should start soon and notify the user if so.
     public void checkForTodaysScheduleTask(MainActivity ma){
         final MainActivity m = ma;
         final Handler handler = new Handler();
@@ -1068,6 +960,7 @@ public class MainActivity extends AppCompatActivity
         },100);
     }
 
+    //Placeholder method to receive a new plan
     public void receiveBetterPlan(String a){
         String plans = "";
         try {
@@ -1110,6 +1003,8 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
+    //Ensure the display is correct for the date.
     public void ensureDisplay(MainActivity ma, View v){
             final MainActivity m = ma;
             final View layoutView = v;
@@ -1165,6 +1060,7 @@ public class MainActivity extends AppCompatActivity
             },100);
     }
 
+    //Show the survey.
     public void callSurvey(){
         fabRevealFabs = (FloatingActionButton) findViewById(R.id.fabRevealFabs);
         fabRevealFabs.setVisibility(View.INVISIBLE);
@@ -1204,6 +1100,8 @@ public class MainActivity extends AppCompatActivity
         };
         newFragment.DismissListner(closeListener);
     }
+
+    //If a survey fragment is closed, check if it was the end of the survey or if the next part of the survey should be displayed.
     @Override
     public void handleDialogClose(DialogInterface dialog) {
         String progress = "0";
@@ -1230,6 +1128,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    //Get the wattage file of the user.
     public String[] getWattage(){
         String wattage = "";
         String[] wattageArray;
@@ -1253,16 +1152,21 @@ public class MainActivity extends AppCompatActivity
         return wattageArray;
     }
 
+    //get the FAB that when pressed reveals the other FABs.
     public FloatingActionButton getFabRevealFabs(){
         return fabRevealFabs;
     }
 
+    //Check if the survey should be revealed.
     public boolean showSurvey(){
         return settings.getBoolean("show_survey",true);
     }
+    //Check if this is the first time the application has been started.
     public boolean firstTimeStart(){
         return settings.getBoolean("my_first_time", true);
     }
+
+    //Get the distance between the starting hour line and the items actual starting time.
     public double getBias(double minutesAfterStartingHour, double fullTimeFrame, double duration){
         double bias = (minutesAfterStartingHour/(fullTimeFrame-duration));
         if(minutesAfterStartingHour!=0){
@@ -1274,6 +1178,8 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    //given a string input of format "00:00" where the first two numbers are the hours and the second two are the minutes,
+    //return an integer of the total number of minutes that represents.
     public static int getIntTime(String a){
         int time;
         char[] timeCharArray = a.toCharArray();
@@ -1282,6 +1188,9 @@ public class MainActivity extends AppCompatActivity
         time=hour*60+minute;
         return time;
     }
+
+    //given an integer whose value is equal to a total number of minutes, convert into a string in the format "00:00" where the first two numbers
+    // are the hours and the second two are the minutes.
     public static String getTimeString(int a){
         int hour = a/60;
         int minute = a%60;
@@ -1299,14 +1208,18 @@ public class MainActivity extends AppCompatActivity
         return result;
     }
 
+    //given an integer whose value is equal to a total number of minutes, get how many hours that is.
     public int getHour(int time){
         return time/60;
     }
+
+    //convert dp to px for constraintSet inputs.
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
+    //Add an item to the constraint layout display.
     public void addEvent(String name, String startTimeString, String durationString, ConstraintLayout constraintLayout){
         String eventName = name;
         switch(name){
@@ -1536,6 +1449,7 @@ public class MainActivity extends AppCompatActivity
         index++;
     }
 
+    //When a new fragment is displayed, hide the mainlayout.
     public void setMainLayoutViewInvisible(boolean check){
         if(check){
             mainLayoutView.setVisibility(View.GONE);
@@ -1544,6 +1458,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    //Scroll to the current hour.
     private final void focusOnView(final ScrollView scroll) {
         final View view = getHour();
         scroll.post(new Runnable() {
@@ -1554,6 +1469,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    //get the line of the current hour.
     private View getHour(){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String currentTimeHour = simpleDateFormat.format(new Date()).substring(11,13);
@@ -1639,9 +1555,12 @@ public class MainActivity extends AppCompatActivity
         return barToScrollTo;
     }
 
+    //Open the fragment with the plans for the user to choose from in this activity.
     public void choicesPopUp(){
         onOpenDialog(thisView);
     }
+
+    //open the fragment with the plans for the user to choose from.
     public void onOpenDialog(View view)
     {
         FragmentManager fm = getSupportFragmentManager();
@@ -1649,6 +1568,7 @@ public class MainActivity extends AppCompatActivity
         overlay.show(fm, "FragmentDialog");
     }
 
+    //Set the fabs to visible or invisible.
     public void setFabRevealFabsVisibility(boolean a){
         if(fabRevealFabs!=null){
             if(a){

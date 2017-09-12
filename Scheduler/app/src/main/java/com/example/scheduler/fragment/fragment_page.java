@@ -13,14 +13,11 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.example.scheduler.R;
-
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 
@@ -50,7 +47,7 @@ public class fragment_page extends Fragment {
         ConstraintLayout constraintLayout = (ConstraintLayout)lv.findViewById(R.id.table);
         data = getArguments().getString("data");
         String[] removeComma = data.split(",");
-
+        //take the items from the plan provided and display it for the user to choose from.
         String[][] removeTab = new String[removeComma.length][];
         String[][] eventsDetails = new String[removeComma.length][3];
         for(int i =0; i<removeComma.length;i++){
@@ -67,7 +64,7 @@ public class fragment_page extends Fragment {
             addEvent(eventsDetails[i][0],eventsDetails[i][1],eventsDetails[i][2],constraintLayout,lv);
         }
         final String associatedText = data;
-
+        //If the user checks the box for this plan, save its details.
         final CheckBox cb = (CheckBox)lv.findViewById(R.id.check);
         cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -86,7 +83,7 @@ public class fragment_page extends Fragment {
 
         return lv;
     }
-
+    //Get the distance between the starting hour line and the items actual starting time.
     public double getBias(double minutesAfterStartingHour, double fullTimeFrame, double duration){
         double bias = (minutesAfterStartingHour/(fullTimeFrame-duration));
         if(minutesAfterStartingHour!=0){
@@ -96,7 +93,8 @@ public class fragment_page extends Fragment {
         }
 
     }
-
+    //given a string input of format "00:00" where the first two numbers are the hours and the second two are the minutes,
+    //return an integer of the total number of minutes that represents.
     public static int getIntTime(String a){
         int time;
         char[] timeCharArray = a.toCharArray();
@@ -105,6 +103,8 @@ public class fragment_page extends Fragment {
         time=hour*60+minute;
         return time;
     }
+    //given an integer whose value is equal to a total number of minutes, convert into a string in the format "00:00" where the first two numbers
+    // are the hours and the second two are the minutes.
     public static String getTimeString(int a){
         int hour = a/60;
         int minute = a%60;
@@ -121,15 +121,18 @@ public class fragment_page extends Fragment {
         }
         return result;
     }
-
+    //given an integer whose value is equal to a total number of minutes, get how many hours that is.
     public int getHour(int time){
         return time/60;
     }
+
+    //convert dp to px for constraintSet inputs.
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
+    //Add an item to the constraint layout display.
     public void addEvent(String name, String startTimeString, String durationString, ConstraintLayout constraintLayout, View view){
         String eventName = name;
         switch(name){

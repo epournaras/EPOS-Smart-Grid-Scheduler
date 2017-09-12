@@ -8,24 +8,18 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.example.scheduler.R;
-
-import org.w3c.dom.Text;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -34,16 +28,14 @@ import java.util.ArrayList;
 /**
  * Created by warrens on 06.09.17.
  */
-
+//a shell dialog fragment to hold the pages of options of possible plans.
+// if the button is pressed, put the tempChosenPlan into chosen plan and dismiss the dialog.
 public class tabsFragment extends DialogFragment {
 
     private SectionsPagerAdapter sectionsPagerAdapter;
     private ViewPager viewPager;
     public int pagesCount;
 
-    // ------------------------------------------------------------------------
-    // public usage
-    // ------------------------------------------------------------------------
 
     @Override
     public Dialog onCreateDialog(final Bundle savedInstanceState)

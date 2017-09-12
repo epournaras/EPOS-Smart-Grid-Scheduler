@@ -1,8 +1,7 @@
 package com.example.scheduler.fragment;
 
-import android.support.v4.app.FragmentTransaction;
+
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import com.example.scheduler.MainActivity;
 import com.example.scheduler.R;
 
@@ -101,7 +99,7 @@ public class addRemoveAppliance extends Fragment {
             temp.setText(applianceNames[i]);
             temp.setTextColor(getResources().getColor(R.color.white));
             temp.setShadowLayer(1.5f, -1, 1, getResources().getColor(R.color.black));
-
+            //check which appliances are currently added or not.
             if(applianceNames[i].equals(enableTable[i][0])){
                 applianceEnableBooleans[i] = "false";
                 if(enableTable[i][1].equals("true")){
@@ -144,6 +142,7 @@ public class addRemoveAppliance extends Fragment {
             LinearLayoutIdArrayList.add(tempLayoutView.getId());
             LinearLayoutArrayList.add(tempLayoutView);
         }
+        //dismiss the fragment without saving changes.
         final Fragment thisFrag = this;
         Button cancel = (Button) v.findViewById(R.id.button);
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -156,7 +155,7 @@ public class addRemoveAppliance extends Fragment {
                 getActivity().getSupportFragmentManager().beginTransaction().remove(thisFrag).commit();
             }
         });
-
+        //dismiss the fragment and save the changes.
         Button confirm = (Button) v.findViewById(R.id.button2);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override

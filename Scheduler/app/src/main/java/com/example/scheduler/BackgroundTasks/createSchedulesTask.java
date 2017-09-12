@@ -30,6 +30,7 @@ public class createSchedulesTask extends AsyncTask<Schedule, Integer, Schedule> 
         toast.show();
     }
 
+    //call the Schedule methods to create and sort the possible plans.
     protected Schedule doInBackground(Schedule... lists){
         Schedule list = lists[0];
         long startTime = System.currentTimeMillis();
@@ -67,6 +68,7 @@ public class createSchedulesTask extends AsyncTask<Schedule, Integer, Schedule> 
 
     }
 
+    //store the possible plans.
     protected void onPostExecute(Schedule result) {
         if(!isCancelled()){
             Schedule[] pass = new Schedule[]{result};
