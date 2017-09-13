@@ -768,7 +768,6 @@ public class MainActivity extends AppCompatActivity
 
     //set the TomorrowSchedule text file
     public void setDisplay(String s){
-        System.out.print(s+"\n");
         try{
             FileOutputStream fos = this.openFileOutput("TomorrowSchedule.txt", this.MODE_PRIVATE);
             fos.write(s.getBytes());
@@ -1048,7 +1047,6 @@ public class MainActivity extends AppCompatActivity
                                 String partsTogether = temp[0]+","+temp[1];
                                 parts[i] = partsTogether;
                                 nameStartDuration[i] = parts[i].split(",");
-                                System.out.print(i+": "+parts[i]+"\n");
                                 addEvent(nameStartDuration[i][0],nameStartDuration[i][1],nameStartDuration[i][2],constraintLayout);
                             }
                         }
@@ -1118,7 +1116,6 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
         int nextScreen = Integer.parseInt(progress);
-        System.out.print(nextScreen+"\n");
         if(nextScreen!=0){
             me.callSurvey();
         }else{
@@ -1147,7 +1144,6 @@ public class MainActivity extends AppCompatActivity
         }catch(Exception e){
             e.printStackTrace();
         }
-        System.out.print("Wattage List:"+wattage+"\n");
         wattageArray = wattage.split(",");
         return wattageArray;
     }
@@ -1170,7 +1166,6 @@ public class MainActivity extends AppCompatActivity
     public double getBias(double minutesAfterStartingHour, double fullTimeFrame, double duration){
         double bias = (minutesAfterStartingHour/(fullTimeFrame-duration));
         if(minutesAfterStartingHour!=0){
-            System.out.print(minutesAfterStartingHour+" "+fullTimeFrame+" "+duration+"\n");
             return bias;
         }else{
             return 0;
@@ -1474,7 +1469,6 @@ public class MainActivity extends AppCompatActivity
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String currentTimeHour = simpleDateFormat.format(new Date()).substring(11,13);
         View barToScrollTo;
-        System.out.print("Hour:"+currentTimeHour+"\n");
         switch(currentTimeHour){
             case "00":
                 barToScrollTo= (View) findViewById(R.id.topBar);

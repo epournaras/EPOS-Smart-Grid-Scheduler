@@ -166,7 +166,6 @@ public class addRemoveAppliance extends Fragment {
                         enableTable[i][1] = applianceEnableBooleans[i];
                     }
                     for(int j = 0; j<enableTable[i].length;j++){
-                        System.out.print(j+" "+enableTable.length+" "+enableTable[i][j]+"\n");
                         if(j==enableTable[i].length-1){
                             if(enableTable[i][j].equals("false")) ((MainActivity)getActivity()).removeItemWithName(enableTable[i][0]);
                             submitString+=enableTable[i][j];

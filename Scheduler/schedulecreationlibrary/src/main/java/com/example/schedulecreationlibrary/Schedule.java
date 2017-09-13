@@ -4,11 +4,12 @@ package com.example.schedulecreationlibrary;
  * Created by warrens on 08.08.17.
  */
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;;
+import java.util.List;
 
 public class Schedule {
     private long startTimeCreateSchedule;
@@ -31,18 +32,20 @@ public class Schedule {
     public int count = 0;
     private Action[][] schedulesList;
     public boolean rankingDone = false;
-    //  public RatedSchedule[] ratedList;
     public Action[][] finalList;
 
     public Schedule(Action[] a){
         list.addAll(Arrays.asList(a));
     }
+
     public Schedule(){
 
     }
+
     public void add(Action a){
         list.add(a);
     }
+
     public void remove(Action a){
         list.remove(a);
     }
@@ -55,6 +58,51 @@ public class Schedule {
         this.actionList = list.toArray(new Action[list.size()]);
         list.clear();
         list.trimToSize();
+    }
+
+
+    /**
+     *                                  FARZAM - This class is basically the same as ThreadManager. It is not finished or working yet, but I am attempting to create a version of
+     *                                  Thread Manager that uses BigInteger instead of long.
+     *
+     */
+    public void makeScheduleListBigInteger(){
+        if(list.size()>0){
+            initialiseActionList();
+            BigInteger totalCombinations = BigInteger.ONE;
+            for(int i = 0 ; i<this.actionList.length;i++) {
+                if (this.actionList[i].versions.length > 0) {
+                    totalCombinations = totalCombinations.multiply(new BigInteger(""+this.actionList[i].versions.length));
+                    System.out.print(totalCombinations.toString()+"\n");
+                }
+            }
+            int cores = (Runtime.getRuntime().availableProcessors())*2;
+            BigInteger coresBigInt = new BigInteger(""+(Runtime.getRuntime().availableProcessors())*2);
+            BigInteger[] startingPoints = new BigInteger[cores];
+            for(int i =0;i<startingPoints.length;i++){
+                startingPoints[i] = (totalCombinations.divide(coresBigInt)).multiply(new BigInteger(""+i));
+            }
+
+            ArrayList<ThreadManagerBigInteger> threads = new ArrayList<ThreadManagerBigInteger>();
+            for(int i = 0 ; i<cores; i++){
+                if(i+1<startingPoints.length){
+                    threads.add(new ThreadManagerBigInteger("Thread "+i,actionList,this, startingPoints[i],startingPoints[i+1]));
+                }else{
+                    threads.add(new ThreadManagerBigInteger("Thread "+i,actionList,this, startingPoints[i],totalCombinations));
+                }
+            }
+            threads.trimToSize();
+            for(int i = 0; i<threads.size();i++){
+                threads.get(i).start();
+            }
+            for(int i = 0; i<threads.size();i++){
+                try{
+                    threads.get(i).t.join();
+                }catch(InterruptedException e){
+                    System.out.print("Thread "+i+" interrupted\n");
+                }
+            }
+        }
     }
 
     public void makeScheduleList(){
@@ -159,7 +207,7 @@ public class Schedule {
                 scheduleList.add(list);
             }
             else{
-                System.out.print("Here 4\n");
+                System.out.print("Unusual conflict when returning list\n");
             }
         }
     }
@@ -234,124 +282,6 @@ public class Schedule {
     public String getTimings(){
         return this.timings;
     }
-    /*
-     * Go to the last list that was given to a thread, use it as an input to changeWindow to get the next list to use to get another schedule
-     */
-//    public synchronized Action[] getNextList(){
-//    	if(countOfUsedPositions<actionList[0].versions.length){
-//    		Action[] temp = new Action[actionList.length];
-//    		temp[0] = actionList[0].getVersion(countOfUsedPositions);
-//    		countOfUsedPositions++;
-//    		return temp;
-//    	}
-//    	return null;
-//    }
-
-
-//    public Action[] getSchedule(Action[] referenceList, int startingIndex){
-//        boolean noSchedule = false;
-//        Action[] temp = new Action[referenceList.length];
-//        for(int i = startingIndex; i<referenceList.length&&!noSchedule;i++){
-//            if(temp[i]==null){
-//                temp[i] = actionList[i].getVersion(0);
-//            }
-//            temp[i] = changeWindow(i,temp);
-//            if(temp[i]==null){
-//                if(i!=startingIndex){
-//                    i-=2;
-//                }else{
-//                    temp = null;
-//                    noSchedule = true;
-//                }
-//            }
-//        }
-//        return temp;
-//    }
-
-
-    /*
-     * Take in an action in an action array.
-     * Move the window of the action, check if the new position of the window conflicts with actions preceding this action in the array.
-     * If not: return the action with the new window.
-     * If it conflicts, move the window of the action again.
-     * If the window moves to the end of possible window positions and there was no position in which it did not conflict with preceding actions, return null.
-     */
-//    public Action changeWindow(int indexOfItem, Action[] currentSchedule){
-//        try{
-//        	boolean positionOk = false;
-//        	int position = 0;
-//        	for(int i = 0; i<currentSchedule[indexOfItem].versions.length&&!positionOk;i++){
-//        		positionOk = checkPosition(indexOfItem, currentSchedule[indexOfItem].getVersion(i),currentSchedule);
-//        		position = i;
-//        	}
-//        	if(!positionOk){
-//        		return null;
-//        	}else{
-//        		return currentSchedule[indexOfItem].getVersion(position);
-//        	}
-//        }catch(NullPointerException e){
-//            System.out.print("ERROR: Action "+currentSchedule[indexOfItem].name+" is null \n");
-//            return null;
-//        }
-//    }
-//
-    /*
-     * Threads attempt to pass back the ratings they found for the particular schedule they were working on.
-     */
-//    public synchronized void returnRating(int i, double a){
-//        ratings[i] = a;
-//    }
-//
-//    /*
-//     * Using the ArrayList of Schedules (Arrays of Actions), create their rating by totalling the rating of each of their actions
-//     * Then, using this rating rank them in order of lowest to highest rating.
-//     */
-//    public void rankSchedulesByRating(){
-//    	System.out.print(scheduleList.size()+"\n");
-//    	System.out.print("Here 2 \n");
-//        schedulesList = new Action[scheduleList.size()][];
-//        scheduleList.toArray(schedulesList);
-//
-//        int cores = Runtime.getRuntime().availableProcessors();
-//        ArrayList<RankingThreads> threads = new ArrayList<RankingThreads>();
-//        ratings = new double[schedulesList.length];
-//
-//        for(int i = 0; i<cores;i++){
-//            threads.add(new RankingThreads("Thread "+i,this, i, schedulesList[i]));
-//            passedSchedulesCount++;
-//        }
-//        threads.trimToSize();
-//        for(int i = 0; i<threads.size();i++){
-//            threads.get(i).start();
-//        }
-//        for(int i = 0; i<threads.size();i++){
-//            try{
-//                threads.get(i).t.join();
-//            }catch(InterruptedException e){
-//                System.out.print("Thread "+i+" interrupted\n");
-//            }
-//        }
-//    }
-
-
-//    public synchronized ScheduleAndIndex getNewSchedule(){
-//
-//        ScheduleAndIndex passBack = new ScheduleAndIndex();
-//        if(passedSchedulesCount<schedulesList.length){
-//            int index = passedSchedulesCount;
-//            Action[] schedule = schedulesList[passedSchedulesCount];
-//            passBack = new ScheduleAndIndex(index, schedule, false);
-//            passedSchedulesCount++;
-//        }else{
-//            passBack = new ScheduleAndIndex();
-//        }
-//        return passBack;
-//    }
-//
-//    public synchronized void receiveSortedRatedSchedules(RatedSchedule[] a){
-//        this.rankedSchedules = new RatedSchedule[a.length];
-//        System.arraycopy(a, 0, this.rankedSchedules, 0, a.length);
-//    }
 }
 
 class ratingComparator implements Comparator<Action[]> {

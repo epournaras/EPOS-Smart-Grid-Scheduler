@@ -44,13 +44,24 @@ public class ThreadManager implements Runnable{
         }
         long[] indeces = new long[list.length];
         if(optimalPoint>startingIndex&&optimalPoint<endingIndex){
-            indeces = getCombination(optimalPoint+1,list,0,indeces);
             Action[] check = new Action[list.length];
             for(int j = 0; j< list.length; j++){
-                check[j] = list[j].getVersion((int)indeces[j]);
+                check[j] = list[j].getVersion(list[j].getOptimalIndex());
             }
             if(checkList(check)){
                 caller.returnActionList(check);
+            }
+        }else{
+            if(optimalPoint<0){
+                if(threadName.equals("Thread 0")){
+                    Action[] check = new Action[list.length];
+                    for(int j = 0; j< list.length; j++){
+                        check[j] = list[j].getVersion(list[j].getOptimalIndex());
+                    }
+                    if(checkList(check)){
+                        caller.returnActionList(check);
+                    }
+                }
             }
         }
         for(long i = startingIndex; i<endingIndex&&count<maxCount;i+=step){

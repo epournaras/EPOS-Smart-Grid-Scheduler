@@ -94,7 +94,6 @@ public class tabsFragment extends DialogFragment {
                         builder.append((char)ch);
                     }
                     String print = builder.toString();
-                    System.out.print(print+"\n");
                     fos = getActivity().openFileOutput("chosenPlan.txt",Context.MODE_PRIVATE);
                     fos.write(builder.toString().getBytes());
                     fis.close();
@@ -132,7 +131,6 @@ public class tabsFragment extends DialogFragment {
                 e.printStackTrace();
             }
             separate = submit.split("\n");
-            System.out.print(separate+" "+position+"\n");
             submit = separate[position];
             fragment_page page = fragment_page.newInstance(submit);
             pages.add(position,page);

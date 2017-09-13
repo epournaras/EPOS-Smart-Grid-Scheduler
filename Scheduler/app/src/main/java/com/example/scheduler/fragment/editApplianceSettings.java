@@ -77,7 +77,6 @@ public class editApplianceSettings extends Fragment {
         }catch(Exception e){
             e.printStackTrace();
         }
-        System.out.print(wattages+"\n");
         final String[] wattagesArray = wattages.split(",");
         LinearLayout lin = (LinearLayout)v.findViewById(R.id.editTextLayout);
         LinearLayout tempLayoutView;
@@ -164,7 +163,6 @@ public class editApplianceSettings extends Fragment {
                         wattFile+=wattagesArray[i];
                     }
                 }
-                System.out.print(wattFile+"\n");
                 try{
                     FileOutputStream fos = getActivity().openFileOutput("wattagesFile.txt", Context.MODE_PRIVATE);
                     fos.write(wattFile.getBytes());

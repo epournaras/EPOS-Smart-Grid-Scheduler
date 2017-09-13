@@ -167,8 +167,6 @@ public class fragment_page extends Fragment {
         int startTime = getIntTime(startTimeString);
         int startingLine = getHour(startTime);
         int duration = getIntTime(durationString);
-        System.out.print("Duration: "+duration+"\n"+
-        "Duration String: "+durationString+"\n");
         int endTime = startTime+duration;
         int endLine = getHour(endTime);
         int frame = ((endLine+1)-startingLine)*60;
