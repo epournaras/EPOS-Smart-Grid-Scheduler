@@ -28,6 +28,7 @@ public class createFilesTask extends AsyncTask<String, Integer, String> {
     public String[][] submitableData;
     public String[] wattage;
     public String[]device;
+    boolean canceled = false;
 
     private String[] actionNames = {
             "cooking (Hob)",
@@ -54,18 +55,24 @@ public class createFilesTask extends AsyncTask<String, Integer, String> {
         this.data = d;
         this.context = c;
         this.activity = m;
-        submitableData = new String[d.length][d[0].length];
+        if(d.length==0){
+            canceled = true;
+        }else{
+            submitableData = new String[d.length][d[0].length];
+        }
         wattage = w;
     }
 
     protected String doInBackground(String... a){
-        storeData(data);
+        if(!canceled)
+            storeData(data);
         return null;
     }
     protected void onProgressUpdate(Integer... a){
 
     }
     protected void onPostExecute(String result){
+        if(!canceled)
                 activity.getFilesToSend(device);
     }
     public boolean checkCancelled(){

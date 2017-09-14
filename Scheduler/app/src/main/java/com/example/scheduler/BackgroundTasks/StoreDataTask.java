@@ -151,14 +151,21 @@ public class StoreDataTask extends AsyncTask<Schedule, Integer, String> {
     }
     protected void onPostExecute(String result) {
         if(!checkCancelled()){
-            activity.setDisplay(result);
-            activity.choicesPopUp();
-            String toastString = "Tomorrow's Schedule Set";
-            int durationOfToast = Toast.LENGTH_SHORT;
-            Toast toast = Toast.makeText(context, toastString, durationOfToast);
-            toast.show();
-            String[] pass = new String[]{"1"};
-            new createFilesTask(parseableData, context,activity, wattage).execute(pass);
+            if(parseableData.length>0){
+                activity.setDisplay(result);
+                activity.choicesPopUp();
+                String toastString = "Tomorrow's Schedule Set";
+                int durationOfToast = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                toast.show();
+                String[] pass = new String[]{"1"};
+                new createFilesTask(parseableData, context,activity, wattage).execute(pass);
+            }else{
+                String toastString = "No Schedules exist for this input";
+                int durationOfToast = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(context, toastString, durationOfToast);
+                toast.show();
+            }
         }
     }
 
