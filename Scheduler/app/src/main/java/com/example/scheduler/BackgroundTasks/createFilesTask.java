@@ -26,6 +26,8 @@ public class createFilesTask extends AsyncTask<String, Integer, String> {
     public Context context;
     public MainActivity activity;
     public String[][] submitableData;
+    public String[] wattage;
+    public String[]device;
 
     private String[] actionNames = {
             "cooking (Hob)",
@@ -48,11 +50,12 @@ public class createFilesTask extends AsyncTask<String, Integer, String> {
             "Shower"
     };
 
-    public createFilesTask(String[][][] d, Context c, MainActivity m){
+    public createFilesTask(String[][][] d, Context c, MainActivity m, String[] w){
         this.data = d;
         this.context = c;
         this.activity = m;
         submitableData = new String[d.length][d[0].length];
+        wattage = w;
     }
 
     protected String doInBackground(String... a){
@@ -63,7 +66,7 @@ public class createFilesTask extends AsyncTask<String, Integer, String> {
 
     }
     protected void onPostExecute(String result){
-
+                activity.getFilesToSend(device);
     }
     public boolean checkCancelled(){
         return activity.checkTasksStop();
@@ -92,9 +95,7 @@ public class createFilesTask extends AsyncTask<String, Integer, String> {
             long startTime = System.currentTimeMillis();
             if(a.length>0){
                 if(a[0].length>1){
-                    String[] wattagesArray = activity.getWattage();
-                    String[] device = new String[a[0].length];
-
+                    device = new String[a[0].length];
                     String title = "Plan/Time,00:00,00:01,00:02,00:03,00:04,00:05,00:06,00:07,00:08,00:09,00:10,00:11,00:12,00:13,00:14,00:15,00:16,00:17,00:18,00:19,00:20,00:21,00:22,00:23,00:24," +
                             "00:25,00:26,00:27,00:28,00:29,00:30,00:31,00:32,00:33,00:34,00:35,00:36,00:37,00:38,00:39,00:40,00:41,00:42,00:43,00:44,00:45,00:46,00:47,00:48,00:49,00:50,00:51,00:52," +
                             "00:53,00:54,00:55,00:56,00:57,00:58,00:59,01:00,01:01,01:02,01:03,01:04,01:05,01:06,01:07,01:08,01:09,01:10,01:11,01:12,01:13,01:14,01:15,01:16,01:17,01:18,01:19,01:20," +
@@ -150,7 +151,7 @@ public class createFilesTask extends AsyncTask<String, Integer, String> {
                     ArrayList<deviceFileFiller> threads = new ArrayList<>();
                     for(int i = 0;i<a.length;i++){
                         for(int j = 0;j<a[i].length;j++){
-                            threads.add(new deviceFileFiller("Thread "+i+"+"+j,a[i][j],wattagesArray[j+1],this,i,j));
+                            threads.add(new deviceFileFiller("Thread "+i+"+"+j,a[i][j],wattage[j+1],this,i,j));
                         }
                     }
                     threads.trimToSize();
@@ -175,80 +176,12 @@ public class createFilesTask extends AsyncTask<String, Integer, String> {
                         }
 
                     }
-
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-HH_mm_ss");
-                    String date = simpleDateFormat.format(new Date());
-
-                    String android_id;
-                    android_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-                    String fileFirstHalfTitle = android_id+"-";
-                    String setup = "0";
-
-                    try {
-                        FileInputStream fisPSched = context.openFileInput("PastSchedules.txt");
-                        int ch;
-                        StringBuilder builder = new StringBuilder();
-                        while ((ch = fisPSched.read()) != -1) {
-                            if(checkCancelled()){
-                                break;
-                            }else {
-                                char s = (char) ch;
-                                String st = "" + s;
-                                if (!st.equals(null)) {
-                                    builder.append((char) ch);
-                                }
-                            }
-                        }
-                        fisPSched.close();
-                        setup = builder.toString();
-                    }catch(Exception e) {
-                        e.printStackTrace();
-                    }
-                    if(checkCancelled()){
-
-                    }else{
-                        int setupInt = Integer.parseInt(setup);
-                        setupInt++;
-                        String fileSecondHalfTitle = "-"+date+"-"+setupInt+".txt" ;
-
-                        String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-                        FileOutputStream fOut=null;
-                        for(int i = 0; i<device.length;i++){
-                            String submitString = device[i];
-                            String fileName = fileFirstHalfTitle+actionFileNames[i]+"-"+fileSecondHalfTitle;
-                            System.out.print(fileName+"\n");
-                            File file1 = new File(root+ File.separator + fileName);
-                            if(!file1.exists()) {
-                                try {
-                                    file1.createNewFile();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            try {
-                                fOut = new FileOutputStream(file1);
-                                fOut.write(submitString.getBytes());
-                                fOut.close();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        try{
-                            fOut = context.openFileOutput("PastSchedules.txt", Context.MODE_PRIVATE);
-                            setup = ""+setupInt;
-                            fOut.write(setup.getBytes());
-                            fOut.close();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
                 }
             }else{
 
             }
         }
     }
-
     public void returnDataTask(String data, int indexOfSchedule, int indexOfDevice){
         submitableData[indexOfSchedule][indexOfDevice] = data;
     }

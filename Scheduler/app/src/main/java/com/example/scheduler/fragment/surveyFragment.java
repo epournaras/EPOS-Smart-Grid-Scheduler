@@ -1194,23 +1194,25 @@ public class surveyFragment extends Fragment {
                             String android_id;
                             android_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
                             String fileName = android_id+"-initial-Survey-results-on-"+date+".txt";
-                            String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-                            FileOutputStream fOut=null;
-                            File file1 = new File(root+ File.separator + fileName);
-                            if(!file1.exists()) {
-                                try {
-                                    file1.createNewFile();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            try {
-                                fOut = new FileOutputStream(file1);
-                                fOut.write(results.getBytes());
-                                fOut.close();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+
+                            ((MainActivity)getActivity()).sendMail(results,fileName);
+//                            String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+//                            FileOutputStream fOut;
+//                            File file1 = new File(root+ File.separator + fileName);
+//                            if(!file1.exists()) {
+//                                try {
+//                                    file1.createNewFile();
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                            try {
+//                                fOut = new FileOutputStream(file1);
+//                                fOut.write(results.getBytes());
+//                                fOut.close();
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
                             try{
                                 FileOutputStream fos = getActivity().openFileOutput("surveyProgress.txt",Context.MODE_PRIVATE);
                                 String nextScreen = 0+"";

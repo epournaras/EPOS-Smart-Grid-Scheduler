@@ -12,9 +12,11 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.constraint.ConstraintSet;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
@@ -48,6 +50,7 @@ import android.util.DisplayMetrics;
 
 import com.example.schedulecreationlibrary.Action;
 import com.example.schedulecreationlibrary.Schedule;
+import com.example.scheduler.BackgroundTasks.SendMailTask;
 import com.example.scheduler.BackgroundTasks.createSchedulesTask;
 import com.example.scheduler.Interface.MyDialogCloseListener;
 import com.example.scheduler.Notifications.NotificationService;
@@ -783,7 +786,7 @@ public class MainActivity extends AppCompatActivity
         tasksStop = false;
         Schedule lists = new Schedule(array);
         Schedule[] pass = new Schedule[]{lists};
-        motherTask = new createSchedulesTask(MainActivity.this,progressChangedValue, this).execute(pass);
+        motherTask = new createSchedulesTask(MainActivity.this,progressChangedValue, this, getWattage()).execute(pass);
     }
 
     //If, before the background tasks are complete, they are called again, cancel the background tasks to reduce overhead and prevent crashing from overload.
@@ -1572,6 +1575,81 @@ public class MainActivity extends AppCompatActivity
                 fabRevealFabs.setVisibility(View.INVISIBLE);
                 fabRevealFabs.setClickable(false);
             }
+        }
+    }
+
+    public void sendMail(String emailBody, String emailSubject){
+        String fromEmail = "mailsenderforscheduler@gmail.com";
+        String fromPassword = "TestMail56";
+        String toEmails = "mailsenderforscheduler@gmail.com";
+        String adminEmail = "admin@gmail.com";
+        String adminSubject = "App Registration Mail";
+        String adminBody = "Your message";
+        new SendMailTask(this).execute(fromEmail,
+                fromPassword, toEmails, emailSubject, emailBody);
+
+    }
+
+    public void getFilesToSend(String[] pass){
+        String[] device = pass;
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-HH_mm_ss");
+        String date = simpleDateFormat.format(new Date());
+
+        String android_id;
+        android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        String fileFirstHalfTitle = android_id+"-";
+        String setup = "0";
+
+        try {
+            FileInputStream fisPSched = openFileInput("PastSchedules.txt");
+            int ch;
+            StringBuilder builder = new StringBuilder();
+            while ((ch = fisPSched.read()) != -1) {
+
+                char s = (char) ch;
+                String st = "" + s;
+                if (!st.equals(null)) {
+                    builder.append((char) ch);
+                }
+            }
+            fisPSched.close();
+            setup = builder.toString();
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+        int setupInt = Integer.parseInt(setup);
+        setupInt++;
+        String fileSecondHalfTitle = "-"+date+"-"+setupInt+".txt" ;
+        FileOutputStream fOut;
+        for(int i = 0; i<device.length;i++){
+            String submitString = device[i];
+            String fileName = fileFirstHalfTitle+applianceNames[i]+"-"+fileSecondHalfTitle;
+            sendMail(submitString,fileName);
+//                            System.out.print(fileName+"\n");
+//                            File file1 = new File(root+ File.separator + fileName);
+//                            if(!file1.exists()) {
+//                                try {
+//                                    file1.createNewFile();
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                            try {
+//                                fOut = new FileOutputStream(file1);
+//                                fOut.write(submitString.getBytes());
+//                                fOut.close();
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+        }
+        try{
+            fOut = openFileOutput("PastSchedules.txt", Context.MODE_PRIVATE);
+            setup = ""+setupInt;
+            fOut.write(setup.getBytes());
+            fOut.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

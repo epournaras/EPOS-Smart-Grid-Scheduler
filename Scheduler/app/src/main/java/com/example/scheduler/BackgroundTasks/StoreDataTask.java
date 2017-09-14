@@ -21,11 +21,13 @@ public class StoreDataTask extends AsyncTask<Schedule, Integer, String> {
     public Context context;
     public int progressChangedValue;
     private MainActivity activity;
+    public String[] wattage;
 
-    public StoreDataTask(Context c, int a, MainActivity main){
+    public StoreDataTask(Context c, int a, MainActivity main,String[] w){
         context = c;
         progressChangedValue = a;
         activity = main;
+        wattage = w;
     }
 
     private String[] actionNames = {
@@ -156,7 +158,7 @@ public class StoreDataTask extends AsyncTask<Schedule, Integer, String> {
             Toast toast = Toast.makeText(context, toastString, durationOfToast);
             toast.show();
             String[] pass = new String[]{"1"};
-            new createFilesTask(parseableData, context,activity).execute(pass);
+            new createFilesTask(parseableData, context,activity, wattage).execute(pass);
         }
     }
 

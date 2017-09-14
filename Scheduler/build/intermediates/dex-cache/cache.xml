@@ -3,6 +3,24 @@
 
     <item
         is-multidex="false"
+        jar="/Users/warrens/EPOS-Frontend/Scheduler/libs/additionnal.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="bd9e8dc422bb8c8405359947fe9f4282b49f57f4">
+        <dex dex="/Users/warrens/EPOS-Frontend/Scheduler/app/build/intermediates/pre-dexed/debug/additionnal_96a663a336b51bc3a35fe840cfb7263758d5776a.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/warrens/EPOS-Frontend/Scheduler/libs/mail.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="428e267abff0d10802ccde86b915da2c20471160">
+        <dex dex="/Users/warrens/EPOS-Frontend/Scheduler/app/build/intermediates/pre-dexed/debug/mail_feaa0d4bb48426c011c664980b73a3dee836a1d9.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="/Users/warrens/.android/build-cache/0fb8bc6a0787e6fa41a658d8d497312dc2679bd1/output/jars/classes.jar"
         jumboMode="false"
         optimize="true"
@@ -12,12 +30,12 @@
     </item>
     <item
         is-multidex="false"
-        jar="/Users/warrens/EPOS-Frontend/Scheduler/schedulecreationlibrary/build/intermediates/bundles/default/classes.jar"
+        jar="/Users/warrens/EPOS-Frontend/Scheduler/libs/activation.jar"
         jumboMode="false"
         optimize="true"
         revision="25.0.2"
-        sha1="e4b1df6fbb65edd2c34037607194c70868092b6e">
-        <dex dex="/Users/warrens/EPOS-Frontend/Scheduler/app/build/intermediates/pre-dexed/debug/classes_5ee95fa2af39bd1e8f8631951ea04b3511f49ab8.jar" />
+        sha1="d1257cbff6faa44c1f325ae0d9413522d4644383">
+        <dex dex="/Users/warrens/EPOS-Frontend/Scheduler/app/build/intermediates/pre-dexed/debug/activation_a52a376a2ab4d8bd009dba70278ee1800e00b38e.jar" />
     </item>
     <item
         is-multidex="false"
@@ -27,6 +45,15 @@
         revision="25.0.2"
         sha1="e03f47f3d1017a093bb3239d4ec47c3447f40744">
         <dex dex="/Users/warrens/EPOS-Frontend/Scheduler/app/build/intermediates/pre-dexed/debug/classes_80f78bd8af30e231ff5b786af05422a973ed5c6e.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/warrens/EPOS-Frontend/Scheduler/schedulecreationlibrary/build/intermediates/bundles/default/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="e4b1df6fbb65edd2c34037607194c70868092b6e">
+        <dex dex="/Users/warrens/EPOS-Frontend/Scheduler/app/build/intermediates/pre-dexed/debug/classes_5ee95fa2af39bd1e8f8631951ea04b3511f49ab8.jar" />
     </item>
 
 </items>

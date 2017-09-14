@@ -18,10 +18,12 @@ public class createSchedulesTask extends AsyncTask<Schedule, Integer, Schedule> 
     public Context context;
     private MainActivity main;
     public int progressChangedValue;
-    public createSchedulesTask(Context c, int progress, MainActivity m){
+    public String[] wattage;
+    public createSchedulesTask(Context c, int progress, MainActivity m, String[] w){
         context = c;
         main = m;
         progressChangedValue = progress;
+        wattage = w;
     }
     protected void onPreExecute(){
         String toastString = "Please wait...";
@@ -72,7 +74,7 @@ public class createSchedulesTask extends AsyncTask<Schedule, Integer, Schedule> 
     protected void onPostExecute(Schedule result) {
         if(!isCancelled()){
             Schedule[] pass = new Schedule[]{result};
-            new StoreDataTask(context,progressChangedValue, main).execute(pass);
+            new StoreDataTask(context,progressChangedValue, main,wattage).execute(pass);
         }
 
     }
