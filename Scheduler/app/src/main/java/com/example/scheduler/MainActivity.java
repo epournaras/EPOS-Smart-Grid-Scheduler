@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -54,6 +56,7 @@ import com.example.scheduler.BackgroundTasks.SendMailTask;
 import com.example.scheduler.BackgroundTasks.createSchedulesTask;
 import com.example.scheduler.Interface.MyDialogCloseListener;
 import com.example.scheduler.Notifications.NotificationService;
+import com.example.scheduler.fragment.No_Network_Fragment;
 import com.example.scheduler.fragment.addRemoveAppliance;
 import com.example.scheduler.fragment.betterPlanPopUpFragment;
 import com.example.scheduler.fragment.editApplianceSettings;
@@ -515,22 +518,41 @@ public class MainActivity extends AppCompatActivity
         fabCreateTomorrowsPlan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager fragManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
-                DialogFragment newFragment = new fragment_create();
-                newFragment.show(fragmentTransaction, "fragment_create");
-                fabCreateTomorrowsPlan.startAnimation(FabClose);
-                fabEdit.startAnimation(FabClose);
-                fabAddRemoveAppliances.startAnimation(FabClose);
-                fabRevealFabs.startAnimation(FabRAntiClockwise);
+                if(isNetworkAvailable()){
+                    FragmentManager fragManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                    DialogFragment newFragment = new fragment_create();
+                    newFragment.show(fragmentTransaction, "fragment_create");
+                    fabCreateTomorrowsPlan.startAnimation(FabClose);
+                    fabEdit.startAnimation(FabClose);
+                    fabAddRemoveAppliances.startAnimation(FabClose);
+                    fabRevealFabs.startAnimation(FabRAntiClockwise);
 
-                textEdit.startAnimation(FabClose);
-                textAddRemove.startAnimation(FabClose);
-                textCreatePlan.startAnimation(FabClose);
-                fabEdit.setClickable(false);
-                fabCreateTomorrowsPlan.setClickable(false);
-                fabAddRemoveAppliances.setClickable(false);
-                isOpen = false;
+                    textEdit.startAnimation(FabClose);
+                    textAddRemove.startAnimation(FabClose);
+                    textCreatePlan.startAnimation(FabClose);
+                    fabEdit.setClickable(false);
+                    fabCreateTomorrowsPlan.setClickable(false);
+                    fabAddRemoveAppliances.setClickable(false);
+                    isOpen = false;
+                }else{
+                    FragmentManager fragManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                    DialogFragment newFragment = new No_Network_Fragment();
+                    newFragment.show(fragmentTransaction, "fragment_no_network");
+                    fabCreateTomorrowsPlan.startAnimation(FabClose);
+                    fabEdit.startAnimation(FabClose);
+                    fabAddRemoveAppliances.startAnimation(FabClose);
+                    fabRevealFabs.startAnimation(FabRAntiClockwise);
+
+                    textEdit.startAnimation(FabClose);
+                    textAddRemove.startAnimation(FabClose);
+                    textCreatePlan.startAnimation(FabClose);
+                    fabEdit.setClickable(false);
+                    fabCreateTomorrowsPlan.setClickable(false);
+                    fabAddRemoveAppliances.setClickable(false);
+                    isOpen = false;
+                }
             }
         });
 
@@ -1651,5 +1673,12 @@ public class MainActivity extends AppCompatActivity
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

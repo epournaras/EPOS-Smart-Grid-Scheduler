@@ -156,10 +156,8 @@ public class createFilesTask extends AsyncTask<String, Integer, String> {
                             "23:17,23:18,23:19,23:20,23:21,23:22,23:23,23:24,23:25,23:26,23:27,23:28,23:29,23:30,23:31,23:32,23:33,23:34,23:35,23:36,23:37,23:38,23:39,23:40,23:41,23:42,23:43,23:44," +
                             "23:45,23:46,23:47,23:48,23:49,23:50,23:51,23:52,23:53,23:54,23:55,23:56,23:57,23:58,23:59";
                     ArrayList<deviceFileFiller> threads = new ArrayList<>();
-                    for(int i = 0;i<a.length;i++){
-                        for(int j = 0;j<a[i].length;j++){
-                            threads.add(new deviceFileFiller("Thread "+i+"+"+j,a[i][j],wattage[j+1],this,i,j));
-                        }
+                    for(int j = 0;j<a[0].length;j++){
+                        threads.add(new deviceFileFiller("Thread "+j+"+"+j,a,wattage[j+1],this,a.length,j));
                     }
                     threads.trimToSize();
                     for(int i = 0;i<threads.size();i++){
