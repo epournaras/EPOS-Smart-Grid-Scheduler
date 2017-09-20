@@ -188,6 +188,48 @@ public class Schedule {
         }
     }
 
+    public Action[][] getNRankedSchedulesWithMoreCloserToBestRating(int n){
+        if(this.finalList!=null){
+            Action[][] NRankedSchedules;
+            if(finalList.length>=n){
+                NRankedSchedules = new Action[n][];
+                NRankedSchedules[0] = finalList[0];
+                for(int i =1;i<n;i++){
+                    NRankedSchedules[i] = finalList[(finalList.length/(n-i))-1];
+                }
+            }else{
+                NRankedSchedules = new Action[finalList.length][];
+                for(int i = 0; i<finalList.length;i++){
+                    NRankedSchedules[i] = finalList[i];
+                }
+            }
+            return NRankedSchedules;
+        }else{
+            return null;
+        }
+    }
+
+    public Action[][] getNRankedSchedulesWithMoreCloserToWorstRating(int n){
+        if(this.finalList!=null){
+            Action[][] NRankedSchedules;
+            if(finalList.length>=n){
+                NRankedSchedules = new Action[n][];
+                NRankedSchedules[0] = finalList[0];
+                for(int i =1;i<n;i++){
+                    NRankedSchedules[i] = finalList[(finalList.length-(finalList.length/(n-i)))-1];
+                }
+            }else{
+                NRankedSchedules = new Action[finalList.length][];
+                for(int i = 0; i<finalList.length;i++){
+                    NRankedSchedules[i] = finalList[i];
+                }
+            }
+            return NRankedSchedules;
+        }else{
+            return null;
+        }
+    }
+
     private void printSchedule(Action[] a){
         for (Action anA : a) {
             System.out.print(anA.name + ":\t" + anA.getTimeString(anA.windowStart) + "\t" + anA.getTimeString(anA.windowEnd) + "\t" + anA.getTimeString(anA.optimalTime) + "\n");

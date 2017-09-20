@@ -30,15 +30,6 @@
     </item>
     <item
         is-multidex="false"
-        jar="/Users/warrens/EPOS-Frontend/Scheduler/libs/activation.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.2"
-        sha1="d1257cbff6faa44c1f325ae0d9413522d4644383">
-        <dex dex="/Users/warrens/EPOS-Frontend/Scheduler/app/build/intermediates/pre-dexed/debug/activation_a52a376a2ab4d8bd009dba70278ee1800e00b38e.jar" />
-    </item>
-    <item
-        is-multidex="false"
         jar="/Users/warrens/.android/build-cache/8bc7c9504f06e084ed9df75360f5b6801fa6bc00/output/jars/classes.jar"
         jumboMode="false"
         optimize="true"
@@ -52,8 +43,17 @@
         jumboMode="false"
         optimize="true"
         revision="25.0.2"
-        sha1="e4b1df6fbb65edd2c34037607194c70868092b6e">
+        sha1="e10914fd2c72c84cf29feffb6118d6791c7efbc4">
         <dex dex="/Users/warrens/EPOS-Frontend/Scheduler/app/build/intermediates/pre-dexed/debug/classes_5ee95fa2af39bd1e8f8631951ea04b3511f49ab8.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/warrens/EPOS-Frontend/Scheduler/libs/activation.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="d1257cbff6faa44c1f325ae0d9413522d4644383">
+        <dex dex="/Users/warrens/EPOS-Frontend/Scheduler/app/build/intermediates/pre-dexed/debug/activation_a52a376a2ab4d8bd009dba70278ee1800e00b38e.jar" />
     </item>
 
 </items>

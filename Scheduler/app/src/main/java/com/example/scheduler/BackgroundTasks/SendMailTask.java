@@ -41,9 +41,7 @@ public class SendMailTask extends AsyncTask {
     @SuppressWarnings("unchecked")
     @Override
     protected Object doInBackground(Object... args) {
-        boolean sent = false;
-        while(!sent){
-            if(isNetworkAvailable()){
+        if(isNetworkAvailable()){
                 try {
                     Log.i("SendMailTask", "About to instantiate GMail...");
                     publishProgress("Processing input....");
@@ -60,8 +58,6 @@ public class SendMailTask extends AsyncTask {
                     publishProgress(e.getMessage());
                     Log.e("SendMailTask", e.getMessage(), e);
                 }
-                sent = true;
-            }
         }
         return null;
     }
@@ -74,7 +70,7 @@ public class SendMailTask extends AsyncTask {
 
     @Override
     public void onPostExecute(Object result) {
-        statusDialog.dismiss();
+        //statusDialog.dismiss();
     }
 
     private boolean isNetworkAvailable() {
