@@ -43,23 +43,11 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="806" column="31" selection-start-line="806" selection-start-column="31" selection-end-line="806" selection-end-column="31" />
+            <state relative-caret-position="193">
+              <caret line="806" column="32" selection-start-line="806" selection-start-column="32" selection-end-line="806" selection-end-column="32" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#26620#28096#0" expanded="true" />
-                <element signature="e#28095#28096#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="surveyFragment.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/fragment/surveyFragment.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5775">
-              <caret line="1589" column="25" selection-start-line="1589" selection-start-column="25" selection-end-line="1589" selection-end-column="25" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -68,12 +56,8 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/fragment/fragment_create.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="193">
-              <caret line="528" column="61" selection-start-line="528" selection-start-column="61" selection-end-line="528" selection-end-column="61" />
+              <caret line="528" column="60" selection-start-line="528" selection-start-column="60" selection-end-line="528" selection-end-column="60" />
               <folding>
-                <element signature="e#1796#1835#0" expanded="true" />
-                <element signature="e#1844#1889#0" expanded="true" />
-                <element signature="e#1894#1937#0" expanded="true" />
-                <element signature="e#1943#1989#0" expanded="true" />
                 <element signature="e#4872#4880#0" expanded="true" />
                 <element signature="e#5014#5022#0" expanded="true" />
                 <element signature="e#5148#5156#0" expanded="true" />
@@ -81,66 +65,7 @@
                 <element signature="e#5423#5431#0" expanded="true" />
                 <element signature="e#5556#5564#0" expanded="true" />
                 <element signature="e#5689#5697#0" expanded="true" />
-                <element signature="e#6950#24576#0" expanded="true" />
-                <element signature="e#24575#24576#0" expanded="true" />
-                <element signature="e#24715#25284#0" expanded="true" />
-                <element signature="e#25149#25215#0" expanded="true" />
-                <element signature="e#25283#25284#0" expanded="true" />
-                <element signature="e#25327#25895#0" expanded="true" />
-                <element signature="e#25761#25834#0" expanded="true" />
-                <element signature="e#25894#25895#0" expanded="true" />
-                <element signature="e#25937#26504#0" expanded="true" />
-                <element signature="e#26372#26444#0" expanded="true" />
-                <element signature="e#26503#26504#0" expanded="true" />
-                <element signature="e#26745#28980#0" expanded="true" />
-                <element signature="e#28979#28980#0" expanded="true" />
-                <element signature="e#31400#31683#0" expanded="true" />
-                <element signature="e#31682#31683#0" expanded="true" />
-                <element signature="e#36684#37016#0" expanded="true" />
-                <element signature="e#37015#37016#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Schedule.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/schedulecreationlibrary/src/main/java/com/example/schedulecreationlibrary/Schedule.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="193">
-              <caret line="170" column="28" selection-start-line="170" selection-start-column="22" selection-end-line="170" selection-end-column="28" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="No_Network_Fragment.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/fragment/No_Network_Fragment.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="30" column="26" selection-start-line="30" selection-start-column="26" selection-end-line="30" selection-end-column="26" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="createSchedulesTask.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/createSchedulesTask.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1009">
-              <caret line="76" column="45" selection-start-line="76" selection-start-column="45" selection-end-line="76" selection-end-column="45" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="StoreDataTask.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/StoreDataTask.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="525">
-              <caret line="55" column="65" selection-start-line="55" selection-start-column="65" selection-end-line="55" selection-end-column="65" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -2905,14 +2830,14 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/StoreDataTask.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/content_main.xml" />
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/deviceFileFiller.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/createFilesTask.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/no_network_fragment_layout.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/fragment/No_Network_Fragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/MainActivity.java" />
         <option value="$PROJECT_DIR$/schedulecreationlibrary/src/main/java/com/example/schedulecreationlibrary/Schedule.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/SendMailTask.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/deviceFileFiller.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/createFilesTask.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/fragment/fragment_create.java" />
       </list>
     </option>
@@ -3082,6 +3007,28 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="fragment" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Scheduler" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scheduler" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BackgroundTasks" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -3717,20 +3664,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/schedulecreationlibrary/src/main/java/com/example/schedulecreationlibrary/Action.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2100">
-          <caret line="152" column="22" selection-start-line="152" selection-start-column="12" selection-end-line="152" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/schedulecreationlibrary/src/main/java/com/example/schedulecreationlibrary/ThreadManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="904">
-          <caret line="62" column="21" selection-start-line="62" selection-start-column="21" selection-end-line="62" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/schedulecreationlibrary/src/main/java/com/example/schedulecreationlibrary/ThreadManagerBigInteger.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="600">
@@ -3809,28 +3742,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/deviceFileFiller.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="40" column="45" selection-start-line="40" selection-start-column="45" selection-end-line="40" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/values/styles.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/fragment/No_Network_Fragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="30" column="26" selection-start-line="30" selection-start-column="26" selection-end-line="30" selection-end-column="26" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -3849,14 +3765,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="840">
           <caret line="56" column="76" selection-start-line="56" selection-start-column="76" selection-end-line="56" selection-end-column="76" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/fragment/surveyFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5775">
-          <caret line="1589" column="25" selection-start-line="1589" selection-start-column="25" selection-end-line="1589" selection-end-column="25" />
           <folding />
         </state>
       </provider>
@@ -3881,46 +3789,88 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/SendMailTask.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="337">
-          <caret line="72" column="0" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
+        <state relative-caret-position="355">
+          <caret line="75" column="11" selection-start-line="75" selection-start-column="9" selection-end-line="75" selection-end-column="11" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/createFilesTask.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/fragment/No_Network_Fragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="601">
-          <caret line="162" column="56" selection-start-line="162" selection-start-column="56" selection-end-line="162" selection-end-column="56" />
+        <state relative-caret-position="420">
+          <caret line="30" column="26" selection-start-line="30" selection-start-column="26" selection-end-line="30" selection-end-column="26" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#869#1012#0" expanded="true" />
+            <element signature="e#1011#1012#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/schedulecreationlibrary/src/main/java/com/example/schedulecreationlibrary/ThreadManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="181">
+          <caret line="34" column="19" selection-start-line="34" selection-start-column="19" selection-end-line="34" selection-end-column="19" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/StoreDataTask.java">
+    <entry file="file://$PROJECT_DIR$/schedulecreationlibrary/src/main/java/com/example/schedulecreationlibrary/Action.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="55" column="65" selection-start-line="55" selection-start-column="65" selection-end-line="55" selection-end-column="65" />
+        <state relative-caret-position="1171">
+          <caret line="103" column="50" selection-start-line="103" selection-start-column="50" selection-end-line="103" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/deviceFileFiller.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="517">
+          <caret line="54" column="1" selection-start-line="54" selection-start-column="1" selection-end-line="54" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/createFilesTask.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="775">
+          <caret line="160" column="21" selection-start-line="160" selection-start-column="21" selection-end-line="160" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/fragment/surveyFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5775">
+          <caret line="1589" column="25" selection-start-line="1589" selection-start-column="25" selection-end-line="1589" selection-end-column="25" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/createSchedulesTask.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1009">
+        <state relative-caret-position="442">
           <caret line="76" column="45" selection-start-line="76" selection-start-column="45" selection-end-line="76" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/StoreDataTask.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="574">
+          <caret line="55" column="65" selection-start-line="55" selection-start-column="65" selection-end-line="55" selection-end-column="65" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="806" column="31" selection-start-line="806" selection-start-column="31" selection-end-line="806" selection-end-column="31" />
+        <state relative-caret-position="193">
+          <caret line="806" column="32" selection-start-line="806" selection-start-column="32" selection-end-line="806" selection-end-column="32" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#26620#28096#0" expanded="true" />
-            <element signature="e#28095#28096#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -3928,12 +3878,8 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/fragment/fragment_create.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="193">
-          <caret line="528" column="61" selection-start-line="528" selection-start-column="61" selection-end-line="528" selection-end-column="61" />
+          <caret line="528" column="60" selection-start-line="528" selection-start-column="60" selection-end-line="528" selection-end-column="60" />
           <folding>
-            <element signature="e#1796#1835#0" expanded="true" />
-            <element signature="e#1844#1889#0" expanded="true" />
-            <element signature="e#1894#1937#0" expanded="true" />
-            <element signature="e#1943#1989#0" expanded="true" />
             <element signature="e#4872#4880#0" expanded="true" />
             <element signature="e#5014#5022#0" expanded="true" />
             <element signature="e#5148#5156#0" expanded="true" />
@@ -3941,23 +3887,6 @@
             <element signature="e#5423#5431#0" expanded="true" />
             <element signature="e#5556#5564#0" expanded="true" />
             <element signature="e#5689#5697#0" expanded="true" />
-            <element signature="e#6950#24576#0" expanded="true" />
-            <element signature="e#24575#24576#0" expanded="true" />
-            <element signature="e#24715#25284#0" expanded="true" />
-            <element signature="e#25149#25215#0" expanded="true" />
-            <element signature="e#25283#25284#0" expanded="true" />
-            <element signature="e#25327#25895#0" expanded="true" />
-            <element signature="e#25761#25834#0" expanded="true" />
-            <element signature="e#25894#25895#0" expanded="true" />
-            <element signature="e#25937#26504#0" expanded="true" />
-            <element signature="e#26372#26444#0" expanded="true" />
-            <element signature="e#26503#26504#0" expanded="true" />
-            <element signature="e#26745#28980#0" expanded="true" />
-            <element signature="e#28979#28980#0" expanded="true" />
-            <element signature="e#31400#31683#0" expanded="true" />
-            <element signature="e#31682#31683#0" expanded="true" />
-            <element signature="e#36684#37016#0" expanded="true" />
-            <element signature="e#37015#37016#0" expanded="true" />
           </folding>
         </state>
       </provider>

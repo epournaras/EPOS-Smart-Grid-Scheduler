@@ -526,7 +526,7 @@ public class fragment_create extends DialogFragment {
                     Action[] array = new Action[list.size()];
                     list.toArray(array);
                     if(array.length>0){
-                        passMain.callBackgroundTasks(array,15);
+                        passMain.callBackgroundTasks(array,5);
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                         String time = simpleDateFormat.format(new Date());
                         char[] timeChars = time.toCharArray();
