@@ -24,7 +24,7 @@ public class No_Network_Fragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         final View layoutView = inflater.inflate(R.layout.no_network_fragment_layout, container, false);
 
-        Button b = (Button) getActivity().findViewById(R.id.button);
+        Button b = (Button) layoutView.findViewById(R.id.button);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
