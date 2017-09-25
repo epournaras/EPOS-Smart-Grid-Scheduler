@@ -25,12 +25,16 @@ public class Schedule {
     private long rankScheduleDuration;
     private long fullDuration;
     private String timings;
+    private String finalDetails;
 
     public ArrayList<Action> list = new ArrayList<Action>();
     private Action[] actionList = new Action[1];
     private ArrayList<Action[]> scheduleList = new ArrayList<Action[]>();
     public int count = 0;
     private Action[][] schedulesList;
+    private ArrayList<Long> combinations = new ArrayList<Long>();
+    private String combinationCompile = "";
+    private String detailsOfActions = "";
     public boolean rankingDone = false;
     public Action[][] finalList;
 
@@ -60,51 +64,6 @@ public class Schedule {
         list.trimToSize();
     }
 
-
-    /**
-     *                                  FARZAM - This class is basically the same as ThreadManager. It is not finished or working yet, but I am attempting to create a version of
-     *                                  Thread Manager that uses BigInteger instead of long.
-     *
-     */
-    public void makeScheduleListBigInteger(){
-        if(list.size()>0){
-            initialiseActionList();
-            BigInteger totalCombinations = BigInteger.ONE;
-            for(int i = 0 ; i<this.actionList.length;i++) {
-                if (this.actionList[i].versions.length > 0) {
-                    totalCombinations = totalCombinations.multiply(new BigInteger(""+this.actionList[i].versions.length));
-                    System.out.print(totalCombinations.toString()+"\n");
-                }
-            }
-            int cores = (Runtime.getRuntime().availableProcessors())*2;
-            BigInteger coresBigInt = new BigInteger(""+(Runtime.getRuntime().availableProcessors())*2);
-            BigInteger[] startingPoints = new BigInteger[cores];
-            for(int i =0;i<startingPoints.length;i++){
-                startingPoints[i] = (totalCombinations.divide(coresBigInt)).multiply(new BigInteger(""+i));
-            }
-
-            ArrayList<ThreadManagerBigInteger> threads = new ArrayList<ThreadManagerBigInteger>();
-            for(int i = 0 ; i<cores; i++){
-                if(i+1<startingPoints.length){
-                    threads.add(new ThreadManagerBigInteger("Thread "+i,actionList,this, startingPoints[i],startingPoints[i+1]));
-                }else{
-                    threads.add(new ThreadManagerBigInteger("Thread "+i,actionList,this, startingPoints[i],totalCombinations));
-                }
-            }
-            threads.trimToSize();
-            for(int i = 0; i<threads.size();i++){
-                threads.get(i).start();
-            }
-            for(int i = 0; i<threads.size();i++){
-                try{
-                    threads.get(i).t.join();
-                }catch(InterruptedException e){
-                    System.out.print("Thread "+i+" interrupted\n");
-                }
-            }
-        }
-    }
-
     public void makeScheduleList(){
         start = System.nanoTime();
         startTimeCreateSchedule = System.nanoTime();
@@ -113,7 +72,12 @@ public class Schedule {
             long totalCombinations = 1;
             for(int i = 0 ; i<this.actionList.length;i++){
                 if(this.actionList[i].versions.length>0){
+                    detailsOfActions+=actionList[i].name+","+actionList[i].getTimeString(actionList[i].getWindowStart())+","+actionList[i].getTimeString(actionList[i].getWindowEnd())
+                            +","+actionList[i].getTimeString(actionList[i].duration)+","+actionList[i].getOptimalTime()+","+actionList[i].returnIfParrallel();
                     totalCombinations*=this.actionList[i].versions.length;
+                }
+                if(i<this.actionList.length-1){
+                    detailsOfActions+="^";
                 }
             }
             if(totalCombinations<0){
@@ -144,8 +108,14 @@ public class Schedule {
                 }
             }
         }
+        compileCombinations();
+        finalDetails = detailsOfActions+"-"+combinationCompile;
         endTimeCreateSchedule = System.nanoTime();
         createScheduleDuration = (endTimeCreateSchedule - startTimeCreateSchedule)/1000000;
+    }
+
+    public String getFinalDetails(){
+        return finalDetails;
     }
 
     public void printTopNRankedSchedules(int n){
@@ -239,21 +209,25 @@ public class Schedule {
     /*
      * Used by threads to add the schedule they found to the list of schedules
      */
-    public synchronized void returnActionList(Action[] list){
-        boolean noConflict = true;
+    public synchronized void returnActionList(Action[] list,long j){
         if(list!=null) {
-            for(int i= 0; i<list.length&&noConflict;i++){
-                noConflict = checkPosition(i, list[i],list);
-            }
-            if(noConflict){
                 scheduleList.add(list);
-            }
-            else{
-                System.out.print("Unusual conflict when returning list\n");
-            }
+                combinations.add(j);
         }
     }
 
+    public void compileCombinations(){
+        StringBuilder builder = new StringBuilder();
+        for(int i =0;i<combinations.size();i++){
+            if(i<combinations.size()-1){
+                builder.append(combinations.get(i)+",");
+            }else{
+                builder.append(combinations.get(i));
+            }
+        }
+        combinationCompile=builder.toString();
+
+    }
 
     /*
      * given an action placed in a given array of actions.
@@ -323,6 +297,10 @@ public class Schedule {
 
     public String getTimings(){
         return this.timings;
+    }
+
+    public String returnFinalDetails(){
+        return finalDetails;
     }
 }
 

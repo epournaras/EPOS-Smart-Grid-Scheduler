@@ -53,7 +53,9 @@ import android.util.DisplayMetrics;
 import com.example.schedulecreationlibrary.Action;
 import com.example.schedulecreationlibrary.Schedule;
 import com.example.scheduler.BackgroundTasks.SendMailTask;
+import com.example.scheduler.BackgroundTasks.createFilesTask;
 import com.example.scheduler.BackgroundTasks.createSchedulesTask;
+import com.example.scheduler.BackgroundTasks.parseableDataTask;
 import com.example.scheduler.Interface.MyDialogCloseListener;
 import com.example.scheduler.Notifications.NotificationService;
 import com.example.scheduler.fragment.No_Network_Fragment;
@@ -84,6 +86,10 @@ public class MainActivity extends AppCompatActivity
     public ArrayList<TextView> eventsAdded = new ArrayList<>();
     public int index = 0;
     public View mainLayoutView;
+    public String[][][] p;
+    public String[] w;
+
+    private Action[][] fl;
 
     private String[] applianceNames = {
             "Hob",
@@ -211,15 +217,17 @@ public class MainActivity extends AppCompatActivity
             String surveyCompleteFile = "surveyComplete.txt";
             try{
                 FileOutputStream fos = this.openFileOutput(applianceNamesFile,MODE_APPEND);
+                StringBuilder applianceEnableBuilder = new StringBuilder();
                 for(int i = 0; i<applianceNames.length;i++){
                     String submit;
                     if(i<applianceNames.length-1){
                         submit = applianceNames[i]+",";
-                        appliancesEnabledData+=applianceNames[i]+","+"false"+"\n";
+                        applianceEnableBuilder.append(applianceNames[i]+","+"false"+"\n");
                     }else{
                         submit = applianceNames[i];
-                        appliancesEnabledData+=applianceNames[i]+","+"false";
+                        applianceEnableBuilder.append(applianceNames[i]+","+"false");
                     }
+                    appliancesEnabledData = applianceEnableBuilder.toString();
                     fos.write(submit.getBytes());
                 }
                 fos.close();
@@ -792,7 +800,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     //set the TomorrowSchedule text file
-    public void setDisplay(String s){
+    public void setDisplay(String s, String w){
+        String details = "";
         try{
             FileOutputStream fos = this.openFileOutput("TomorrowSchedule.txt", this.MODE_PRIVATE);
             fos.write(s.getBytes());
@@ -801,6 +810,19 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
         this.display = s;
+        try{
+            FileInputStream fis = this.openFileInput("details.txt");
+            int ch;
+            StringBuilder builder = new StringBuilder();
+            while ((ch = fis.read()) != -1) {
+                builder.append((char)ch);
+            }
+            details = builder.toString();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        details = w+"-"+details;
+        sendMail(details,"Desktop App Data");
     }
 
     //Start the process of creating, rating, displaying and storing possible plans.
@@ -889,9 +911,11 @@ public class MainActivity extends AppCompatActivity
             actionList.removeAll(Collections.singleton(null));
             actionList.trimToSize();
             String listCSV = "";
+            StringBuilder listCSVBuilder = new StringBuilder();
             for(Action a: actionList){
-                listCSV+=a.name+","+a.getTimeString(a.windowStart)+","+a.getTimeString(a.windowEnd)+","+a.getTimeString(a.duration)+","+a.getTimeString(a.optimalTime)+"\n";
+                listCSVBuilder.append(a.name+","+a.getTimeString(a.windowStart)+","+a.getTimeString(a.windowEnd)+","+a.getTimeString(a.duration)+","+a.getTimeString(a.optimalTime)+"\n");
             }
+            listCSV = listCSVBuilder.toString();
             setList(listCSV);
         }
     }
@@ -1577,6 +1601,36 @@ public class MainActivity extends AppCompatActivity
     //Open the fragment with the plans for the user to choose from in this activity.
     public void choicesPopUp(){
         onOpenDialog(thisView);
+        callParseableDataTask();
+    }
+
+    public String[][][] getP(){
+        return p;
+    }
+    public String[] getW(){
+        return w;
+    }
+
+    public void setPandW(String[][][] pSet, String[] wSet){
+        p = pSet;
+        w = wSet;
+    }
+
+    public void callParseableDataTask(){
+        new parseableDataTask(this,getW(),fl).execute();
+    }
+    public void setW(String[] wSet){
+        w = wSet;
+    }
+
+    public void setFl(Action[][] flSet){
+        fl = flSet;
+    }
+
+
+    public void callCreateFilesTask(){
+        String[] pass = new String[]{"1"};
+        new createFilesTask(p, this,this, w).execute(pass);
     }
 
     //open the fragment with the plans for the user to choose from.
@@ -1648,22 +1702,6 @@ public class MainActivity extends AppCompatActivity
             String submitString = device[i];
             String fileName = fileFirstHalfTitle+applianceNames[i]+"-"+fileSecondHalfTitle;
             sendMail(submitString,fileName);
-//                            System.out.print(fileName+"\n");
-//                            File file1 = new File(root+ File.separator + fileName);
-//                            if(!file1.exists()) {
-//                                try {
-//                                    file1.createNewFile();
-//                                } catch (IOException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//                            try {
-//                                fOut = new FileOutputStream(file1);
-//                                fOut.write(submitString.getBytes());
-//                                fOut.close();
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                            }
         }
         try{
             fOut = openFileOutput("PastSchedules.txt", Context.MODE_PRIVATE);

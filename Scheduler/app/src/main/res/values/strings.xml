@@ -15,7 +15,7 @@
     <string name="before_only">Before Only</string>
     <string name="after_only">After Only</string>
     <string name = "hour_minute_delimiter">:</string>
-    <string name="submit_button">Submit</string>
+    <string name="submit_button">Finish Planning</string>
     <string name="plan_creator_title">Create Your Plan</string>
     <string name = "name">Name</string>
     <string name = "start_time">Start Time</string>

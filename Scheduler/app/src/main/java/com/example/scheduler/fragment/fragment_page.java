@@ -8,16 +8,20 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.example.scheduler.R;
+
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 
@@ -30,6 +34,7 @@ public class fragment_page extends Fragment {
     public ArrayList<TextView> eventsAdded = new ArrayList<>();
     public int index = 0;
     public String data;
+    public DialogFragment reference;
 
     static fragment_page newInstance(String a){
         fragment_page p = new fragment_page();
@@ -80,7 +85,30 @@ public class fragment_page extends Fragment {
                 }
             }
         });
-
+        Button conf = (Button) lv.findViewById(R.id.confirmChoice);
+        conf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FileInputStream fis;
+                FileOutputStream fos;
+                try{
+                    fis = getActivity().openFileInput("tempChosenPlan.txt");
+                    int ch;
+                    StringBuilder builder = new StringBuilder();
+                    while((ch=fis.read())!=-1){
+                        builder.append((char)ch);
+                    }
+                    String print = builder.toString();
+                    fos = getActivity().openFileOutput("chosenPlan.txt",Context.MODE_PRIVATE);
+                    fos.write(builder.toString().getBytes());
+                    fis.close();
+                    fos.close();
+                    reference.dismiss();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
         return lv;
     }
     //Get the distance between the starting hour line and the items actual starting time.
@@ -365,6 +393,9 @@ public class fragment_page extends Fragment {
         constraintSet.setHorizontalBias(tx.getId(),(float)0);
         constraintSet.applyTo(constraintLayout);
         index++;
+    }
+    public void setReference(DialogFragment r){
+        reference = r;
     }
 }
 

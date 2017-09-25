@@ -161,20 +161,24 @@ public class addRemoveAppliance extends Fragment {
             @Override
             public void onClick(View g) {
                 String submitString = "";
+                StringBuilder submitBuilder = new StringBuilder();
                 for(int i = 0; i <applianceEnableBooleans.length;i++){
                     if(enableTable.length == applianceEnableBooleans.length){
                         enableTable[i][1] = applianceEnableBooleans[i];
                     }
+
                     for(int j = 0; j<enableTable[i].length;j++){
                         if(j==enableTable[i].length-1){
-                            if(enableTable[i][j].equals("false")) ((MainActivity)getActivity()).removeItemWithName(enableTable[i][0]);
-                            submitString+=enableTable[i][j];
+                            if(enableTable[i][j].equals("false"))
+                                ((MainActivity)getActivity()).removeItemWithName(enableTable[i][0]);
+                            submitBuilder.append(enableTable[i][j]);
                         }else{
-                            submitString+=enableTable[i][j]+",";
+                            submitBuilder.append(enableTable[i][j]+",");
                         }
                     }
-                    submitString+="\n";
+                    submitBuilder.append("\n");
                 }
+                submitString = submitBuilder.toString();
                 try{
                     FileOutputStream fos = getActivity().openFileOutput(appliancesEnabledDataFile,Context.MODE_PRIVATE);
                     fos.write(submitString.getBytes());

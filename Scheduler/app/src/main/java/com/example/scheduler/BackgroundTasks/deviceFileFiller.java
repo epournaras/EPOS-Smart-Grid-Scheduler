@@ -14,6 +14,8 @@ public class deviceFileFiller implements Runnable {
     public createFilesTask caller;
     public int schSiz;
     public int devIndex;
+    public String devicePlans = "";
+    private StringBuilder builder = new StringBuilder(2880);
 
     public deviceFileFiller(String name,String[][][] fullData, String wattage, createFilesTask task, int scheduleSize, int deviceIndex){
         this.threadName = name;
@@ -28,6 +30,8 @@ public class deviceFileFiller implements Runnable {
         for(int c = 0; c<schSiz;c++){
             singlePlan(c);
         }
+        devicePlans = builder.toString();
+        returnData(devicePlans);
     }
 
     public void start(){
@@ -37,19 +41,22 @@ public class deviceFileFiller implements Runnable {
         t.start();
     }
 
-    public void returnData(String d, int schIndex){
-        caller.returnDataTask(d, schIndex, devIndex);
+    public void returnData(String d){
+        caller.returnDeviceFile(devIndex,d);
     }
 
     public void singlePlan(int c){
+        StringBuilder planBuilder = new StringBuilder(2880);
         String dataToReturn = "Plan "+c;
+        planBuilder.append(dataToReturn);
         for(int i =0;i<data[c][devIndex].length;i++){
-            if(data[c][devIndex][i].equals("1")){
-                dataToReturn+=","+appWattage;
-            }else{
-                dataToReturn+=","+"0";
-            }
+            planBuilder.append(","+data[c][devIndex][i]);
         }
-        returnData(dataToReturn,c);
+        dataToReturn = planBuilder.toString();
+        compilePlans(dataToReturn);
+    }
+
+    public void compilePlans(String data){
+        builder.append(data+"-");
     }
 }

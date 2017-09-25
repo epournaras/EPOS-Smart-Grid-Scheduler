@@ -30,7 +30,7 @@ public class ThreadManager implements Runnable{
      */
     public void run(){
         long count = 0;
-        long maxCount = 500000L;
+        long maxCount = 50000L;
         long step = endingIndex/maxCount;
         if(step<1){
             step = 1;
@@ -49,7 +49,7 @@ public class ThreadManager implements Runnable{
                 check[j] = list[j].getVersion(list[j].getOptimalIndex());
             }
             if(checkList(check)){
-                caller.returnActionList(check);
+                caller.returnActionList(check,optimalPoint);
             }
         }else{
             if(optimalPoint<0){
@@ -59,7 +59,7 @@ public class ThreadManager implements Runnable{
                         check[j] = list[j].getVersion(list[j].getOptimalIndex());
                     }
                     if(checkList(check)){
-                        caller.returnActionList(check);
+                        caller.returnActionList(check,optimalPoint);
                     }
                 }
             }
@@ -79,7 +79,7 @@ public class ThreadManager implements Runnable{
 
                 }
                 if(checkList(check)){
-                    caller.returnActionList(check);
+                    caller.returnActionList(check,i);
                 }
             }
         }

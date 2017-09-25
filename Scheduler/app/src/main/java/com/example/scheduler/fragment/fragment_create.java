@@ -764,9 +764,11 @@ public class fragment_create extends DialogFragment {
         String submit = "";
         try{
             FileOutputStream fileOutputStream = getActivity().openFileOutput("currentItems.txt", Context.MODE_PRIVATE);
+            StringBuilder submitBuilder = new StringBuilder();
             for(int i =0;i<dataPostRemoval.length;i++){
-                submit+=dataPostRemoval[i][0]+","+dataPostRemoval[i][1]+","+dataPostRemoval[i][2]+","+dataPostRemoval[i][3]+"\n";
+                submitBuilder.append(dataPostRemoval[i][0]+","+dataPostRemoval[i][1]+","+dataPostRemoval[i][2]+","+dataPostRemoval[i][3]+"\n");
             }
+            submit = submitBuilder.toString();
             fileOutputStream.write(submit.getBytes());
             fileOutputStream.close();
         }catch (Exception e){

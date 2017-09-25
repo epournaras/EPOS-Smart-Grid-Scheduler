@@ -39,11 +39,15 @@ public class createSchedulesTask extends AsyncTask<Schedule, Integer, Schedule> 
         list.makeScheduleList();
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
+        String details = list.getFinalDetails();
         String TimingsFile = "timings.txt";
         try{
             FileOutputStream fos = main.openFileOutput(TimingsFile,context.MODE_APPEND);
             String submit = elapsedTime+",";
             fos.write(submit.getBytes());
+            fos.close();
+            fos = main.openFileOutput("details.txt",context.MODE_PRIVATE);
+            fos.write(details.getBytes());
             fos.close();
         }catch(Exception e){
             e.printStackTrace();

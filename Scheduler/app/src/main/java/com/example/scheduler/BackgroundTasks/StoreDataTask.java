@@ -22,7 +22,7 @@ public class StoreDataTask extends AsyncTask<Schedule, Integer, String> {
     public int progressChangedValue;
     private MainActivity activity;
     public String[] wattage;
-
+    public Action[][] fullList;
     public StoreDataTask(Context c, int a, MainActivity main,String[] w){
         context = c;
         progressChangedValue = a;
@@ -51,70 +51,14 @@ public class StoreDataTask extends AsyncTask<Schedule, Integer, String> {
         String display = "";
         parseableData = new String[1][1][1];
         parseableData[0][0][0] = "0";
-        Action[][] fullList;
+
         if(progressChangedValue>1){
             fullList = lists.getTopNRankedSchedules(progressChangedValue);
         }else{
             fullList = lists.getTopNRankedSchedules(1);
         }
-        parseableData = new String[fullList.length][actionNames.length][1440];
-        for(int i = 0; i<parseableData.length;i++){
-            if(checkCancelled()){
-                break;
-            }
-            for(int j = 0; j<parseableData[i].length;j++){
-                if(checkCancelled()){
-                    break;
-                }
-                for(int q = 0; q<parseableData[i][j].length;q++){
-                    if(checkCancelled()){
-                        break;
-                    }
-                    parseableData[i][j][q] = "0";
-                }
-            }
-            for(int j = 0; j<fullList[i].length;j++){
-                if(checkCancelled()){
-                    break;
-                }
-                int index = 0;
-                switch(fullList[i][j].name){
-                    case "Hob":
-                        index = 0;
-                        break;
-                    case "Oven":
-                        index = 1;
-                        break;
-                    case "TumbleDryer":
-                        index = 2;
-                        break;
-                    case "WashingMachine":
-                        index = 3;
-                        break;
-                    case "Computer":
-                        index = 4;
-                        break;
-                    case "Kettle":
-                        index = 5;
-                        break;
-                    case "DishWasher":
-                        index = 6;
-                        break;
-                    case "Shower":
-                        index = 7;
-                        break;
-                    default:
-                        index = 7;
-                        break;
-                }
-                for(int q = fullList[i][j].windowStart;q<fullList[i][j].windowEnd+1;q++){
-                    if(checkCancelled()){
-                        break;
-                    }
-                    parseableData[i][index][q] = "1";
-                }
-            }
-        }
+        //a[Schedule][Device][Whether on or off at this index converted to a time+1]
+        StringBuilder displayBuilder = new StringBuilder(1000);
         for(int i = 0; i<fullList.length;i++){
             if(checkCancelled()){
                 break;
@@ -124,14 +68,15 @@ public class StoreDataTask extends AsyncTask<Schedule, Integer, String> {
                     break;
                 }
                 if(j<fullList[i].length-1){
-                    display+= fullList[i][j].name+"\t"+fullList[i][j].getTimeString(fullList[i][j].windowStart)+"-"+fullList[i][j].getTimeString(fullList[i][j].windowEnd)+",";
+                    displayBuilder.append(fullList[i][j].name+"\t"+fullList[i][j].getTimeString(fullList[i][j].windowStart)+"-"+fullList[i][j].getTimeString(fullList[i][j].windowEnd)+",");
                 }
                 else {
-                    display+= fullList[i][j].name+"\t"+fullList[i][j].getTimeString(fullList[i][j].windowStart)+"-"+fullList[i][j].getTimeString(fullList[i][j].windowEnd);
+                    displayBuilder.append(fullList[i][j].name+"\t"+fullList[i][j].getTimeString(fullList[i][j].windowStart)+"-"+fullList[i][j].getTimeString(fullList[i][j].windowEnd));
                 }
             }
-            display+="\n";
+            displayBuilder.append("\n");
         }
+        display = displayBuilder.toString();
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
 
@@ -152,14 +97,24 @@ public class StoreDataTask extends AsyncTask<Schedule, Integer, String> {
     protected void onPostExecute(String result) {
         if(!checkCancelled()){
             if(parseableData.length>0){
-                activity.setDisplay(result);
+                StringBuilder wattageBuilder = new StringBuilder(200);
+                String wattages = "";
+                for(int i =0;i<wattage.length;i++){
+                    if(i<wattage.length-1){
+                        wattageBuilder.append(wattage[i]+",");
+                    }else{
+                        wattageBuilder.append(wattage[i]);
+                    }
+                }
+                wattages = wattageBuilder.toString();
+                activity.setDisplay(result,wattages);
+                activity.setW(wattage);
+                activity.setFl(fullList);
                 activity.choicesPopUp();
                 String toastString = "Tomorrow's Schedule Set";
                 int durationOfToast = Toast.LENGTH_SHORT;
                 Toast toast = Toast.makeText(context, toastString, durationOfToast);
                 toast.show();
-                String[] pass = new String[]{"1"};
-                new createFilesTask(parseableData, context,activity, wattage).execute(pass);
             }else{
                 String toastString = "No Schedules exist for this input";
                 int durationOfToast = Toast.LENGTH_SHORT;

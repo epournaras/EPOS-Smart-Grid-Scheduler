@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 
+import com.example.scheduler.MainActivity;
 import com.example.scheduler.R;
 
 import java.io.FileInputStream;
@@ -53,6 +54,7 @@ public class tabsFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Rect displayRectangle = new Rect();
         Window window = getActivity().getWindow();
         window.getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
@@ -61,6 +63,7 @@ public class tabsFragment extends DialogFragment {
 
         // tab slider
         sectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
+        sectionsPagerAdapter.setReference(getThis());
         String[] separate;
         String submit = " ";
         try{
@@ -80,37 +83,15 @@ public class tabsFragment extends DialogFragment {
         viewPager = (ViewPager)view.findViewById(R.id.pager);
         viewPager.setOffscreenPageLimit(pagesCount-1);
         viewPager.setAdapter(sectionsPagerAdapter);
-        Button conf = (Button) view.findViewById(R.id.confirmChoice);
-        conf.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FileInputStream fis;
-                FileOutputStream fos;
-                try{
-                    fis = getActivity().openFileInput("tempChosenPlan.txt");
-                    int ch;
-                    StringBuilder builder = new StringBuilder();
-                    while((ch=fis.read())!=-1){
-                        builder.append((char)ch);
-                    }
-                    String print = builder.toString();
-                    fos = getActivity().openFileOutput("chosenPlan.txt",Context.MODE_PRIVATE);
-                    fos.write(builder.toString().getBytes());
-                    fis.close();
-                    fos.close();
-                    dismiss();
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
-            }
-        });
-
         return view;
+    }
+    public DialogFragment getThis(){
+        return this;
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
         public ArrayList<Fragment> pages = new ArrayList<>();
-
+        private DialogFragment reference;
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -133,10 +114,14 @@ public class tabsFragment extends DialogFragment {
             separate = submit.split("\n");
             submit = separate[position];
             fragment_page page = fragment_page.newInstance(submit);
+            page.setReference(reference);
             pages.add(position,page);
             return pages.get(position);
         }
 
+        public DialogFragment getReference(){
+            return reference;
+        }
         @Override
         public int getCount() {
             return pagesCount;
@@ -146,6 +131,10 @@ public class tabsFragment extends DialogFragment {
         public CharSequence getPageTitle(int position) {
             int title = position+1;
             return "Option "+title;
+        }
+
+        public void setReference(DialogFragment r){
+            reference = r;
         }
     }
 }

@@ -14,6 +14,16 @@
             android:layout_height="wrap_content"
             android:id="@+id/check"
             android:text="@string/Choose"/>
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/confirmChoice"
+            android:layout_gravity="end"
+            android:text="@string/confirm"/>
     </LinearLayout>
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"

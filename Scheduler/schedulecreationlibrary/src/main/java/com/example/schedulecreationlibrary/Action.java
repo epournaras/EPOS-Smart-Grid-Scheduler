@@ -16,6 +16,7 @@ public class Action {
     private int parentActionWindowEnd;
     private int optimalIndex;
     private boolean parallel = false;
+    private int versionNumber;
     public Action(){
 		/*
 		 * allows the use of built in methods like getTimeString() or getIntTime()
@@ -23,6 +24,7 @@ public class Action {
     }
     //Instantiation method.
     public Action(String name, int a, int b, int c, int d, boolean e){
+        this.versionNumber = 0;
         try{
             if(a>b||a+c>b){
                 throw new RuntimeException();
@@ -39,6 +41,7 @@ public class Action {
         }
     }
     public Action(String name, String start, String end, String duration, String optimalTime, boolean parallelI){
+        this.versionNumber = 0;
         int a = getIntTime(start);
         int b = getIntTime(end);
         int c = getIntTime(duration);
@@ -112,6 +115,7 @@ public class Action {
                 this.versions[i] = new Action(this.name,this.windowStart+i,this.duration+this.windowStart+i, this.duration,this.optimalTime, this.parallel);
                 this.versions[i].setParentStats(this.windowStart, this.windowEnd);
                 this.versions[i].setRating();
+                this.versions[i].setVersionNumber(i);
                 if(this.windowStart+i == this.optimalTime){
                     this.optimalIndex = i;
                 }
@@ -156,5 +160,19 @@ public class Action {
 
     public int getOptimalIndex(){
         return this.optimalIndex;
+    }
+    private void setVersionNumber(int vN){
+        this.versionNumber = vN;
+    }
+    public int getVersionNumber(){
+        return this.versionNumber;
+    }
+
+    public String returnIfParrallel(){
+        if(parallel){
+            return "true";
+        }else{
+            return "false";
+        }
     }
 }

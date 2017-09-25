@@ -155,6 +155,9 @@ public class createFilesTask extends AsyncTask<String, Integer, String> {
                             "22:49,22:50,22:51,22:52,22:53,22:54,22:55,22:56,22:57,22:58,22:59,23:00,23:01,23:02,23:03,23:04,23:05,23:06,23:07,23:08,23:09,23:10,23:11,23:12,23:13,23:14,23:15,23:16," +
                             "23:17,23:18,23:19,23:20,23:21,23:22,23:23,23:24,23:25,23:26,23:27,23:28,23:29,23:30,23:31,23:32,23:33,23:34,23:35,23:36,23:37,23:38,23:39,23:40,23:41,23:42,23:43,23:44," +
                             "23:45,23:46,23:47,23:48,23:49,23:50,23:51,23:52,23:53,23:54,23:55,23:56,23:57,23:58,23:59";
+                    for(int i = 0; i<device.length;i++){
+                        device[i] = title+"-";
+                    }
                     ArrayList<deviceFileFiller> threads = new ArrayList<>();
 //                    for(int i = 0;i<a.length;i++){
 //                        for(int j = 0;j<a[0].length;j++){
@@ -175,36 +178,17 @@ public class createFilesTask extends AsyncTask<String, Integer, String> {
                             System.out.print("Thread "+i+" interrupted\n");
                         }
                     }
-                    for(int i = 0; i<device.length;i++){
-                        if(checkCancelled()){
-                            break;
-                        }else{
-                            device[i] = title;
-                            for(int j = 0;j<submitableData.length;j++){
-                                device[i]+="\n"+submitableData[j][i];
-                            }
-                        }
 
-                    }
                 }
             }else{
 
             }
         }
     }
-    public void returnDataTask(String data, int indexOfSchedule, int indexOfDevice){
-        submitableData[indexOfSchedule][indexOfDevice] = data;
+
+    public synchronized void returnDeviceFile(int dev, String file){
+        device[dev]+=file;
     }
 
-    public void singlePlan(int c, int devIndex, String appWattage){
-        String dataToReturn = "Plan "+c;
-        for(int i =0;i<data[c][devIndex].length;i++){
-            if(data[c][devIndex][i].equals("1")){
-                dataToReturn+=","+appWattage;
-            }else{
-                dataToReturn+=","+"0";
-            }
-        }
-        returnDataTask(dataToReturn,c,devIndex);
-    }
+
 }
