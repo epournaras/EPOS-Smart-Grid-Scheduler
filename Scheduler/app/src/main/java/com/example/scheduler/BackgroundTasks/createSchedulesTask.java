@@ -39,6 +39,7 @@ public class createSchedulesTask extends AsyncTask<Schedule, Integer, Schedule> 
         list.makeScheduleList();
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
+        list.compileCombinations();
         String details = list.getFinalDetails();
         String TimingsFile = "timings.txt";
         try{

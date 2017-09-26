@@ -108,13 +108,12 @@ public class Schedule {
                 }
             }
         }
-        compileCombinations();
-        finalDetails = detailsOfActions+"-"+combinationCompile;
         endTimeCreateSchedule = System.nanoTime();
         createScheduleDuration = (endTimeCreateSchedule - startTimeCreateSchedule)/1000000;
     }
 
     public String getFinalDetails(){
+        finalDetails = detailsOfActions+"-"+combinationCompile;
         return finalDetails;
     }
 
@@ -226,7 +225,6 @@ public class Schedule {
             }
         }
         combinationCompile=builder.toString();
-
     }
 
     /*
