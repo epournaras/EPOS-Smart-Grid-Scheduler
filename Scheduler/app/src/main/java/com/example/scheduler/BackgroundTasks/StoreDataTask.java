@@ -40,7 +40,6 @@ public class StoreDataTask extends AsyncTask<Schedule, Integer, String> {
             "DishWasher",
             "Shower"
     };
-    private String[][][] parseableData;
     protected void onPreExecute(){
 
     }
@@ -49,8 +48,6 @@ public class StoreDataTask extends AsyncTask<Schedule, Integer, String> {
         long startTime = System.currentTimeMillis();
         Schedule lists = list[0];
         String display = "";
-        parseableData = new String[1][1][1];
-        parseableData[0][0][0] = "0";
 
         if(progressChangedValue>1){
             fullList = lists.getTopNRankedSchedules(progressChangedValue);
@@ -96,7 +93,7 @@ public class StoreDataTask extends AsyncTask<Schedule, Integer, String> {
     }
     protected void onPostExecute(String result) {
         if(!checkCancelled()){
-            if(parseableData.length>0){
+            if(fullList.length>0){
                 StringBuilder wattageBuilder = new StringBuilder(200);
                 String wattages = "";
                 for(int i =0;i<wattage.length;i++){

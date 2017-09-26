@@ -822,7 +822,8 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
         details = w+"-"+details;
-        sendMail(details,"Desktop App Data");
+        String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        sendMail(details,"Desktop App Data for "+android_id);
     }
 
     //Start the process of creating, rating, displaying and storing possible plans.
