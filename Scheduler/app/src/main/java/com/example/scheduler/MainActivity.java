@@ -710,6 +710,7 @@ public class MainActivity extends AppCompatActivity
                 fis.close();
 
                 todaySch = builder.toString();
+                System.out.print("Chosen Plan to Today Schedule: "+todaySch+"\n");
                 FileOutputStream fos = mainActivity.openFileOutput("TodaySchedule.txt", Context.MODE_PRIVATE);
                 fos.write(todaySch.getBytes());
                 fos.close();
@@ -1070,11 +1071,12 @@ public class MainActivity extends AppCompatActivity
                         }
                         fis.close();
                         todayDisplay = builder.toString();
+                        System.out.print("Today's Schedule: "+todayDisplay+"\n");
                     }catch(Exception e){
                         e.printStackTrace();
                     }
                     ConstraintLayout constraintLayout = (ConstraintLayout) findViewById(R.id.table);
-                    String[] parts = todayDisplay.split("\n");
+                    String[] parts = todayDisplay.split(",");
                     String[][] nameStartDuration = new String[parts.length][];
                     if(index>0){
                         for(int i = 0;i<index;i++){
@@ -1083,8 +1085,7 @@ public class MainActivity extends AppCompatActivity
                         eventsAdded.clear();
                         index = 0;
                     }
-                    if(parts.length>0)
-                    {
+                    if(parts.length>0) {
                         if(!parts[0].equals(" ")){
                             for(int i =0;i<parts.length;i++){
                                 String[] temp = parts[i].split("\t");

@@ -76,6 +76,7 @@ public class fragment_page extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(cb.isChecked()){
                     try{
+                        System.out.print(associatedText+"\n");
                         FileOutputStream fos = getActivity().openFileOutput("tempChosenPlan.txt", Context.MODE_PRIVATE);
                         fos.write(associatedText.getBytes());
                         fos.close();
@@ -99,8 +100,9 @@ public class fragment_page extends Fragment {
                         builder.append((char)ch);
                     }
                     String print = builder.toString();
+                    System.out.print(print+"\n");
                     fos = getActivity().openFileOutput("chosenPlan.txt",Context.MODE_PRIVATE);
-                    fos.write(builder.toString().getBytes());
+                    fos.write(print.getBytes());
                     fis.close();
                     fos.close();
                     reference.dismiss();
