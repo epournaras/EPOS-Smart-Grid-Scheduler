@@ -217,11 +217,13 @@ public class Schedule {
 
     public void compileCombinations(){
         StringBuilder builder = new StringBuilder();
-        for(int i =0;i<combinations.size();i++){
-            if(i<combinations.size()-1){
-                builder.append(combinations.get(i)+",");
+        Long[] combinationsArray = new Long[combinations.size()];
+        combinations.toArray(combinationsArray);
+        for(int i =0;i<combinationsArray.length;i++){
+            if(i<combinationsArray.length-1){
+                builder.append(combinationsArray[i]+",");
             }else{
-                builder.append(combinations.get(i));
+                builder.append(combinationsArray[i]);
             }
         }
         combinationCompile=builder.toString();

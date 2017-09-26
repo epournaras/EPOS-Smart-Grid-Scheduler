@@ -39,6 +39,8 @@ public class createSchedulesTask extends AsyncTask<Schedule, Integer, Schedule> 
         list.makeScheduleList();
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
+        //Note, two freezes occur in this app. Both are caused by the construction and storing of the huge details String which contains all the combinations which can be upwards of 400,000 longs
+        //This causes the phone to be out of memory available to the app, causing the app to freeze.
         list.compileCombinations();
         String details = list.getFinalDetails();
         String TimingsFile = "timings.txt";
