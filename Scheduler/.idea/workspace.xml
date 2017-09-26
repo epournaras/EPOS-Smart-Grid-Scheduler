@@ -40,12 +40,34 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="193">
-              <caret line="1126" column="61" selection-start-line="1126" selection-start-column="48" selection-end-line="1126" selection-end-column="61" />
+            <state relative-caret-position="328">
+              <caret line="1135" column="17" selection-start-line="1135" selection-start-column="17" selection-end-line="1135" selection-end-column="17" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="createFilesTask.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/createFilesTask.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1403">
+              <caret line="179" column="38" selection-start-line="179" selection-start-column="38" selection-end-line="179" selection-end-column="38" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="parseableDataTask.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/parseableDataTask.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="458">
+              <caret line="85" column="42" selection-start-line="85" selection-start-column="42" selection-end-line="85" selection-end-column="42" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -53,7 +75,7 @@
       <file leaf-file-name="SendMailTask.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/SendMailTask.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="193">
+            <state relative-caret-position="-92">
               <caret line="32" column="35" selection-start-line="32" selection-start-column="4" selection-end-line="32" selection-end-column="35" />
               <folding />
             </state>
@@ -63,7 +85,7 @@
       <file leaf-file-name="StoreDataTask.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/StoreDataTask.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1391">
+            <state relative-caret-position="71">
               <caret line="99" column="68" selection-start-line="99" selection-start-column="68" selection-end-line="99" selection-end-column="68" />
               <folding />
             </state>
@@ -2869,16 +2891,16 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/fragment/fragment_page.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/createSchedulesTask.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/parseableDataTask.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/fragment/tabsFragment.java" />
         <option value="$PROJECT_DIR$/schedulecreationlibrary/src/main/java/com/example/schedulecreationlibrary/ThreadManager.java" />
         <option value="$PROJECT_DIR$/schedulecreationlibrary/src/main/java/com/example/schedulecreationlibrary/Schedule.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/createFilesTask.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/fragment/addRemoveAppliance.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/fragment/fragment_create.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/MainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/deviceFileFiller.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/StoreDataTask.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/parseableDataTask.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/createFilesTask.java" />
       </list>
     </option>
   </component>
@@ -3486,7 +3508,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1920" height="1098" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32586557" sideWeight="0.49361023" order="12" side_tool="false" content_ui="tabs" />
@@ -3494,7 +3516,7 @@
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32655138" sideWeight="0.5063898" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32790223" sideWeight="0.69009584" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32790223" sideWeight="0.69009584" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296146" sideWeight="0.49574015" order="2" side_tool="false" content_ui="tabs" />
@@ -3902,14 +3924,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/createFilesTask.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="23" column="53" selection-start-line="23" selection-start-column="47" selection-end-line="23" selection-end-column="53" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/fragment/surveyFragment.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="193">
@@ -3934,36 +3948,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/parseableDataTask.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="139">
-          <caret line="40" column="48" selection-start-line="40" selection-start-column="47" selection-end-line="40" selection-end-column="48" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/SendMailTask.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="32" column="35" selection-start-line="32" selection-start-column="4" selection-end-line="32" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/deviceFileFiller.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="690">
           <caret line="48" column="58" selection-start-line="48" selection-start-column="58" selection-end-line="48" selection-end-column="58" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/StoreDataTask.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1391">
-          <caret line="99" column="68" selection-start-line="99" selection-start-column="68" selection-end-line="99" selection-end-column="68" />
           <folding />
         </state>
       </provider>
@@ -3994,8 +3982,42 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="1126" column="61" selection-start-line="1126" selection-start-column="48" selection-end-line="1126" selection-end-column="61" />
+        <state relative-caret-position="328">
+          <caret line="1135" column="17" selection-start-line="1135" selection-start-column="17" selection-end-line="1135" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/StoreDataTask.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="71">
+          <caret line="99" column="68" selection-start-line="99" selection-start-column="68" selection-end-line="99" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/SendMailTask.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-92">
+          <caret line="32" column="35" selection-start-line="32" selection-start-column="4" selection-end-line="32" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/parseableDataTask.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="458">
+          <caret line="85" column="42" selection-start-line="85" selection-start-column="42" selection-end-line="85" selection-end-column="42" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/scheduler/BackgroundTasks/createFilesTask.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1403">
+          <caret line="179" column="38" selection-start-line="179" selection-start-column="38" selection-end-line="179" selection-end-column="38" />
           <folding />
         </state>
       </provider>

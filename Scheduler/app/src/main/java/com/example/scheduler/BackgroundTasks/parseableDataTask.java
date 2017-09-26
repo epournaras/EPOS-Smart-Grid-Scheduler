@@ -44,7 +44,6 @@ public class parseableDataTask extends AsyncTask {
                 parseableData[i][j] = off.split(",");
             }
             for(int j = 0; j<fullList[i].length;j++){
-
                 int index;
                 switch(fullList[i][j].name){
                     case "Hob":
@@ -83,7 +82,8 @@ public class parseableDataTask extends AsyncTask {
         return null;
     }
 
-    protected void onPostExecute(){
+    protected void onPostExecute(Object result){
+        System.out.print("Parseable done\n");
         activity.setPandW(parseableData,wattage);
         activity.callCreateFilesTask();
     }

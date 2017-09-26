@@ -28,6 +28,7 @@ public class createFilesTask extends AsyncTask<String, Integer, String> {
     public String[][] submitableData;
     public String[] wattage;
     public String[]device;
+    public StringBuilder[] deviceFileBuilder;
     boolean canceled = false;
 
     private String[] actionNames = {
@@ -72,6 +73,7 @@ public class createFilesTask extends AsyncTask<String, Integer, String> {
 
     }
     protected void onPostExecute(String result){
+        System.out.print("Files prepared");
         if(!canceled)
                 activity.getFilesToSend(device);
     }
@@ -102,7 +104,8 @@ public class createFilesTask extends AsyncTask<String, Integer, String> {
             long startTime = System.currentTimeMillis();
             if(a.length>0){
                 if(a[0].length>1){
-                    device = new String[a[0].length];
+                    deviceFileBuilder = new StringBuilder[a[0].length];
+
                     String title = "Plan/Time,00:00,00:01,00:02,00:03,00:04,00:05,00:06,00:07,00:08,00:09,00:10,00:11,00:12,00:13,00:14,00:15,00:16,00:17,00:18,00:19,00:20,00:21,00:22,00:23,00:24," +
                             "00:25,00:26,00:27,00:28,00:29,00:30,00:31,00:32,00:33,00:34,00:35,00:36,00:37,00:38,00:39,00:40,00:41,00:42,00:43,00:44,00:45,00:46,00:47,00:48,00:49,00:50,00:51,00:52," +
                             "00:53,00:54,00:55,00:56,00:57,00:58,00:59,01:00,01:01,01:02,01:03,01:04,01:05,01:06,01:07,01:08,01:09,01:10,01:11,01:12,01:13,01:14,01:15,01:16,01:17,01:18,01:19,01:20," +
@@ -155,15 +158,11 @@ public class createFilesTask extends AsyncTask<String, Integer, String> {
                             "22:49,22:50,22:51,22:52,22:53,22:54,22:55,22:56,22:57,22:58,22:59,23:00,23:01,23:02,23:03,23:04,23:05,23:06,23:07,23:08,23:09,23:10,23:11,23:12,23:13,23:14,23:15,23:16," +
                             "23:17,23:18,23:19,23:20,23:21,23:22,23:23,23:24,23:25,23:26,23:27,23:28,23:29,23:30,23:31,23:32,23:33,23:34,23:35,23:36,23:37,23:38,23:39,23:40,23:41,23:42,23:43,23:44," +
                             "23:45,23:46,23:47,23:48,23:49,23:50,23:51,23:52,23:53,23:54,23:55,23:56,23:57,23:58,23:59";
-                    for(int i = 0; i<device.length;i++){
-                        device[i] = title+"-";
+                    for(int i = 0; i<deviceFileBuilder.length;i++){
+                        deviceFileBuilder[i] = new StringBuilder(2880);
+                        deviceFileBuilder[i].append(title+"-");
                     }
                     ArrayList<deviceFileFiller> threads = new ArrayList<>();
-//                    for(int i = 0;i<a.length;i++){
-//                        for(int j = 0;j<a[0].length;j++){
-//                            singlePlan(i,j,wattage[j+1]);
-//                        }
-//                    }
                     for(int j = 0;j<a[0].length;j++){
                         threads.add(new deviceFileFiller("Thread "+j+"+"+j,a,wattage[j+1],this,a.length,j));
                     }
@@ -178,7 +177,7 @@ public class createFilesTask extends AsyncTask<String, Integer, String> {
                             System.out.print("Thread "+i+" interrupted\n");
                         }
                     }
-
+                    builderToString();
                 }
             }else{
 
@@ -186,9 +185,14 @@ public class createFilesTask extends AsyncTask<String, Integer, String> {
         }
     }
 
-    public synchronized void returnDeviceFile(int dev, String file){
-        device[dev]+=file;
+    public void builderToString(){
+        device = new String[deviceFileBuilder.length];
+        for(int i = 0;i<deviceFileBuilder.length;i++){
+            device[i] = deviceFileBuilder[i].toString();
+        }
     }
 
-
+    public synchronized void returnDeviceFile(int dev, String file){
+        deviceFileBuilder[dev].append(file);
+    }
 }
