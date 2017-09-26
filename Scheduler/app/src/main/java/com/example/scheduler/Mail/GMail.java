@@ -53,6 +53,7 @@ public class GMail {
         emailProperties.put("mail.smtp.port", emailPort);
         emailProperties.put("mail.smtp.auth", smtpAuth);
         emailProperties.put("mail.smtp.starttls.enable", starttls);
+        emailProperties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
         Log.i("GMail", "Mail server properties set.");
     }
 
