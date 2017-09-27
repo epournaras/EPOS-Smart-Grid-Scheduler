@@ -112,6 +112,15 @@ public class Schedule {
         createScheduleDuration = (endTimeCreateSchedule - startTimeCreateSchedule)/1000000;
     }
 
+    public String getDetailsOfActions(){
+        return detailsOfActions;
+    }
+
+    public Long[] getCombinations(){
+        Long[] combinationsArray = new Long[combinations.size()];
+        combinations.toArray(combinationsArray);
+        return combinationsArray;
+    }
     public String getFinalDetails(){
         finalDetails = detailsOfActions+"-"+combinationCompile;
         return finalDetails;
