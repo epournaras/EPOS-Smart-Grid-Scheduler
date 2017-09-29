@@ -10,6 +10,8 @@ import android.widget.Toast;
 import com.example.schedulecreationlibrary.Action;
 import com.example.schedulecreationlibrary.Schedule;
 import com.example.scheduler.MainActivity;
+
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 /**
@@ -80,7 +82,7 @@ public class StoreDataTask extends AsyncTask<Schedule, Integer, String> {
         String TimingsFile = "timings.txt";
         try{
             FileOutputStream fos = activity.openFileOutput(TimingsFile,context.MODE_APPEND);
-            String submit = elapsedTime+",";
+            String submit = elapsedTime+"\n";
             fos.write(submit.getBytes());
             fos.close();
         }catch(Exception e){
@@ -108,6 +110,18 @@ public class StoreDataTask extends AsyncTask<Schedule, Integer, String> {
                 activity.setW(wattage);
                 activity.setFl(fullList);
                 activity.choicesPopUp();
+                String TimingsFile = "timings.txt";
+                try{
+                    FileInputStream fis = activity.openFileInput(TimingsFile);
+                    int ti;
+                    StringBuilder builder = new StringBuilder();
+                    while((ti=fis.read())!=-1){
+                        builder.append((char)ti);
+                    }
+                    System.out.print(builder.toString()+"\n");
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
                 String toastString = "Tomorrow's Schedule Set";
                 int durationOfToast = Toast.LENGTH_SHORT;
                 Toast toast = Toast.makeText(context, toastString, durationOfToast);

@@ -9,6 +9,8 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 import com.example.schedulecreationlibrary.Schedule;
 import com.example.scheduler.MainActivity;
+
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 /**
@@ -34,6 +36,29 @@ public class createSchedulesTask extends AsyncTask<Schedule, Integer, Schedule> 
 
     //call the Schedule methods to create and sort the possible plans.
     protected Schedule doInBackground(Schedule... lists){
+        String TimingsFile = "timings.txt";
+        String counterFile = "counter.txt";
+        int number = 0;
+        try{
+            FileInputStream fis = main.openFileInput(counterFile);
+            int ti;
+            StringBuilder builder = new StringBuilder();
+            while((ti=fis.read())!=-1){
+                builder.append((char)ti);
+            }
+            number = Integer.parseInt(builder.toString());
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        number++;
+        try{
+            FileOutputStream fos = main.openFileOutput(TimingsFile,context.MODE_APPEND);
+            String submit = number+",";
+            fos.write(submit.getBytes());
+            fos.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         Schedule list = lists[0];
         long startTime = System.currentTimeMillis();
         list.makeScheduleList();
@@ -43,7 +68,6 @@ public class createSchedulesTask extends AsyncTask<Schedule, Integer, Schedule> 
         //This causes the phone to be out of memory available to the app, causing the app to freeze.
         list.compileCombinations();
         String details = list.getFinalDetails();
-        String TimingsFile = "timings.txt";
         try{
             FileOutputStream fos = main.openFileOutput(TimingsFile,context.MODE_APPEND);
             String submit = elapsedTime+",";

@@ -39,6 +39,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v4.app.DialogFragment;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -116,6 +118,20 @@ public class MainActivity extends AppCompatActivity
         fullTime = " ";
         date = " ";
         tomorrowsDate = " ";
+
+        String counterFile = "counter.txt";
+
+        File counterFil = new File(counterFile);
+
+        if(!counterFil.exists()){
+            try{
+                FileOutputStream fos = this.openFileOutput(counterFile,MODE_PRIVATE);
+                fos.write("0".getBytes());
+                fos.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final LinearLayout textEdit = (LinearLayout) findViewById(R.id.fabEditAppliancesTextLayout);

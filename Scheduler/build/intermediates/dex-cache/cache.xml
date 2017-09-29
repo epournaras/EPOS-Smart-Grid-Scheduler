@@ -43,7 +43,7 @@
         jumboMode="false"
         optimize="true"
         revision="25.0.2"
-        sha1="e010536854440e959dfced7cecba3db2dd8c5362">
+        sha1="e9e6c2fce396aa70834f5f0e0fd73cecfa10d497">
         <dex dex="/Users/warrens/EPOS-Frontend/Scheduler/app/build/intermediates/pre-dexed/debug/classes_5ee95fa2af39bd1e8f8631951ea04b3511f49ab8.jar" />
     </item>
     <item
